@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2024-03-11T13:52:23.674Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 OPR/109.0.0.0 (Edition developer)" etag="Ug-7wBkCRtSJYGS1lOWy" version="24.0.2" type="device">
+<mxfile host="app.diagrams.net" modified="2024-03-13T18:52:47.905Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0" etag="uDNMTFPdsehhsfaB-nxT" version="24.0.5" type="device">
   <diagram name="Seite-1" id="fWnW3hOuJFl1YckPMjlk">
-    <mxGraphModel dx="3465" dy="1042" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="2696" dy="569" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -249,6 +249,30 @@
         </mxCell>
         <mxCell id="XkvbFqVH8ZylM9C7yXK--132" value="Themes" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="-1150" y="20" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="1Sw_dVwiENIE5QYuIblr-1" value="X" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="510" y="825.5" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="1Sw_dVwiENIE5QYuIblr-2" value="X" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="510" y="1015" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="1Sw_dVwiENIE5QYuIblr-3" value="X" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="180" y="824.5" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="1Sw_dVwiENIE5QYuIblr-4" value="X" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="180" y="1015" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="JrjH9FEkH6C1OYBb5Dng-1" value="✎" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="143" y="824.5" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="JrjH9FEkH6C1OYBb5Dng-2" value="✎" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="143" y="1015" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="JrjH9FEkH6C1OYBb5Dng-3" value="✎" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="470" y="824.5" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="JrjH9FEkH6C1OYBb5Dng-4" value="✎" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="470" y="1015" width="20" height="20" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
