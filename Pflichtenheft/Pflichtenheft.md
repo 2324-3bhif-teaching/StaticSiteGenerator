@@ -19,9 +19,15 @@ benutzten und mit CSS mühsam die Fonts und Colors verändern und Code Highlight
 |Phase|Soll-Termin|Ergebnisse|
 |-----|-----------|----------|
 |Initiierung|13.03.2024         |Pflichtenheft und MockUps sind vollständig|vorhanden|
-|Planung|||
-|Durchführung|||
-|Durchführung|||
+|Planung||Arbeitspakete sind festgelegt|
+|Durchführung||Die API kann benutzt werden um Benutzer zu erstellen und zu verwalten|
+|Durchführung||Die API kann benutzt weden um Themes zu erstellen und zu zu verwalten|
+|Durchführung||Die API kann beutzt werden um Projekte zu erstellen und verwalten|
+|Durchführung||Die API kann benutzt werden um eine statische Website eines Projektes zu generieren und zu bekommen|
+|Durchführung||Es können Projekte eines Benutzers mithilfe des Frontends verwaltet werden|
+|Durchführung||Themes können mithilfe des Frontends erstellt bearbeitet und verwaltet werden|
+|Durchführung||Projekte können mithilfe des Frontends bearbeitet werden und eine Preview wird angezeigt|
+|Durchführung||Die statisch generertie Website kann mithilfe des Frontends für jedes Projekt heruntergeladen werden|
 
 ## Soll-Zustand
 
@@ -43,6 +49,8 @@ Es gibt eine Website welche Markdown Files in eine statische Website konvertiere
   * löschbar
   * teilbar mit anderen Benutzern
   * bearbeitbar
+  * Themes anderer Benutzer können nachträglich für sich bearbeitet werden
+  * durch das löschen geteilter Themes werden sie für andere Benutzer auch gelöscht
 
 Für alle genannten Funktionen wird ein Account benötigt.
 
