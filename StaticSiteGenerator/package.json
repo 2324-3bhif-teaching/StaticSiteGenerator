@@ -1,0 +1,14 @@
+{
+  "name": "staticsitegenerator",
+  "version": "1.0.0",
+  "description": "Static Site Generator Website from markdown",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "rmifka, paul-schein, LukasPerger",
+  "license": "ISC"
+}
