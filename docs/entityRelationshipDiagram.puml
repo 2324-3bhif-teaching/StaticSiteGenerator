@@ -1,0 +1,57 @@
+@startuml
+hide empty fields
+hide empty methods
+
+entity Theme
+{
+  * userName <<FK>>
+  * name
+  --
+  isPublic
+}
+
+entity ElementStyles
+{
+  * tag
+  * userName <<FK>>
+  * themeName <<FK>>
+  * styleProperty <<FK>>
+  * styleValue <<FK>>
+}
+
+entity Style
+{
+  * property
+  * value
+}
+
+entity Project
+{
+  * name
+  * userName <<FK>>
+  --
+  themeName <<FK>>
+  themeOwner <<FK>>
+}
+
+entity File
+{
+  * projectName <<FK>>
+  * userName <<FK>>
+  * index
+  * path
+}
+
+entity User
+{
+  * name
+  password
+}
+
+Theme "1" -- "n" ElementStyles
+ElementStyles "1" -- "n" Style
+User "1" -- "n" Project
+Project "1" -- "1" Theme
+Project "1" -- "n" File
+
+@enduml
