@@ -7,7 +7,7 @@ export const themeRouter = express.Router();
 
 themeRouter.get('/', async (_, res) => {
     const db = await DB.createDBConnection();
-    const themes: Theme[] = await db.all<Theme[]>("select * from theme where isPublic != 0");
+    const themes: Theme[] = await db.all<Theme[]>("select * from theme where isPublic != nullptr");
     await db.close();
 
     res.send(themes);
