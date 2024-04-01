@@ -10,9 +10,19 @@ export interface Project {
     files: File[];
 }
 
-export interface Style {
-    property: string;
-    value: string;
+export class Style {
+
+    private property: string;
+    private value: string;
+
+    constructor(property: string, value: string) {
+        this.property = property;
+        this.value = value;
+    }
+
+    public toString(): string {
+        return `${this.property}: ${this.value}`;
+    }
 }
 
 export interface User {
@@ -22,8 +32,8 @@ export interface User {
     projects: Project[];
 }
 
-
 export interface Theme {
-    isPublic: boolean;
-    stylesheet: Map<string, Style[]>;
+    isPublic: boolean,
+    userName: string,
+    name: string
 }
