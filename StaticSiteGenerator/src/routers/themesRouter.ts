@@ -1,6 +1,6 @@
 import express from "express";
 import { DB } from "../data";
-import { Theme } from "../model";
+import { Theme } from "../theme";
 import { StatusCodes } from "http-status-codes";
 
 export const themeRouter = express.Router();
@@ -72,7 +72,6 @@ themeRouter.post('/', async (req, res) => {
     let db;
     try {
         db = await DB.createDBConnection();
-
         await DB.beginTransaction(db);
 
         const stmt = await db.prepare("INSERT INTO theme (isPublic, userName, name) VALUES (?1, ?2, ?3)");
@@ -80,9 +79,7 @@ themeRouter.post('/', async (req, res) => {
         await stmt.bind({ 1: theme.isPublic, 2: theme.userName, 3: theme.name });
 
         await stmt.run();
-
         await stmt.finalize();
-
         await DB.commitTransaction(db);
     } catch (error) {
         if (db) {

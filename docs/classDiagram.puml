@@ -1,4 +1,4 @@
-@startuml a
+@startuml
 hide empty fields
 hide empty methods
 
@@ -13,24 +13,24 @@ class App <<File>>
 class themesRouter <<File>>
 {
   GET <<all public themes>>
-  GET <<all themes of userID>>
-  GET <<Theme with userID and name>>
+  GET <<all themes of userName>>
+  GET <<Theme with userName and name>>
   --
-  POST <<Theme with userID and name>>
+  POST <<Theme with userName and name>>
   --
-  PUT <<Theme with userID and name>>
+  PUT <<Theme with userName and name>>
   --
-  DELETE <<Theme with userID and name>>
+  DELETE <<Theme with userName and name>>
 }
 
 class projectsRouter <<File>>
 {
-  GET <<Project with userID and name>>
+  GET <<Project with userName and name>>
   --
-  POST <<Project with userID and name>>
-  PUT <<Project with userID and name>>
+  POST <<Project with userName and name>>
+  PUT <<Project with userName and name>>
   --
-  DELETE <<Project with userID and name>>
+  DELETE <<Project with userName and name>>
 }
 
 class usersRouter <<File>>
@@ -79,11 +79,13 @@ interface Style
   string value
 }
 
-interface Theme
+class Theme
 {
-  string name
-  bool isPublic
-  Map<string, Style[]> stylesheet
+  +string name
+  +string userName
+  +bool isPublic
+  +Map<string, Style[]> getStyles()
+  +string toString()
 }
 
 class Converter <<File>>
