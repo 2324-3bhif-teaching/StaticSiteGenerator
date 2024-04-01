@@ -5,7 +5,7 @@ GET {{themesURL}}/
 GET {{themesURL}}/abc
 
 ###
-GET {{themesURL}}/JohnDoe/DarkTheme
+GET {{themesURL}}/abc/DarkTheme
 
 ###
 GET {{themesURL}}/JohnerDoe/BlackTheme
