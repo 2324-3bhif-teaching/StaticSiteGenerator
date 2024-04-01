@@ -13,8 +13,28 @@ themeRouter.get('/', async (_, res) => {
     res.send(themes);
 });
 
-themeRouter.get('/:username', async (_, res) => {
-    throw new Error("Not Implemented");
+themeRouter.get('/:username', async (req, res) => {
+    const user = req.params.username;
+    let db;
+    let themes;
+    try {
+        db = await DB.createDBConnection();
+        const stmt = await db.prepare("select * from Theme where isPublic != 0 and userName = ?1");
+
+        await stmt.bind({ 1: user });
+
+        themes = await stmt.all<Theme[]>();
+
+        await stmt.finalize();
+    } catch (error) {
+        res.sendStatus(StatusCodes.BAD_REQUEST);
+    } finally {
+        if (db) {
+            await db.close();
+        }
+    }
+
+    res.send(themes);
 });
 
 themeRouter.get('/:username/:name', async (_, res) => {
