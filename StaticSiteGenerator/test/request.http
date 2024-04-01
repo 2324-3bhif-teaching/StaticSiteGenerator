@@ -1,4 +1,54 @@
-@baseUrl = localhost:3000/api
-@projectsURL = {{baseUrl}}/projects
-@themesURL = {{baseUrl}}/themes
-@usersURL = {{baseUrl}}/users
+###
+GET {{themesURL}}/
+
+###
+GET {{themesURL}}/JohnerDoe
+
+###
+GET {{themesURL}}/JohnDoe/DarkTheme
+
+###
+GET {{themesURL}}/JohnerDoe/BlackTheme
+
+###
+POST {{themesURL}}/ HTTP/1.1
+Content-Type: application/json
+
+{
+  "isPublic": true,
+  "userName": "abc",
+  "name": "DarkTheme"
+}
+
+###
+POST {{themesURL}}/ HTTP/1.1
+Content-Type: application/json
+
+{
+  "isPublic": false,
+  "userName": "abc",
+  "name": "    "
+}
+
+###
+POST {{themesURL}}/ HTTP/1.1
+Content-Type: application/json
+
+{
+  "isPublic": false,
+  "userName": "JohnerDoe",
+  "name": "BlackTheme"
+}
+
+###
+PUT {{themesURL}}/JohnerDoe/BlackTheme HTTP/1.1
+Content-Type: application/json
+
+{
+  "isPublic": true,
+  "userName": "MarkusDoe",
+  "name": "MaybeDarkTheme"
+}
+
+###
+DELETE {{themesURL}}/DarkTheme/JohnerDoe HTTP/1.1
