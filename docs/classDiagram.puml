@@ -1,4 +1,4 @@
-@startuml
+@startuml a
 hide empty fields
 hide empty methods
 
@@ -81,6 +81,7 @@ interface Style
 
 interface Theme
 {
+  string name
   bool isPublic
   Map<string, Style[]> stylesheet
 }
