@@ -2,15 +2,11 @@
 GET {{themesURL}}/
 
 ###
+
 GET {{themesURL}}/abc
 
 ###
-GET {{themesURL}}/abc/DarkTheme
 
-###
-GET {{themesURL}}/JohnerDoe/BlackTheme
-
-###
 POST {{themesURL}}/ HTTP/1.1
 Content-Type: application/json
 
@@ -21,6 +17,13 @@ Content-Type: application/json
 }
 
 ###
+
+GET {{themesURL}}/abc/DarkTheme
+
+###
+GET {{themesURL}}/JohnerDoe/BlackTheme
+
+###
 POST {{themesURL}}/ HTTP/1.1
 Content-Type: application/json
 
@@ -28,6 +31,16 @@ Content-Type: application/json
   "isPublic": false,
   "userName": "abc",
   "name": "    "
+}
+
+###
+POST {{themesURL}}/ HTTP/1.1
+Content-Type: application/json
+
+{
+  "isPublic": false,
+  "userName": "JohndDoe",
+  "name": "BlackTheme"
 }
 
 ###
@@ -46,9 +59,8 @@ Content-Type: application/json
 
 {
   "isPublic": true,
-  "userName": "MarkusDoe",
   "name": "MaybeDarkTheme"
 }
 
 ###
-DELETE {{themesURL}}/DarkTheme/JohnerDoe HTTP/1.1
+DELETE {{themesURL}}/JohnerDoe/MaybeDarkTheme HTTP/1.1
