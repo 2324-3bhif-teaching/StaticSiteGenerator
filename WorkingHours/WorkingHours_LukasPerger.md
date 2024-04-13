@@ -10,3 +10,4 @@
 | 29.03.2024 | 2h 40min | Klassendiagramm und ERD bearbeitet und Projekt Setup                          | -     |
 | 01.04.2024 | 3h       | Themes Router und http test Requests                                          | -     |
 | 07.04.2024 | 1h 20min | Helped with Themes Router                                                     | -     |
+| 13.04.2024 | 1h 20min | Meilensteine ausformuliert | - |

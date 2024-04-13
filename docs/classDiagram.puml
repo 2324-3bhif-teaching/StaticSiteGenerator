@@ -25,6 +25,7 @@ class themesRouter <<File>>
 
 class projectsRouter <<File>>
 {
+  GET <<Projects of a userName>>
   GET <<Project with userName and name>>
   --
   POST <<Project with userName and name>>
