@@ -1,14 +1,10 @@
 # Meilensteine
-|Phase| Soll-Termin |Ergebnisse|
-|-----|-------------|----------|
-|Initiierung| 13.03.2024  |Pflichtenheft und MockUps sind vollständig|vorhanden|
+|Phase| Soll-Termin |Ergebnisse|benötigte Issues|
+|-----|-------------|----------|----------------|
+|Initiierung| 13.03.2024  |Pflichtenheft und MockUps sind vollständig, vorhanden|
 |Planung| 20.03.2024  |Arbeitspakete sind festgelegt|
-|Durchführung| 03.4.2024   |Die API kann benutzt weden um Themes zu erstellen und zu zu verwalten|
-|Durchführung| 17.4.2024   |Die API kann beutzt werden um Projekte zu erstellen und verwalten|
-|Durchführung| 24.4.2024   |Die API kann benutzt werden um Benutzer zu erstellen und zu verwalten|
-|Durchführung| 10.5.2024   |Markdown zu HTML Parser|
-|Durchführung| 15.5.2024   |Die API kann benutzt werden um eine statische Website eines Projektes zu generieren und zu bekommen|
-|Durchführung| 22.5.2024   |Es können Projekte eines Benutzers mithilfe des Frontends verwaltet werden|
-|Durchführung| 05.6.2024   |Themes können mithilfe des Frontends erstellt bearbeitet und verwaltet werden|
-|Durchführung| 12.6.2024   |Projekte können mithilfe des Frontends bearbeitet werden und eine Preview wird angezeigt|
-|Durchführung| 17.6.2024   |Die statisch generertie Website kann mithilfe des Frontends für jedes Projekt heruntergeladen werden|
+|Durchführung| 24.4.2024   |Die API kann benutzt werden um Themes, Benutzer und Projekte zu verwalten|#22, #23|
+|Durchführung| 10.5.2024   |Markdown zu HTML Parser|#13, #14|
+|Durchführung| 15.5.2024   |Die API kann benutzt werden um eine statische Website eines Projektes zu generieren und zu bekommen|#15|
+|Durchführung| 12.6.2024   |Frontendverwaltung von Themes, Bentzer und Projekten|#24, #25, #26, #19, #17|
+|Durchführung| 17.6.2024   |Die statisch generertie Website kann mithilfe des Frontends für jedes Projekt heruntergeladen werden|#18|
