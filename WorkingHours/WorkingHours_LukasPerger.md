@@ -11,3 +11,4 @@
 | 01.04.2024 | 3h       | Themes Router und http test Requests                                          |#11, #22|
 | 07.04.2024 | 1h 20min | Helped with Themes Router                                                     |#22|
 | 13.04.2024 | 1h 20min | Meilensteine ausformuliert | - |
+| 14.04.2024 | 2h 30min | Meilensteine zusammengefasst. Issues hinzugefügt/aufgeräumt. Ist- und Soll-Zustand geändert. Projektrisiken geändert|-|

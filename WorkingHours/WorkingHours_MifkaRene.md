@@ -9,3 +9,4 @@
 | 29.03.2024 | 2h 40min | Klassendiagramm und ERD bearbeitet und Projekt Setup |#10|
 | 01.04.2024 | 3h       | Themes Router und http test Requests                 |#11, #22|
 | 07.04.2024 | 1h       | Added Github issues and helped with Themes Router    |#22|
+| 14.04.2024 | 2h 30min | Meilensteine zusammengefasst. Issues hinzugefügt/aufgeräumt. Ist- und Soll-Zustand geändert. Projektrisiken geändert|-|

@@ -10,3 +10,4 @@
 | 01.04.2024 | 3h       | Themes Router und http test Requests                       |#11, #22|
 | 07.04.2024 | 1h 20min | Updated Themes Router                                      |#22|
 | 10.04.2024 | 1h 30min | Worked on Dockerfile and updated WorkingHours to Markdown  | -     |
+| 14.04.2024 | 2h 30min | Meilensteine zusammengefasst. Issues hinzugefügt/aufgeräumt. Ist- und Soll-Zustand geändert. Projektrisiken geändert|-|
