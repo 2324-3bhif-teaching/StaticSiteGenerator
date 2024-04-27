@@ -28,7 +28,7 @@ Am Ende des Projekts soll die Funktionalität und das Projektvorgehen präsentie
 
 - Markdown ist zu komplex
 - nicht genug Informationen über KeyCloak
-- konvertierung von Codehighlighting komplexer als gedacht
+- Konvertierung von Codehighlighting komplexer als gedacht
 
 ## Projektorganisation
 
