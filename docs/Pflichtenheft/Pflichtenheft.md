@@ -34,6 +34,7 @@ Du kannst Dokumentation normal mit Markdown schreiben und dann einfach in HTML k
   * Typescript
   * Express
   * NodeJS
+  * Highlightjs
 
 ## Mengengerüst
 
