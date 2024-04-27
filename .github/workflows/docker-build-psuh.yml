@@ -28,4 +28,4 @@ jobs:
      with:
       context: ./StaticSiteGenerator
       push: true
-      tags: static_site_generator
+      tags: ${{ secrets.DOCKERHUB_USERNAME }}/static_site_generator:lastest
