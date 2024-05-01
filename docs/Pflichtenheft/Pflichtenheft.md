@@ -10,8 +10,7 @@ Es wird ein Projekt die Fächer "Systemplanung und Projektentwiklung" und "Webpr
 
 ## Ist-Zustand
 
-Wenn man schnell eine simple und schöne Website mit Documentation oder Code Highlighting machen will, dann muss man HTML
-benutzten und mit CSS mühsam die Fonts und Colors verändern und Code Highlighting mit komischer Syntax implementieren.
+Es ist mühsam und langsam eine Webseite mit HTML zu machen und mit CSS zu stylen. Codehighlighting ist schwierig richtig umzusetzen. Das schreiben einer Dokumentation in HTML ist unangenehm.
 
 ## Zielsetzung
 
@@ -21,28 +20,7 @@ Zu finden in [Meilensteine](../Meilensteine.md)
 
 ## Soll-Zustand
 
-Es gibt eine Website welche Markdown Files in eine statische Website konvertieren kann. Hierbei ist es möglich Designs auszuwählen und zu erstellen. Diese Designs können mit anderen Benutzern geteilt werden. Die statische Website kann als Projekt des Users auf unserer Website gespeichert werden. Für die statische Website kann automatisch eine Inhaltsangabe generieren.
-
-* Projekte
-  * erstellbar
-  * löschbar
-  * veränderbar  
-* Übersicht in Projekten
-  * Es können mehrere Markdown Files hochgeladen werden
-  * Prieview für das ausgewählte File
-  * Es kann ein Markdown File zur Startseite gemacht werden
-  * Ein Inhaltsverzeichnis kann für jede der Seiten generiert werden
-  * Es kann ein Theme ausgewählt werden, von welchem die Daten geladen werden
-    * Dies ermöglicht die Bearbeitung von Themes anderer Nutzer
-* Themes
-  * erstellbar
-  * löschbar
-  * teilbar mit anderen Benutzern
-  * bearbeitbar
-  * Themes anderer Benutzer können nachträglich für sich bearbeitet werden
-  * durch das löschen geteilter Themes werden sie für andere Benutzer auch gelöscht
-
-Für alle genannten Funktionen wird ein Account benötigt.
+Du kannst Dokumentation normal mit Markdown schreiben und dann einfach in HTML konvertieren lassen. Der Style der Webseite kann einfach verändert werden. Es muss nicht immer jedes Theme selbst gemacht werden, da man schon vorhandene eigene und Themes von anderen einfach anwenden kann. Codehighlighting wird automatisch konvertiert und man muss sich keine weiteren Gedanken darüber machen.
 
 ### MockUp
 ![MockUp](MockUp.png)
@@ -56,6 +34,7 @@ Für alle genannten Funktionen wird ein Account benötigt.
   * Typescript
   * Express
   * NodeJS
+  * Highlightjs
 
 ## Mengengerüst
 
