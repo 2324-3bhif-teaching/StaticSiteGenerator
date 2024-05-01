@@ -56,12 +56,51 @@ projectRouter.post('/', async (req, res) => {
 
 });
 
-projectRouter.put('/', async (req, res) => {
-    // Body contatins user token and project Name
-    throw new Error("Not Implemented");
+projectRouter.put('/:owner/:project', async (req, res) => {
+    const prj = req.body;
+    const prjName = req.params.project;
+    const prjOwner = req.params.owner;
+    if (prj.themeName === undefined ||
+        prj.themeOwner === undefined ||
+        prj.name === undefined) {
+        res.sendStatus(StatusCodes.BAD_REQUEST);
+        return;
+    }
+
+    const unit: Unit = await Unit.create(false);
+    try {
+        const stmt = await unit.prepare(`UPDATE Project Set themeName = ?1,themeOwner = ?2,name = ?3 
+               where name = ?4 and userName = ?5`,
+            {1: prj.themeName,2: prj.themeOwner,3:prj.name,4:prjName,5:prjOwner});
+
+        await stmt.run();
+        await unit.complete(true);
+        res.sendStatus(StatusCodes.OK);
+    }
+    catch (error){
+        console.log(error);
+        await unit.complete(false);
+        res.sendStatus(StatusCodes.BAD_REQUEST);
+    }
 });
 
-projectRouter.delete('/', async (req, res) => {
-    // Body contatins user token and project Name
-    throw new Error("Not Implemented");
+projectRouter.delete('/:owner/:name', async (req, res) => {
+
+    const prjName = req.params.name;
+    const prjOwner = req.params.owner;
+
+    const unit: Unit = await Unit.create(false);
+    try {
+        const stmt = await unit.prepare(`Delete from Project where name = ?1 and userName = ?2`,
+            {1:prjName,2:prjOwner});
+
+        await stmt.run();
+        await unit.complete(true);
+        res.sendStatus(StatusCodes.OK);
+    }
+    catch (error){
+        console.log(error);
+        await unit.complete(false);
+        res.sendStatus(StatusCodes.BAD_REQUEST);
+    }
 });
