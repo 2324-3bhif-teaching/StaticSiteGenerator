@@ -58,7 +58,7 @@ themeRouter.get('/:username/:name', async (req, res) => {
     try {
         db = await DB.createDBConnection();
         stmt = await db.prepare("select * from Theme where isPublic != 0 and userName = ?1 and name = ?2");
-        await stmt.bind({ 1: user ,2:themeName});
+        await stmt.bind({ 1: user, 2: themeName });
 
         const themes = await stmt.get<Theme>();
 
@@ -135,16 +135,17 @@ themeRouter.put('/:username/:name', async (req, res) => {
         await DB.beginTransaction(db);
 
         stmt = await db.prepare("UPDATE Theme SET isPublic = ?1, name = ?2 WHERE userName = ?3 AND name = ?4");
+
         await stmt.bind({ 1: theme.isPublic, 2: theme.name, 3: username, 4: name });
-
         await stmt.run();
-
         await DB.commitTransaction(db);
         res.sendStatus(StatusCodes.OK);
+
     } catch (error) {
         if (db) {
             await DB.rollbackTransaction(db);
         }
+        console.log(error);
         res.sendStatus(StatusCodes.BAD_REQUEST);
     } finally {
         if (stmt) {
@@ -158,7 +159,7 @@ themeRouter.put('/:username/:name', async (req, res) => {
 
 
 themeRouter.delete('/:username/:name', async (req, res) => {
-    const theme: String  = req.params.name;
+    const theme: String = req.params.name;
     const username: String = req.params.username;
 
     let db;
@@ -167,7 +168,7 @@ themeRouter.delete('/:username/:name', async (req, res) => {
         await DB.beginTransaction(db);
 
         const stmt = await db.prepare("DELETE FROM Theme WHERE userName = ?1 AND name = ?2");
-        await stmt.bind({ 1: username, 2: theme});
+        await stmt.bind({ 1: username, 2: theme });
 
         await stmt.run();
         await stmt.finalize();

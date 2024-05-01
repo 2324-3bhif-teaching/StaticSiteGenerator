@@ -1,6 +1,7 @@
 import {Style} from "./style";
 
 export class Theme {
+    public static readonly DefaultName : string  = "Default";
     private readonly _isPublic: boolean;
     private readonly _userName: string;
     private readonly _name: string;

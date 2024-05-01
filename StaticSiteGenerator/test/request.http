@@ -13,12 +13,12 @@ Content-Type: application/json
 {
   "isPublic": true,
   "userName": "abc",
-  "name": "DarkTheme"
+  "name": "DarkestTheme"
 }
 
 ###
 
-GET {{themesURL}}/abc/DarkTheme
+GET {{themesURL}}/abc/DarkestTheme
 
 ###
 GET {{themesURL}}/JohnerDoe/BlackTheme
@@ -40,7 +40,7 @@ Content-Type: application/json
 {
   "isPublic": false,
   "userName": "JohndDoe",
-  "name": "BlackTheme"
+  "name": "BlackgTheme"
 }
 
 ###
@@ -64,3 +64,20 @@ Content-Type: application/json
 
 ###
 DELETE {{themesURL}}/JohnerDoe/MaybeDarkTheme HTTP/1.1
+
+###
+POST {{projectsURL}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "token": "abc",
+  "projectName": "The Best Project Known To Mankind"
+}
+
+###
+GET {{projectsURL}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "token": "abc"
+}
