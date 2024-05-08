@@ -10,9 +10,13 @@ import "dotenv/config"
 
 const app = express();
 
+if(process.env.SECRET_KEY === undefined){
+    throw new Error("Secret was undefined")
+}
+
 const memoryStore = new session.MemoryStore();
 app.use(session({
-    secret: 'some long secret',
+    secret: process.env.SECRET_KEY,
     resave: false,
     saveUninitialized: true,
     store: memoryStore
