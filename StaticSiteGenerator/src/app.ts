@@ -4,9 +4,20 @@ import { projectRouter } from "./routers/projectsRouter";
 import { themeRouter } from "./routers/themesRouter";
 import { userRouter } from "./routers/usersRouter";
 import { DB } from "./data";
+import session from 'express-session';
+import Keycloak from 'keycloak-connect';
+import "dotenv/config"
 
 const app = express();
 
+const memoryStore = new session.MemoryStore();
+app.use(session({
+    secret: 'some long secret',
+    resave: false,
+    saveUninitialized: true,
+    store: memoryStore
+}));
+const keycloak = new Keycloak({ store: memoryStore });
 
 app.use(cors());
 app.use(express.json());
