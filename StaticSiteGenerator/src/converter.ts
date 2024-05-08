@@ -10,7 +10,7 @@ export function generateCss(theme: Theme): string {
     styles.forEach((value : Style[], key : string) => {
         let elementCss = `.${key} {`;
         value.forEach((style : Style) => {
-            elementCss += `${style.toString()};`;
+            elementCss += `${style.toString()}`;
         });
         elementCss += "}";
 
