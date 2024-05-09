@@ -6,6 +6,8 @@ export const dbFileName = 'StaticSiteGenerator.db';
 
 
 export class DB {
+    private static tableInitDone = false;
+
     public static readonly SystemUserName = "StaticSiteGenerator";
     public static async createDBConnection(): Promise<Database> {
         const db = await open({
@@ -32,12 +34,9 @@ export class DB {
     }
 
     private static async ensureTablesCreated(connection: Database): Promise<void> {
-
-        await connection.run(`create table if not exists User (
-            name text not null,
-            password text not null,
-            constraint PK_User primary key (name)
-        ) strict`);
+        if(this.tableInitDone){
+            return;
+        }
 
         await connection.run(`create table if not exists Theme (
             userName text not null,
@@ -82,6 +81,7 @@ export class DB {
             constraint FK_Project foreign key (projectName, userName) references Project(name, userName)
         ) strict`);
 
+        this.tableInitDone = true;
     }
 
     private static async ensureTablesPopulated(connection: Database) : Promise<void> {

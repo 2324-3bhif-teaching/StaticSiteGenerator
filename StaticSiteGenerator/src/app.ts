@@ -30,6 +30,23 @@ app.use("/api/projects", projectRouter);
 app.use("/api/themes", themeRouter);
 app.use("/api/users", userRouter);
 
+app.use(keycloak.middleware({
+    logout: '/logout'
+}));
+
+// Protected route
+app.get('/protected', [keycloak.protect()], (req: any, res: any) => {
+    const token = req.kauth.grant.access_token.content;
+    console.log(token.name); // Use the token as required
+    res.send('Secret stuff');
+});
+
+// Logout route
+app.get('/logout', keycloak.protect(), (req: any, res) => {
+    req.kauth.logout();
+    res.redirect('/');
+});
+
 app.listen(3000, async () => {
     console.log("Server listening on port 3000");
     await DB.createDBConnection();

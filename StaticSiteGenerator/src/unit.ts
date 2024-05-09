@@ -5,11 +5,12 @@ export class Unit {
 
     private db: Database | null;
     private readonly statements: Statement[];
+    private completed: boolean;
 
-    private constructor(public readonly readOnly: boolean)
-    {
+    private constructor(public readonly readOnly: boolean) {
         this.db = null;
         this.statements = [];
+        this.completed = false;
     }
 
     private async init(): Promise<void> {
@@ -21,14 +22,24 @@ export class Unit {
 
     public async prepare(sql: string, bindings: any | null = null): Promise<Statement> {
         const stmt = await this.db!.prepare(sql);
-        if (bindings !== null){
+        if (bindings !== null) {
             await stmt!.bind(bindings);
         }
         this.statements.push(stmt);
         return stmt!;
     }
 
+    public async getLastRowId(): Promise<number> {
+        const result = await this.db!.get('SELECT last_insert_rowid() as "id"');
+        return result.id;
+    }
+
     public async complete(commit: boolean | null = null): Promise<void> {
+        if (this.completed) {
+            return;
+        }
+        this.completed = true;
+
         if (commit !== null) {
             await (commit ? DB.commitTransaction(this.db!) : DB.rollbackTransaction(this.db!));
         } else if (!this.readOnly) {
