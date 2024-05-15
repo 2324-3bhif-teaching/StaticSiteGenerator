@@ -1,5 +1,5 @@
 import express from "express";
-import { DB } from "../data";
+import { DB } from "../database/data";
 import { Theme } from "../theme";
 import { StatusCodes } from "http-status-codes";
 

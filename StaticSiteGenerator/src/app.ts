@@ -3,12 +3,18 @@ import cors from "cors";
 import { projectRouter } from "./routers/projectsRouter";
 import { themeRouter } from "./routers/themesRouter";
 import { userRouter } from "./routers/usersRouter";
-import { DB } from "./data";
+import { DB } from "./database/data";
 import session from 'express-session';
 import Keycloak from 'keycloak-connect';
-import "dotenv/config"
+import "dotenv/config";
 
 const app = express();
+
+(async () => {
+    const connection = await DB.createDBConnection();
+    await DB.ensureTablesPopulated(connection);
+    await connection.close();
+})();
 
 if(process.env.SECRET_KEY === undefined){
     throw new Error("Secret was undefined")
@@ -49,5 +55,4 @@ app.get('/logout', keycloak.protect(), (req: any, res) => {
 
 app.listen(3000, async () => {
     console.log("Server listening on port 3000");
-    await DB.createDBConnection();
 });

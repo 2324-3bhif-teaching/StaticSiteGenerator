@@ -1,9 +1,9 @@
 import express from "express";
-import {Unit} from "../unit";
+import {Unit} from "../database/unit";
 import {StatusCodes} from "http-status-codes";
 import {Project} from "../model";
 import {Theme} from "../theme";
-import {DB} from "../data";
+import {DB} from "../database/data";
 
 export const projectRouter = express.Router();
 

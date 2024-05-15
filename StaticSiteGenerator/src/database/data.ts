@@ -1,23 +1,22 @@
 import { Database as Driver } from "sqlite3";
 import { open, Database } from "sqlite";
-import {Theme} from "./theme";
+import {Theme} from "../theme";
 
 export const dbFileName = 'StaticSiteGenerator.db';
 
-
 export class DB {
+    public static dbFilePath: string = dbFileName;
     private static tableInitDone = false;
 
     public static readonly SystemUserName = "StaticSiteGenerator";
     public static async createDBConnection(): Promise<Database> {
         const db = await open({
-            filename: `./${dbFileName}`,
+            filename: `./${DB.dbFilePath}`,
             driver: Driver
         });
         await db.run('PRAGMA foreign_keys = ON');
 
         await DB.ensureTablesCreated(db);
-        await DB.ensureTablesPopulated(db);
         return db;
     }
 
@@ -42,8 +41,7 @@ export class DB {
             userName text not null,
             name text not null,
             isPublic integer not null,
-            constraint PK_Theme primary key (name, userName),
-            constraint FK_User foreign key (userName) references User(name)
+            constraint PK_Theme primary key (name, userName)
         ) strict`);
 
         await connection.run(`create table if not exists Style(
@@ -84,17 +82,15 @@ export class DB {
         this.tableInitDone = true;
     }
 
-    private static async ensureTablesPopulated(connection: Database) : Promise<void> {
+    public static async ensureTablesPopulated(connection: Database) : Promise<void> {
         const defTheme = await connection.get(`Select Count(*) as cnt from theme where name = '${Theme.DefaultName}' and userName = '${DB.SystemUserName}'`);
-        const defUser = await connection.get(`Select Count(*) as cnt from User where name = '${DB.SystemUserName}'`);
 
-        if(defTheme.cnt === 1 || defUser.cnt === 1) {
+        if(defTheme.cnt === 1) {
             return;
         }
 
         await DB.beginTransaction(connection);
         try {
-            await connection.run(`Insert into User (name, password) VALUES ('${DB.SystemUserName}',',mxvc,mxvc,mvxc,mxvc,mxvc,m,mv,mxvc,mxcv,mxcvm,vc,mxcv,mxcv mvvm')`);
             await connection.run(`Insert into THEME (userName, name, isPublic)  Values ('${DB.SystemUserName}','${Theme.DefaultName}',1)`);
             await DB.commitTransaction(connection);
         }
@@ -102,8 +98,6 @@ export class DB {
         {
             await DB.rollbackTransaction(connection);
         }
-
-
     }
 }
 
