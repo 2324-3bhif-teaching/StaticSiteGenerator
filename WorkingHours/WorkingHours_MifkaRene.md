@@ -11,3 +11,5 @@
 | 07.04.2024 | 1h       | Added Github issues and helped with Themes Router    |#22|
 | 14.04.2024 | 2h 30min | Meilensteine zusammengefasst. Issues hinzugefügt/aufgeräumt. Ist- und Soll-Zustand geändert. Projektrisiken geändert|-|
 | 01.05.2024 | 2h 30min | Project Router ohne Keycloak und ohne Fileverwaltung implementiert + Meilensteine umbenannt | #23|
+| 14.05.2024 | 1h | Asciidoc Parser hinzugefügt | #13, #14 |
+| 15.05.2024 | 2h 30min | Asciidoc Parser und Methoden fertiggestellt | #13, #14 |
