@@ -1,0 +1,20 @@
+:encoding: iso-8859-1
+
+= Meine Überschrift
+K. Mustermann
+
+https://wikipedia.org[Wikipedia] ist eine Online-Enzyklopädie,
+verfügbar auf Englisch, Deutsch und in *vielen* anderen Sprachen.
+
+== Software
+
+Sie können 'paket' mit dem `make`-Kommando installieren:
+
+ make install paket
+
+== Hardware
+
+Häufig genutzte Metalle sind:
+
+* Eisen
+* Kupfer

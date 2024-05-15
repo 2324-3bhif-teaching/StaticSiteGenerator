@@ -7,6 +7,9 @@ import { DB } from "./data";
 import session from 'express-session';
 import Keycloak from 'keycloak-connect';
 import "dotenv/config"
+import { Project } from "./model";
+import { convertFile } from "./converter";
+import { Theme } from "./theme";
 
 const app = express();
 
@@ -47,7 +50,17 @@ app.get('/logout', keycloak.protect(), (req: any, res) => {
     res.redirect('/');
 });
 
+
+
 app.listen(3000, async () => {
     console.log("Server listening on port 3000");
-    await DB.createDBConnection();
+    //await DB.createDBConnection();
+
+    test();
+    async function test(){
+        const project : Project = {name: "test", theme: new Theme("test","TestTheme",false), files: [{index: 0, path: "./test/test.adoc"}]};
+
+        const content = await convertFile(project,0);
+        console.log(content);
+    }
 });

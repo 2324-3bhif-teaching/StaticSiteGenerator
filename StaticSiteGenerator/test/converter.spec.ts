@@ -1,11 +1,15 @@
 import { throws } from "assert";
-import { convertFile, convertProject, generateCss } from "../src/converter";
+import {convertFile, convertProject, generateCss } from "../src/converter";
 import { Theme } from "../src/theme";
 import { Style } from "../src/style";
+import { Project } from "../src/model";
+import { readFileSync } from "fs";
 
 describe("convertFile ", () => {
 
     test('should throw not implemented', () => {
+        const project : Project = {name: "test", theme: new Theme("test","TestTheme",false), files: [{index: 0, path: "./test.adoc"}]};
+
 
     });
 
