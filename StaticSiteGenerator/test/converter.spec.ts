@@ -5,25 +5,6 @@ import { Style } from "../src/style";
 import { Project } from "../src/model";
 import { readFileSync } from "fs";
 
-describe("convertFile ", () => {
-
-    test('should throw not implemented', () => {
-        const project : Project = {name: "test", theme: new Theme("test","TestTheme",false), files: [{index: 0, path: "./test.adoc"}]};
-
-
-    });
-
-});
-
-
-describe("convertProject ", () => {
-
-    test('should throw not implemented', () => {
-
-    });
-
-});
-
 describe("generateCss ", () => {
 
     test('should receive expected output', () => {
