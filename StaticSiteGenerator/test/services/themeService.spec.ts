@@ -25,6 +25,13 @@ describe("ThemeService", () => {
                 expect(result).toBe(true);
             });
         }
+        test('should not create duplicate theme', async () => {
+            const unit = await Unit.create(false);
+            const service = new ThemeService(unit);
+            await expect(async () => {await service.createTheme(testThemes[0])})
+                .rejects.toThrow('SQLITE_CONSTRAINT: UNIQUE constraint failed: Theme.name, Theme.userName');
+            await unit.complete(true);
+        });
     });
 
     describe("getPublicThemes", () => {
@@ -52,16 +59,74 @@ describe("ThemeService", () => {
         }
     });
 
-    describe("getTheme", () => {
-        for (const theme of testThemes) {
-            test(`should return theme ${theme.name} for user ${theme.userName}`, async () => {
-                const unit = await Unit.create(true);
-                const service = new ThemeService(unit);
-                const result = await service.getTheme(theme.userName, theme.name);
-                await unit.complete();
+    describe("updateThemeName", () => {
+        test('should update theme name', async () => {
+            const unit = await Unit.create(false);
+            const service = new ThemeService(unit);
+            const newName = "newName";
+            const result = await service.updateThemeName(testThemes[0].userName, testThemes[0].name, newName);
+            await unit.complete(true);
+            expect(result).toBeTruthy();
+        });
+        test('should not update non-existing theme', async () => {
+            const unit = await Unit.create(false);
+            const service = new ThemeService(unit);
+            const result = await service.updateThemeName("user1", "nonExistingTheme", "newName");
+            await unit.complete(true);
+            expect(result).toBeFalsy();
+        });
+    });
 
-                expect(result).toEqual(theme);
-            });
-        }
+    describe("updateThemePublic", () => {
+        test('should update theme public', async () => {
+            const unit = await Unit.create(false);
+            const service = new ThemeService(unit);
+            const result = await service.updateThemePublic(testThemes[0].userName, "newName", false);
+            await unit.complete(true);
+            expect(result).toBeTruthy();
+        });
+        test('should not update non-existing theme', async () => {
+            const unit = await Unit.create(false);
+            const service = new ThemeService(unit);
+            const result = await service.updateThemePublic("user1", "nonExistingTheme", false);
+            await unit.complete(true);
+            expect(result).toBeFalsy();
+        });
+    });
+
+    describe("deleteTheme", () => {
+        test('should delete theme', async () => {
+            const unit = await Unit.create(false);
+            const service = new ThemeService(unit);
+            const result = await service.deleteTheme(testThemes[2].userName, testThemes[2].name);
+            await unit.complete(true);
+            expect(result).toBeTruthy();
+        });
+        test('should not delete non-existing theme', async () => {
+            const unit = await Unit.create(false);
+            const service = new ThemeService(unit);
+            const result = await service.deleteTheme("user1", "nonExistingTheme");
+            await unit.complete(true);
+            expect(result).toBeFalsy();
+        });
+    });
+
+    describe("database changes", () => {
+        test('no more public themes', async () => {
+            const unit = await Unit.create(true);
+            const service = new ThemeService(unit);
+            const themes: Theme[] = await service.getPublicThemes();
+            await unit.complete();
+
+            expect(themes).toEqual([]);
+        });
+        test('theme name and isPublic update', async () => {
+            const unit = await Unit.create(true);
+            const service = new ThemeService(unit);
+            const themes: Theme[] = await service.getThemesByUser(testThemes[0].userName);
+            await unit.complete();
+
+            expect(themes[0]).toEqual({userName: testThemes[0].userName, name: "newName", isPublic: 1});
+        });
     });
 });

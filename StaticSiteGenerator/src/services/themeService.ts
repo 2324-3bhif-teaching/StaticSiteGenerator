@@ -12,11 +12,8 @@ export class ThemeService extends ServiceBase {
     }
 
     public async getThemesByUser(userName: string): Promise<Theme[]> {
-        return [];
-    }
-
-    public async getTheme(userName: string, name: string): Promise<Theme> {
-        return {userName: userName, name: name, isPublic: 1};
+        const stmt = await this.unit.prepare("select * from Theme where userName = ?1", {1: userName});
+        return await stmt.all<Theme[]>();
     }
 
     public async createTheme(theme: Theme): Promise<boolean> {
@@ -25,12 +22,22 @@ export class ThemeService extends ServiceBase {
         return await this.executeStmt(stmt);
     }
 
-    public async updateTheme(theme: Theme): Promise<boolean> {
-        return false;
+    public async updateThemeName(userName: string, name: string, newName: string): Promise<boolean> {
+        const stmt = await this.unit.prepare("update Theme set name = ?1 where userName = ?2 and name = ?3",
+            {1: newName, 2: userName, 3: name});
+        return await this.executeStmt(stmt);
+    }
+
+    public async updateThemePublic(userName: string, name: string, isPublic: boolean): Promise<boolean> {
+        const stmt = await this.unit.prepare("update Theme set isPublic = ?1 where userName = ?2 and name = ?3",
+            {1: isPublic ? 1 : 0, 2: userName, 3: name});
+        return await this.executeStmt(stmt);
     }
 
     public async deleteTheme(userName: string, name: string): Promise<boolean> {
-        return false;
+        const stmt = await this.unit.prepare("delete from Theme where userName = ?1 and name = ?2",
+            {1: userName, 2: name});
+        return await this.executeStmt(stmt);
     }
 }
 

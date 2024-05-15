@@ -50,13 +50,13 @@ export class DB {
             constraint PK_Style primary key (property, value)
         ) strict`);
 
-        await connection.run(`create table if not exists ElementStyles (
+        await connection.run(`create table if not exists ElementStyle (
             tag text not null,
             userName text not null,
             themeName text not null,
             styleProperty text not null,
             styleValue text not null,
-            constraint PK_ElementStyles primary key (tag, userName, themeName, styleProperty, styleValue),
+            constraint PK_ElementStyle primary key (tag, userName, themeName, styleProperty, styleValue),
             constraint FK_Theme foreign key (userName, themeName) references Theme(userName, name),
             constraint FK_Style foreign key (styleProperty, styleValue) references Style(property, value)
         ) strict`);
@@ -100,4 +100,3 @@ export class DB {
         }
     }
 }
-

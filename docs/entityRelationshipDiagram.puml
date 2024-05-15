@@ -10,7 +10,7 @@ entity Theme
   isPublic
 }
 
-entity ElementStyles
+entity ElementStyle
 {
   * tag
   * userName <<FK>>
@@ -47,8 +47,8 @@ entity User
   * name
 }
 
-Theme "1" -- "n" ElementStyles
-ElementStyles "1" -- "n" Style
+Theme "1" -- "n" ElementStyle
+ElementStyle "1" -- "n" Style
 User "1" -- "n" Project
 Project "1" -- "1" Theme
 Project "1" -- "n" File

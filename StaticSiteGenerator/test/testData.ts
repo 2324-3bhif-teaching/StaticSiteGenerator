@@ -5,16 +5,19 @@ const testDBPath: string = "test/test.db";
 
 export async function setupTestData() : Promise<void> {
     DB.dbFilePath = testDBPath;
-    const connection: Database = await DB.createDBConnection();
-    await DB.beginTransaction(connection);
+    let connection: Database | undefined;
     try {
-        await DB.commitTransaction(connection);
+        connection = await DB.createDBConnection();
     }
     catch (error)
     {
-        await DB.rollbackTransaction(connection);
+        if (connection) {
+            await DB.rollbackTransaction(connection);
+        }
     }
     finally {
-        await connection.close();
+        if (connection) {
+            await connection.close();
+        }
     }
 }
