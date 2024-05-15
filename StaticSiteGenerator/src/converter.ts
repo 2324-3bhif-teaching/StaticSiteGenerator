@@ -3,7 +3,9 @@ import { Project } from "./model";
 import { Style } from "./style";
 import { Theme } from "./theme";
 import Asciidoctor from 'asciidoctor';
-
+import fs from 'fs';
+import fsPromises from 'fs/promises';
+import path from "path";
 const asciidoctorInstance = Asciidoctor();
 
 
@@ -13,7 +15,9 @@ export function generateCss(theme: Theme): string {
     let outputCss : string = "";
 
     styles.forEach((value : Style[], key : string) => {
-        let elementCss = `.${key} {`;
+        
+        
+        let elementCss = `${key} {`;
         value.forEach((style : Style) => {
             elementCss += `${style.toString()}`;
         });
@@ -34,15 +38,34 @@ export async function convertFile(project: Project, fileIndex: number): Promise<
 
     const content = await readFile(file.path, "utf-8");
 
-    const converted = asciidoctorInstance.convert(content).toString();
+    const dir = './output';
+
+    if (!fs.existsSync(dir)){
+        fs.mkdirSync(dir);
+    }
+    
+
+    const converted = asciidoctorInstance.convert(content,
+        {to_file:path.basename(file.path) + `.html`,
+        to_dir:dir,
+        attributes: {
+            'stylesheet': `./${project.theme.name}.css`,
+            'copycss': true
+        }
+    }
+    ).toString();
+
+    const css = generateCss(project.theme);
+    await fsPromises.writeFile(`./output/${project.theme.name}.css`, css);
+
     return converted;
 }
 
-export function convertProject(project: Project): string {
-    let content = "";
+export function convertProject(project: Project): string[] {
+    let content  : string[]= [];
 
     project.files.forEach(async (file) => {
-        content += await convertFile(project, file.index);
+        content.push(await convertFile(project, file.index));
     });
 
     return content;

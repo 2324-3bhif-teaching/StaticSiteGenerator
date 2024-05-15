@@ -10,6 +10,7 @@ import "dotenv/config"
 import { Project } from "./model";
 import { convertFile } from "./converter";
 import { Theme } from "./theme";
+import { Style } from "./style";
 
 const app = express();
 
@@ -58,7 +59,31 @@ app.listen(3000, async () => {
 
     test();
     async function test(){
-        const project : Project = {name: "test", theme: new Theme("test","TestTheme",false), files: [{index: 0, path: "./test/test.adoc"}]};
+        const theme = new Theme("test","TestTheme",false);
+
+        theme.addStyle("*",new Style("font-family", "Arial, sans-serif"));
+
+        theme.addStyle("body", 
+        new Style("background-color", "black"),
+        new Style("color", "white"));
+
+        theme.addStyle("p", 
+            new Style("color", "white"));
+
+        theme.addStyle("h1, h2, h3, h4, h5, h6", 
+            new Style("color", "white"));
+
+        theme.addStyle("a", 
+            new Style("color", "white"));
+
+        theme.addStyle("code", 
+            new Style("color", "white"));
+
+        theme.addStyle("pre", 
+            new Style("background-color", "#333333"),
+            new Style("color", "white"));
+
+        const project : Project = {name: "test", theme:theme , files: [{index: 0, path: "./test/test.adoc"}]};
 
         const content = await convertFile(project,0);
         console.log(content);

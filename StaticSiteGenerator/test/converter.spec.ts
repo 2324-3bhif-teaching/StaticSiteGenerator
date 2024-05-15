@@ -1,5 +1,5 @@
 import { throws } from "assert";
-import {convertFile, convertProject, generateCss } from "../src/converter";
+import {generateCss } from "../src/converter";
 import { Theme } from "../src/theme";
 import { Style } from "../src/style";
 import { Project } from "../src/model";
@@ -16,6 +16,13 @@ describe("generateCss ", () => {
 
         const css = generateCss(theme);
         expect(css).toBe(`.paragraph {color: red;opacity: 50%;font-size: 12px;font-family: Arial;}`);
+    });
+
+    test('should receive empty css', () => {
+        const theme = new Theme("test","TestTheme",false);
+
+        const css = generateCss(theme);
+        expect(css).toBe("");
     });
 
 });
