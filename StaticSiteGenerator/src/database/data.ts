@@ -41,7 +41,8 @@ export class DB {
             userName text not null,
             name text not null,
             isPublic integer not null,
-            constraint PK_Theme primary key (name, userName)
+            constraint PK_Theme primary key (name, userName),
+            constraint NOT_EMPTY_STRING check (userName != '' and name != '')
         ) strict`);
 
         await connection.run(`create table if not exists Style(
@@ -80,6 +81,21 @@ export class DB {
         ) strict`);
 
         this.tableInitDone = true;
+    }
+
+    public static async ensureTablesCleared(connection: Database): Promise<void> {
+        try {
+            await DB.beginTransaction(connection);
+            await connection.run('delete from ElementStyle');
+            await connection.run('delete from File');
+            await connection.run('delete from Project');
+            await connection.run('delete from Style');
+            await connection.run('delete from Theme');
+            await DB.commitTransaction(connection);
+        } catch (error) {
+            await DB.rollbackTransaction(connection);
+            console.log(error);
+        }
     }
 
     public static async ensureTablesPopulated(connection: Database) : Promise<void> {

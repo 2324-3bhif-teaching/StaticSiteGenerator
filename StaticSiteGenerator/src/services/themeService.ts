@@ -8,16 +8,16 @@ export class ThemeService extends ServiceBase {
 
     public async getPublicThemes(): Promise<Theme[]> {
         const stmt = await this.unit.prepare("select * from Theme where isPublic != 0");
-        return await stmt.all<Theme[]>();
+        return this.normalizeThemes(await stmt.all<Theme[]>());
     }
 
     public async getThemesByUser(userName: string): Promise<Theme[]> {
         const stmt = await this.unit.prepare("select * from Theme where userName = ?1", {1: userName});
-        return await stmt.all<Theme[]>();
+        return this.normalizeThemes(await stmt.all<Theme[]>());
     }
 
     public async createTheme(theme: Theme): Promise<boolean> {
-        const stmt = await this.unit.prepare("Insert into Theme (userName, name, isPublic) VALUES (?1, ?2, ?3)",
+        const stmt = await this.unit.prepare("insert into Theme (userName, name, isPublic) VALUES (?1, ?2, ?3)",
             {1: theme.userName, 2: theme.name, 3: theme.isPublic});
         return await this.executeStmt(stmt);
     }
@@ -39,10 +39,20 @@ export class ThemeService extends ServiceBase {
             {1: userName, 2: name});
         return await this.executeStmt(stmt);
     }
+
+    private normalizeThemes(themes: Theme[]): Theme[] {
+        return themes.map(t => {
+            return {
+                userName: t.userName,
+                name: t.name,
+                isPublic: !!t.isPublic // intended because in the database isPublic is stored as 0 or 1
+            };
+        });
+    }
 }
 
 export interface Theme {
     userName: string;
     name: string;
-    isPublic: number;
+    isPublic: boolean;
 }

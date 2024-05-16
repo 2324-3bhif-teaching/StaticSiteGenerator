@@ -4,10 +4,10 @@ import {Unit} from "../../src/database/unit";
 import {Theme} from "../../src/services/themeService";
 
 const testThemes: Theme[] = [
-    {userName: "user1", name: "theme1", isPublic: 1},
-    {userName: "user1", name: "theme2", isPublic: 0},
-    {userName: "user2", name: "theme1", isPublic: 1},
-    {userName: "user2", name: "theme2", isPublic: 0}
+    {userName: "user1", name: "theme1", isPublic: true},
+    {userName: "user1", name: "theme2", isPublic: false},
+    {userName: "user2", name: "theme1", isPublic: true},
+    {userName: "user2", name: "theme2", isPublic: false}
 ];
 
 describe("ThemeService", () => {
@@ -32,6 +32,22 @@ describe("ThemeService", () => {
                 .rejects.toThrow('SQLITE_CONSTRAINT: UNIQUE constraint failed: Theme.name, Theme.userName');
             await unit.complete(true);
         });
+        test('should not create with invalid userName', async () => {
+            const unit = await Unit.create(false);
+            const service = new ThemeService(unit);
+            await expect(async () => {
+                await service.createTheme({userName: "", name: "theme", isPublic: false})
+            }).rejects.toThrow('SQLITE_CONSTRAINT: CHECK constraint failed: NOT_EMPTY_STRING');
+            await unit.complete(true);
+        });
+        test('should not create with invalid name', async () => {
+            const unit = await Unit.create(false);
+            const service = new ThemeService(unit);
+            await expect(async () => {
+                await service.createTheme({userName: "user1", name: "", isPublic: false})
+            }).rejects.toThrow('SQLITE_CONSTRAINT: CHECK constraint failed: NOT_EMPTY_STRING');
+            await unit.complete(true);
+        });
     });
 
     describe("getPublicThemes", () => {
@@ -41,7 +57,7 @@ describe("ThemeService", () => {
             const themes: Theme[] = await service.getPublicThemes();
             await unit.complete();
 
-            expect(themes).toEqual(testThemes.filter(t => t.isPublic === 1));
+            expect(themes).toEqual(testThemes.filter(t => t.isPublic));
         });
     });
 
@@ -72,6 +88,13 @@ describe("ThemeService", () => {
             const unit = await Unit.create(false);
             const service = new ThemeService(unit);
             const result = await service.updateThemeName("user1", "nonExistingTheme", "newName");
+            await unit.complete(true);
+            expect(result).toBeFalsy();
+        });
+        test('should not update with invalid name', async () => {
+            const unit = await Unit.create(false);
+            const service = new ThemeService(unit);
+            const result = await service.updateThemeName(testThemes[0].userName, testThemes[0].name, "");
             await unit.complete(true);
             expect(result).toBeFalsy();
         });
@@ -126,7 +149,7 @@ describe("ThemeService", () => {
             const themes: Theme[] = await service.getThemesByUser(testThemes[0].userName);
             await unit.complete();
 
-            expect(themes[0]).toEqual({userName: testThemes[0].userName, name: "newName", isPublic: 1});
+            expect(themes[0]).toEqual({userName: testThemes[0].userName, name: "newName", isPublic: false});
         });
     });
 });

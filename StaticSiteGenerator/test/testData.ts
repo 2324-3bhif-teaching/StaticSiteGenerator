@@ -8,6 +8,7 @@ export async function setupTestData() : Promise<void> {
     let connection: Database | undefined;
     try {
         connection = await DB.createDBConnection();
+        await DB.ensureTablesCleared(connection);
     }
     catch (error)
     {
