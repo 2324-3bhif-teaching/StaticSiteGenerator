@@ -42,13 +42,16 @@ export class DB {
             name text not null,
             isPublic integer not null,
             constraint PK_Theme primary key (name, userName),
-            constraint NOT_EMPTY_STRING check (userName != '' and name != '')
+            constraint CK_Theme_UserName check (userName != ''),
+            constraint CK_Theme_Name check (name != '')
         ) strict`);
 
         await connection.run(`create table if not exists Style(
             property text not null,
             value text not null,
-            constraint PK_Style primary key (property, value)
+            constraint PK_Style primary key (property, value),
+            constraint CK_Style_Property check (property != ''),
+            constraint CK_Style_Value check (value != '')
         ) strict`);
 
         await connection.run(`create table if not exists ElementStyle (
@@ -59,7 +62,8 @@ export class DB {
             styleValue text not null,
             constraint PK_ElementStyle primary key (tag, userName, themeName, styleProperty, styleValue),
             constraint FK_Theme foreign key (userName, themeName) references Theme(userName, name),
-            constraint FK_Style foreign key (styleProperty, styleValue) references Style(property, value)
+            constraint FK_Style foreign key (styleProperty, styleValue) references Style(property, value),
+            constraint CK_ElementStyle_Tag check (tag != '')
         ) strict`);
 
         await connection.run(`create table if not exists Project (
@@ -68,7 +72,9 @@ export class DB {
             themeName text not null,
             themeOwner text not null,
             constraint PK_Project primary key (name, userName),
-            constraint FK_Theme foreign key (themeName, themeOwner) references Theme(name, userName)
+            constraint FK_Theme foreign key (themeName, themeOwner) references Theme(name, userName),
+            constraint CK_Project_Name check (name != ''),
+            constraint CK_Project_UserName check (userName != '')
         ) strict`);
 
         await connection.run(`create table if not exists File (
@@ -77,7 +83,8 @@ export class DB {
             fileIndex integer not null,
             path text not null,
             constraint PK_File primary key (projectName, userName, fileIndex, path),
-            constraint FK_Project foreign key (projectName, userName) references Project(name, userName)
+            constraint FK_Project foreign key (projectName, userName) references Project(name, userName),
+            constraint CK_File_Path check (path != '')
         ) strict`);
 
         this.tableInitDone = true;
