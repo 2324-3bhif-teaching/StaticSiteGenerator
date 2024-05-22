@@ -38,53 +38,51 @@ export class DB {
         }
 
         await connection.run(`create table if not exists Theme (
-            userName text not null,
+            id integer primary key autoincrement,
             name text not null,
-            isPublic integer not null,
-            constraint PK_Theme primary key (name, userName),
-            constraint CK_Theme_UserName check (userName != ''),
-            constraint CK_Theme_Name check (name != '')
+            user_name text not null,
+            is_public integer not null,
+            constraint CK_Theme_User_Name check (user_name != ''),
+            constraint CK_Theme_Name check (name != ''),
+            constraint CK_Theme_Unique unique (name, user_name)
+        ) strict`);
+
+        await connection.run(`create table if not exists Element_Style (
+            id integer primary key autoincrement,
+            selector text not null,
+            theme_id integer not null,
+            constraint FK_Theme foreign key (theme_id) references Theme(id),
+            constraint CK_ElementStyle_Selector check (selector != '')
         ) strict`);
 
         await connection.run(`create table if not exists Style(
+            id integer primary key autoincrement,
             property text not null,
             value text not null,
-            constraint PK_Style primary key (property, value),
+            element_style_id integer not null,
+            constraint FK_Element_Style foreign key (element_style_id) references Element_Style(id),
             constraint CK_Style_Property check (property != ''),
             constraint CK_Style_Value check (value != '')
         ) strict`);
 
-        await connection.run(`create table if not exists ElementStyle (
-            tag text not null,
-            userName text not null,
-            themeName text not null,
-            styleProperty text not null,
-            styleValue text not null,
-            constraint PK_ElementStyle primary key (tag, userName, themeName, styleProperty, styleValue),
-            constraint FK_Theme foreign key (userName, themeName) references Theme(userName, name),
-            constraint FK_Style foreign key (styleProperty, styleValue) references Style(property, value),
-            constraint CK_ElementStyle_Tag check (tag != '')
-        ) strict`);
-
         await connection.run(`create table if not exists Project (
+            id integer primary key autoincrement,
             name text not null,
-            userName text not null,
-            themeName text not null,
-            themeOwner text not null,
-            constraint PK_Project primary key (name, userName),
-            constraint FK_Theme foreign key (themeName, themeOwner) references Theme(name, userName),
+            user_name text not null,
+            theme_id integer not null,
+            constraint FK_Theme foreign key (theme_id) references Theme(id),
             constraint CK_Project_Name check (name != ''),
-            constraint CK_Project_UserName check (userName != '')
+            constraint CK_Project_User_Name check (user_name != ''),
+            constraint CK_Project_Unique unique (name, user_name)
         ) strict`);
 
         await connection.run(`create table if not exists File (
-            projectName text not null,
-            userName text not null,
-            fileIndex integer not null,
-            path text not null,
-            constraint PK_File primary key (projectName, userName, fileIndex, path),
-            constraint FK_Project foreign key (projectName, userName) references Project(name, userName),
-            constraint CK_File_Path check (path != '')
+            id integer primary key autoincrement,
+            file_index integer not null,
+            name text not null,
+            project_id integer not null,
+            constraint FK_Project foreign key (project_id) references Project(id),
+            constraint CK_File_Name check (name != '')
         ) strict`);
 
         this.tableInitDone = true;
@@ -93,7 +91,7 @@ export class DB {
     public static async ensureTablesCleared(connection: Database): Promise<void> {
         try {
             await DB.beginTransaction(connection);
-            await connection.run('drop table ElementStyle');
+            await connection.run('drop table Element_Style');
             await connection.run('drop table File');
             await connection.run('drop table Project');
             await connection.run('drop table Style');
@@ -107,7 +105,7 @@ export class DB {
     }
 
     public static async ensureTablesPopulated(connection: Database) : Promise<void> {
-        const defTheme = await connection.get(`Select Count(*) as cnt from theme where name = '${Theme.DefaultName}' and userName = '${DB.SystemUserName}'`);
+        const defTheme = await connection.get(`Select Count(*) as cnt from theme where name = '${Theme.DefaultName}' and user_name = '${DB.SystemUserName}'`);
 
         if(defTheme.cnt === 1) {
             return;
@@ -115,7 +113,7 @@ export class DB {
 
         await DB.beginTransaction(connection);
         try {
-            await connection.run(`Insert into THEME (userName, name, isPublic)  Values ('${DB.SystemUserName}','${Theme.DefaultName}',1)`);
+            await connection.run(`Insert into THEME (user_name, name, is_public) Values ('${DB.SystemUserName}','${Theme.DefaultName}',1)`);
             await DB.commitTransaction(connection);
         }
         catch (error)

@@ -29,7 +29,7 @@ describe("ThemeService", () => {
             const unit = await Unit.create(false);
             const service = new ThemeService(unit);
             await expect(async () => {await service.createTheme(testThemes[0])})
-                .rejects.toThrow('SQLITE_CONSTRAINT: UNIQUE constraint failed: Theme.name, Theme.userName');
+                .rejects.toThrow('SQLITE_CONSTRAINT: UNIQUE constraint failed: Theme.name, Theme.user_name');
             await unit.complete(true);
         });
         test('should not create with invalid userName', async () => {
@@ -37,7 +37,7 @@ describe("ThemeService", () => {
             const service = new ThemeService(unit);
             await expect(async () => {
                 await service.createTheme({userName: "", name: "theme", isPublic: false})
-            }).rejects.toThrow('SQLITE_CONSTRAINT: CHECK constraint failed: CK_Theme_UserName');
+            }).rejects.toThrow('SQLITE_CONSTRAINT: CHECK constraint failed: CK_Theme_User_Name');
             await unit.complete(true);
         });
         test('should not create with invalid name', async () => {

@@ -8,35 +8,41 @@ export class ThemeService extends ServiceBase {
     }
 
     public async getPublicThemes(): Promise<Theme[]> {
-        const stmt: Statement = await this.unit.prepare("select * from Theme where isPublic != 0");
+        const stmt: Statement = await this.unit.prepare(`
+            select name as name, user_name as userName, is_public as isPublic 
+            from Theme where is_public != 0
+            `);
         return this.normalizeThemes(await stmt.all<Theme[]>());
     }
 
     public async getThemesByUser(userName: string): Promise<Theme[]> {
-        const stmt: Statement = await this.unit.prepare("select * from Theme where userName = ?1", {1: userName});
+        const stmt: Statement = await this.unit.prepare(`
+            select name as name, user_name as userName, is_public as isPublic 
+            from Theme where user_name = ?1`,
+            {1: userName});
         return this.normalizeThemes(await stmt.all<Theme[]>());
     }
 
     public async createTheme(theme: Theme): Promise<boolean> {
-        const stmt: Statement = await this.unit.prepare("insert into Theme (userName, name, isPublic) VALUES (?1, ?2, ?3)",
+        const stmt: Statement = await this.unit.prepare("insert into Theme (user_name, name, is_public) VALUES (?1, ?2, ?3)",
             {1: theme.userName, 2: theme.name, 3: theme.isPublic});
         return await this.executeStmt(stmt);
     }
 
     public async updateThemeName(userName: string, name: string, newName: string): Promise<boolean> {
-        const stmt: Statement = await this.unit.prepare("update Theme set name = ?1 where userName = ?2 and name = ?3",
+        const stmt: Statement = await this.unit.prepare("update Theme set name = ?1 where user_name = ?2 and name = ?3",
             {1: newName, 2: userName, 3: name});
         return await this.executeStmt(stmt);
     }
 
     public async updateThemePublic(userName: string, name: string, isPublic: boolean): Promise<boolean> {
-        const stmt: Statement = await this.unit.prepare("update Theme set isPublic = ?1 where userName = ?2 and name = ?3",
+        const stmt: Statement = await this.unit.prepare("update Theme set is_public = ?1 where user_name = ?2 and name = ?3",
             {1: isPublic ? 1 : 0, 2: userName, 3: name});
         return await this.executeStmt(stmt);
     }
 
     public async deleteTheme(userName: string, name: string): Promise<boolean> {
-        const stmt: Statement = await this.unit.prepare("delete from Theme where userName = ?1 and name = ?2",
+        const stmt: Statement = await this.unit.prepare("delete from Theme where user_name = ?1 and name = ?2",
             {1: userName, 2: name});
         return await this.executeStmt(stmt);
     }
