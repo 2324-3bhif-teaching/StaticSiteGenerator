@@ -13,4 +13,4 @@
 | 01.05.2024 | 2h 30min | Project Router ohne Keycloak und ohne Fileverwaltung implementiert + Meilensteine umbenannt | #23|
 | 14.05.2024 | 1h | Asciidoc Parser hinzugefügt | #13, #14 |
 | 15.05.2024 | 2h 30min | Asciidoc Parser und Methoden fertiggestellt | #13, #14 |
-| 15.05.2024 | 3h | Simple Start Seite erstellt und Designt, sowie die Angular Komponenten für die Projektbearbeitung begonnen  | #25, #26 |
+| 22.05.2024 | 3h | Simple Start Seite erstellt und Designt, sowie die Angular Komponenten für die Projektbearbeitung begonnen  | #25, #26 |
