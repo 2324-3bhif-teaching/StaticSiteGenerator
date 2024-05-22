@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { ProjectComponent } from '../components/project/project.component';
 import { CommonModule } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
+import { ProjectModalComponent } from '../components/project-modal/project-modal.component';
+
 
 @Component({
   selector: 'app-project-selection',
@@ -10,15 +13,39 @@ import { CommonModule } from '@angular/common';
   styleUrl: './project-selection.component.css'
 })
 export class ProjectSelectionComponent {
-  constructor() { }
+
 
   public projects: Project[] = [];
+
+  constructor(public dialog: MatDialog) { }
 
   ngOnInit() {
     this.projects = [{ name: "MyAwesomeProject", theme: "Renschi's Theme" },
     { name: "Lukas-Main", theme: "Kriegerkatze's Theme" }]
   }
 
+
+
+  handleNewProjectCreation(newProject: Project) {
+    if (newProject === undefined || newProject.name === "") {
+      return;
+    }
+
+    this.projects.push(newProject);
+  }
+
+  openProjectModal(): void {
+    const dialogRef = this.dialog.open(ProjectModalComponent, {
+      width: '250px',
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === undefined) {
+        return;
+      }
+      this.handleNewProjectCreation(result)
+    });
+  }
 }
 
 export interface Project {
