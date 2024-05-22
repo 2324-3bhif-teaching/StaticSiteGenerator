@@ -4,11 +4,11 @@
         <p class="text-gray-600">{{project.theme}}</p>
     </div>
 
-    <div class="*:mx-2 *:rounded-lg *:p-2 *:px-4">
-        <button class="bg-blue-500">
+    <div class="*:mx-2 *:rounded-lg *:p-2 *:px-4 *:transition-all">
+        <button class="bg-blue-500 hover:bg-blue-600 hover:text-gray-400">
             <fa-icon [icon]="faEdit"></fa-icon>
         </button>
-        <button class="bg-red-500" (click)="deleteMe()">
+        <button class="bg-red-500 hover:bg-red-600 hover:text-gray-400" (click)="deleteMe()">
             <fa-icon [icon]="faTrash"></fa-icon>
         </button>
     </div>
