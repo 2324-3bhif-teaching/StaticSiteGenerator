@@ -23,6 +23,11 @@ export class ProjectService extends ServiceBase {
         await stmt.run();
     }
 
+    public async updateProjectTheme(userName: string, id: number, themeId: number): Promise<void> {
+        const stmt: Statement = await this.unit.prepare(`update Project set theme_id = ?1 where userName = ?2 and id = ?3`, {1: themeId, 2: userName, 3: id});
+        await stmt.run();
+    }
+
     public async deleteProject(userName: string, id: number): Promise<void> {
         const stmt: Statement = await this.unit.prepare(`delete from Project where userName = ?1 and id = ?2`, {1: userName, 2: id});
         await stmt.run();

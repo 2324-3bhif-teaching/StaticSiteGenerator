@@ -19,6 +19,11 @@ projectRouter.patch("/:id", [keycloak.protect()], (req: any, res: any) : Promise
     throw new Error("Not impemented");
 });
 
+//patch a project themeId; themeId in the body
+projectRouter.patch("/:id", [keycloak.protect()], (req: any, res: any) : Promise<void> => {
+    throw new Error("Not impemented");
+});
+
 //delete a project with the id
 projectRouter.delete("/:id", [keycloak.protect()], (req: any, res: any) : Promise<void> => {
     throw new Error("Not impemented");
