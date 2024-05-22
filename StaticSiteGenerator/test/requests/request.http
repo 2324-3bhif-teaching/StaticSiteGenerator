@@ -3,16 +3,17 @@ GET {{themesURL}}/
 
 ###
 
-GET {{themesURL}}/abc
+GET {{themesURL}}/private
+Authorization: Bearer
 
 ###
 
 POST {{themesURL}}/ HTTP/1.1
+Authorization: Bearer
 Content-Type: application/json
 
 {
   "isPublic": true,
-  "userName": "abc",
   "name": "DarkestTheme"
 }
 

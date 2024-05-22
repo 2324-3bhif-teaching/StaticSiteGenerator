@@ -20,25 +20,25 @@ if(process.env.SECRET_KEY === undefined){
     throw new Error("Secret was undefined")
 }
 
-const memoryStore = new session.MemoryStore();
+export const memoryStore = new session.MemoryStore();
 app.use(session({
     secret: process.env.SECRET_KEY,
     resave: false,
     saveUninitialized: true,
     store: memoryStore
 }));
-const keycloak = new Keycloak({ store: memoryStore });
+const keycloak: Keycloak.Keycloak = new Keycloak({ store: memoryStore });
 
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/projects", projectRouter);
-app.use("/api/themes", themeRouter);
-app.use("/api/users", userRouter);
-
 app.use(keycloak.middleware({
     logout: '/logout'
 }));
+
+app.use("/api/projects", projectRouter);
+app.use("/api/themes", themeRouter);
+app.use("/api/users", userRouter);
 
 // Protected route
 app.get('/protected', [keycloak.protect()], (req: any, res: any) => {
