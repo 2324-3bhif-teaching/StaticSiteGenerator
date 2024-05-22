@@ -44,7 +44,7 @@ themeRouter.post('/', [keycloak.protect()], async (req: any, res: any): Promise<
     try {
         res.status(StatusCodes.CREATED).send(await service.createTheme({
             userName: req.kauth.grant.access_token.content.preferred_username,
-            name: req.body.name,
+            name: req.body.name.trim(),
             isPublic: req.body.isPublic
         }));
         await unit.complete(true);
@@ -56,13 +56,13 @@ themeRouter.post('/', [keycloak.protect()], async (req: any, res: any): Promise<
     }
 });
 
-themeRouter.patch('/name/:name', [keycloak.protect()], async (req: any, res: any): Promise<void> => {
+themeRouter.patch('/name/:id', [keycloak.protect()], async (req: any, res: any): Promise<void> => {
     const unit: Unit = await Unit.create(false);
     const service: ThemeService = new ThemeService(unit);
     try {
         res.status(StatusCodes.OK).send(await service.updateThemeName(
             req.kauth.grant.access_token.content.preferred_username,
-            req.params.name,
+            req.params.id,
             req.body.name));
         await unit.complete(true);
     }
@@ -73,13 +73,13 @@ themeRouter.patch('/name/:name', [keycloak.protect()], async (req: any, res: any
     }
 });
 
-themeRouter.patch('/isPublic/:name', [keycloak.protect()], async (req: any, res: any): Promise<void> => {
+themeRouter.patch('/isPublic/:id', [keycloak.protect()], async (req: any, res: any): Promise<void> => {
     const unit: Unit = await Unit.create(false);
     const service: ThemeService = new ThemeService(unit);
     try {
         res.status(StatusCodes.OK).send(await service.updateThemePublic(
             req.kauth.grant.access_token.content.preferred_username,
-            req.params.name,
+            req.params.id,
             req.body.isPublic));
         await unit.complete(true);
     } catch (error) {
@@ -89,13 +89,13 @@ themeRouter.patch('/isPublic/:name', [keycloak.protect()], async (req: any, res:
     }
 });
 
-themeRouter.delete('/:name', [keycloak.protect()],async (req: any, res: any): Promise<void> => {
+themeRouter.delete('/:id', [keycloak.protect()],async (req: any, res: any): Promise<void> => {
     const unit: Unit = await Unit.create(false);
     const service: ThemeService = new ThemeService(unit);
     try {
         res.status(StatusCodes.OK).send(await service.deleteTheme(
             req.kauth.grant.access_token.content.preferred_username,
-            req.params.name));
+            req.params.id));
         await unit.complete(true);
     }
     catch (error) {

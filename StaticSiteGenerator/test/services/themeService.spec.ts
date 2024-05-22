@@ -1,13 +1,20 @@
-import {ThemeService} from "../../src/services/themeService";
+import {ThemeData, ThemeService} from "../../src/services/themeService";
 import {setupTestData} from "../database/testData";
 import {Unit} from "../../src/database/unit";
 import {Theme} from "../../src/services/themeService";
 
-const testThemes: Theme[] = [
+const testThemeData: ThemeData[] = [
     {userName: "user1", name: "theme1", isPublic: true},
     {userName: "user1", name: "theme2", isPublic: false},
     {userName: "user2", name: "theme1", isPublic: true},
     {userName: "user2", name: "theme2", isPublic: false}
+];
+
+const testThemes: Theme[] = [
+    {id: 1, userName: "user1", name: "theme1", isPublic: true},
+    {id: 2, userName: "user1", name: "theme2", isPublic: false},
+    {id: 3, userName: "user2", name: "theme1", isPublic: true},
+    {id: 4, userName: "user2", name: "theme2", isPublic: false}
 ];
 
 describe("ThemeService", () => {
@@ -16,7 +23,7 @@ describe("ThemeService", () => {
     });
 
     describe("createTheme", () => {
-        for (const theme of testThemes) {
+        for (const theme of testThemeData) {
             test(`should create theme ${theme.name} for user ${theme.userName}`, async () => {
                 const unit = await Unit.create(false);
                 const service = new ThemeService(unit);
@@ -86,23 +93,24 @@ describe("ThemeService", () => {
             const unit = await Unit.create(false);
             const service = new ThemeService(unit);
             const newName = "newName";
-            const result = await service.updateThemeName(testThemes[0].userName, testThemes[0].name, newName);
+            const result = await service.updateThemeName(testThemes[0].userName, 1, newName);
             await unit.complete(true);
             expect(result).toBeTruthy();
         });
         test('should not update non-existing theme', async () => {
             const unit = await Unit.create(false);
             const service = new ThemeService(unit);
-            const result = await service.updateThemeName("user1", "nonExistingTheme", "newName");
+            const result = await service.updateThemeName("user1", -1, "newName");
             await unit.complete(true);
             expect(result).toBeFalsy();
         });
         test('should not update with invalid name', async () => {
             const unit = await Unit.create(false);
             const service = new ThemeService(unit);
-            const result = await service.updateThemeName(testThemes[0].userName, testThemes[0].name, "");
+            await expect(async () => {
+                await service.updateThemeName(testThemes[0].userName, 1, "")
+            }).rejects.toThrow('SQLITE_CONSTRAINT: CHECK constraint failed: CK_Theme_Name');
             await unit.complete(true);
-            expect(result).toBeFalsy();
         });
     });
 
@@ -110,14 +118,14 @@ describe("ThemeService", () => {
         test('should update theme public', async () => {
             const unit = await Unit.create(false);
             const service = new ThemeService(unit);
-            const result = await service.updateThemePublic(testThemes[0].userName, "newName", false);
+            const result = await service.updateThemePublic(testThemes[0].userName, 1, false);
             await unit.complete(true);
             expect(result).toBeTruthy();
         });
         test('should not update non-existing theme', async () => {
             const unit = await Unit.create(false);
             const service = new ThemeService(unit);
-            const result = await service.updateThemePublic("user1", "nonExistingTheme", false);
+            const result = await service.updateThemePublic("user1", -1, false);
             await unit.complete(true);
             expect(result).toBeFalsy();
         });
@@ -127,14 +135,14 @@ describe("ThemeService", () => {
         test('should delete theme', async () => {
             const unit = await Unit.create(false);
             const service = new ThemeService(unit);
-            const result = await service.deleteTheme(testThemes[2].userName, testThemes[2].name);
+            const result = await service.deleteTheme(testThemes[2].userName, 3);
             await unit.complete(true);
             expect(result).toBeTruthy();
         });
         test('should not delete non-existing theme', async () => {
             const unit = await Unit.create(false);
             const service = new ThemeService(unit);
-            const result = await service.deleteTheme("user1", "nonExistingTheme");
+            const result = await service.deleteTheme("user1", -1);
             await unit.complete(true);
             expect(result).toBeFalsy();
         });
@@ -155,7 +163,7 @@ describe("ThemeService", () => {
             const themes: Theme[] = await service.getThemesByUser(testThemes[0].userName);
             await unit.complete();
 
-            expect(themes[0]).toEqual({userName: testThemes[0].userName, name: "newName", isPublic: false});
+            expect(themes[0]).toEqual({id: 1, userName: testThemes[0].userName, name: "newName", isPublic: false});
         });
     });
 });
