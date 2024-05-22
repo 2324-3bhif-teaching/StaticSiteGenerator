@@ -22,12 +22,12 @@ describe("ThemeService", (): void => {
         await setupTestData();
     });
 
-    describe("createTheme", (): void => {
+    describe("insertTheme", (): void => {
         for (const theme of testThemeData) {
             test(`should create theme ${theme.name} for user ${theme.userName}`, async () => {
                 const unit: Unit = await Unit.create(false);
                 const service: ThemeService = new ThemeService(unit);
-                const result: boolean = await service.createTheme(theme);
+                const result: boolean = await service.insertTheme(theme);
                 await unit.complete(true);
                 expect(result).toBe(true);
             });
@@ -35,7 +35,7 @@ describe("ThemeService", (): void => {
         test('should not create duplicate theme', async () => {
             const unit: Unit = await Unit.create(false);
             const service: ThemeService = new ThemeService(unit);
-            await expect(async (): Promise<void> => {await service.createTheme(testThemes[0])})
+            await expect(async (): Promise<void> => {await service.insertTheme(testThemes[0])})
                 .rejects.toThrow('SQLITE_CONSTRAINT: UNIQUE constraint failed: Theme.name, Theme.user_name');
             await unit.complete(true);
         });
@@ -43,10 +43,10 @@ describe("ThemeService", (): void => {
             const unit: Unit = await Unit.create(false);
             const service: ThemeService = new ThemeService(unit);
             await expect(async (): Promise<void> => {
-                await service.createTheme({userName: "", name: "theme", isPublic: false})
+                await service.insertTheme({userName: "", name: "theme", isPublic: false})
             }).rejects.toThrow('SQLITE_CONSTRAINT: CHECK constraint failed: CK_Theme_User_Name');
             await expect(async (): Promise<void> => {
-                await service.createTheme({userName: "   ", name: "theme", isPublic: false})
+                await service.insertTheme({userName: "   ", name: "theme", isPublic: false})
             }).rejects.toThrow('SQLITE_CONSTRAINT: CHECK constraint failed: CK_Theme_User_Name');
             await unit.complete(true);
         });
@@ -54,33 +54,33 @@ describe("ThemeService", (): void => {
             const unit: Unit = await Unit.create(false);
             const service: ThemeService = new ThemeService(unit);
             await expect(async (): Promise<void> => {
-                await service.createTheme({userName: "user1", name: "", isPublic: false})
+                await service.insertTheme({userName: "user1", name: "", isPublic: false})
             }).rejects.toThrow('SQLITE_CONSTRAINT: CHECK constraint failed: CK_Theme_Name');
             await expect(async (): Promise<void> => {
-                await service.createTheme({userName: "user1", name: "   ", isPublic: false})
+                await service.insertTheme({userName: "user1", name: "   ", isPublic: false})
             }).rejects.toThrow('SQLITE_CONSTRAINT: CHECK constraint failed: CK_Theme_Name');
             await unit.complete(true);
         });
     });
 
-    describe("getPublicThemes", () => {
+    describe("selectPublicThemes", () => {
         test('should return all public themes', async () => {
             const unit: Unit = await Unit.create(true);
             const service: ThemeService = new ThemeService(unit);
-            const themes: Theme[] = await service.getPublicThemes();
+            const themes: Theme[] = await service.selectPublicThemes();
             await unit.complete();
 
             expect(themes).toEqual(testThemes.filter(t => t.isPublic));
         });
     });
 
-    describe("getThemesByUser", () => {
+    describe("selectThemesByUser", () => {
         const users: string[] = ["user1", "user2"];
         for (const user of users) {
             test(`should return all themes for user ${user}`, async () => {
                 const unit: Unit = await Unit.create(true);
                 const service: ThemeService = new ThemeService(unit);
-                const themes: Theme[] = await service.getThemesByUser(user);
+                const themes: Theme[] = await service.selectThemesByUser(user);
                 await unit.complete();
 
                 expect(themes).toEqual(testThemes.filter(t => t.userName === user));
@@ -152,7 +152,7 @@ describe("ThemeService", (): void => {
         test('no more public themes', async () => {
             const unit: Unit = await Unit.create(true);
             const service: ThemeService = new ThemeService(unit);
-            const themes: Theme[] = await service.getPublicThemes();
+            const themes: Theme[] = await service.selectPublicThemes();
             await unit.complete();
 
             expect(themes).toEqual([]);
@@ -160,7 +160,7 @@ describe("ThemeService", (): void => {
         test('theme name and isPublic update', async () => {
             const unit: Unit = await Unit.create(true);
             const service: ThemeService = new ThemeService(unit);
-            const themes: Theme[] = await service.getThemesByUser(testThemes[0].userName);
+            const themes: Theme[] = await service.selectThemesByUser(testThemes[0].userName);
             await unit.complete();
 
             expect(themes[0]).toEqual({id: 1, userName: testThemes[0].userName, name: "newName", isPublic: false});

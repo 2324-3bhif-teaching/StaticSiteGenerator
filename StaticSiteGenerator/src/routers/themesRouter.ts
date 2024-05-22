@@ -12,7 +12,7 @@ themeRouter.get('/', async (_, res): Promise<void> => {
     const unit: Unit = await Unit.create(true);
     const service: ThemeService = new ThemeService(unit);
     try {
-        res.status(StatusCodes.OK).send(await service.getPublicThemes());
+        res.status(StatusCodes.OK).send(await service.selectPublicThemes());
     }
     catch (error) {
         console.log(error);
@@ -27,7 +27,7 @@ themeRouter.get('/private', [keycloak.protect()], async (req: any, res: any): Pr
     const unit: Unit = await Unit.create(true);
     const service: ThemeService = new ThemeService(unit);
     try {
-        res.status(StatusCodes.OK).send(await service.getThemesByUser(req.kauth.grant.access_token.content.preferred_username));
+        res.status(StatusCodes.OK).send(await service.selectThemesByUser(req.kauth.grant.access_token.content.preferred_username));
     }
     catch (error) {
         console.log(error);
@@ -42,7 +42,7 @@ themeRouter.post('/', [keycloak.protect()], async (req: any, res: any): Promise<
     const unit: Unit = await Unit.create(false);
     const service: ThemeService = new ThemeService(unit);
     try {
-        res.status(StatusCodes.CREATED).send(await service.createTheme({
+        res.status(StatusCodes.CREATED).send(await service.insertTheme({
             userName: req.kauth.grant.access_token.content.preferred_username,
             name: req.body.name.trim(),
             isPublic: req.body.isPublic

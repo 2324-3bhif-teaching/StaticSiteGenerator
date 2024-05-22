@@ -7,7 +7,7 @@ export class ThemeService extends ServiceBase {
         super(unit);
     }
 
-    public async getPublicThemes(): Promise<Theme[]> {
+    public async selectPublicThemes(): Promise<Theme[]> {
         const stmt: Statement = await this.unit.prepare(`
             select id as id, name as name, user_name as userName, is_public as isPublic 
             from Theme where is_public != 0
@@ -15,7 +15,7 @@ export class ThemeService extends ServiceBase {
         return this.normalizeThemes(await stmt.all<Theme[]>());
     }
 
-    public async getThemesByUser(userName: string): Promise<Theme[]> {
+    public async selectThemesByUser(userName: string): Promise<Theme[]> {
         const stmt: Statement = await this.unit.prepare(`
             select id as id, name as name, user_name as userName, is_public as isPublic 
             from Theme where user_name = ?1`,
@@ -23,7 +23,7 @@ export class ThemeService extends ServiceBase {
         return this.normalizeThemes(await stmt.all<Theme[]>());
     }
 
-    public async createTheme(theme: ThemeData): Promise<boolean> {
+    public async insertTheme(theme: ThemeData): Promise<boolean> {
         const stmt: Statement = await this.unit.prepare("insert into Theme (user_name, name, is_public) VALUES (?1, ?2, ?3)",
             {1: theme.userName, 2: theme.name, 3: theme.isPublic});
         return await this.executeStmt(stmt);
