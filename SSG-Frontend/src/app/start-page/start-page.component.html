@@ -3,10 +3,25 @@
         <h1 class="text-white">The Next</h1>
         <h1 class="text-8xl text-blue-400">Static-Site Generator</h1>
         <div class="flex flex-row justify-center items-center">
+
+            @if (!isLoggedIn) {
             <button
                 class="rounded-2xl px-10 hover:px-16 py-2  mt-12 font-normal border-4 bg-gray-900 hover:bg-gray-800
-         border-gray-800 hover:border-blue-600 hover:text-slate-400 focus:animate-ping text-gray-300 text-2xl tracking-normal transition-all"
+             border-gray-800 hover:border-blue-600 hover:text-slate-400 focus:animate-ping text-gray-300 text-2xl tracking-normal transition-all"
                 (click)="handleLoginPressed()">Login</button>
+            }
+            @else{
+            <button
+                class="rounded-2xl px-10 hover:px-16 py-2  mt-12 font-normal border-4 bg-gray-900 hover:bg-gray-800
+             border-gray-800 hover:border-blue-600 hover:text-slate-400 focus:animate-ping text-gray-300 text-2xl tracking-normal transition-all"
+                (click)="handleLogoutPressed()">Logout</button>
+
+            <button
+                class="rounded-2xl px-10 hover:px-16 py-2  mt-12 font-normal border-4 bg-gray-900 hover:bg-gray-800
+             border-gray-800 hover:border-blue-600 hover:text-slate-400 focus:animate-ping text-gray-300 text-2xl tracking-normal transition-all"
+                (click)="handleLoginPressed()">Go to Project Selector</button>
+            }
+
         </div>
     </div>
 </main>

@@ -1,15 +1,43 @@
 import { Component } from '@angular/core';
+import { KeycloakService } from 'keycloak-angular';
+import { AppComponent } from '../app.component';
 
 @Component({
   selector: 'app-start-page',
   standalone: true,
   imports: [],
   templateUrl: './start-page.component.html',
-  styleUrl: './start-page.component.css'
+  styleUrl: './start-page.component.css',
 })
 export class StartPageComponent {
 
-  handleLoginPressed() {
+  async handleLoginPressed() {
+    await this.login();
+
     document.location.pathname = "/project-selection";
+  }
+
+  isLoggedIn = false;
+
+  constructor(private keycloakService: KeycloakService) {
+    this.isLoggedIn = this.keycloakService.isLoggedIn();
+    this.keycloakService.getToken().then(token => {
+      console.log(token);
+    });
+  }
+
+  async login(): Promise<void> {
+    if (this.isLoggedIn) {
+      return;
+    }
+    await this.keycloakService.login();
+
+  }
+
+  async handleLogoutPressed(): Promise<void> {
+    if (!this.isLoggedIn) {
+      return;
+    }
+    await this.keycloakService.logout();
   }
 }
