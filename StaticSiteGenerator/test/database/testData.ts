@@ -1,7 +1,7 @@
-import {DB} from "../src/database/data";
+import {DB} from "../../src/database/data";
 import {Database} from "sqlite";
 
-const testDBPath: string = "test/test.db";
+const testDBPath: string = "test/database/test.db";
 
 export async function setupTestData() : Promise<void> {
     DB.dbFilePath = testDBPath;

@@ -1,5 +1,5 @@
 import {ThemeService} from "../../src/services/themeService";
-import {setupTestData} from "../testData";
+import {setupTestData} from "../database/testData";
 import {Unit} from "../../src/database/unit";
 import {Theme} from "../../src/services/themeService";
 
