@@ -18,14 +18,8 @@ Content-Type: application/json
 }
 
 ###
-
-GET {{themesURL}}/abc/DarkestTheme
-
-###
-GET {{themesURL}}/JohnerDoe/BlackTheme
-
-###
 POST {{themesURL}}/ HTTP/1.1
+Authorization: Bearer
 Content-Type: application/json
 
 {

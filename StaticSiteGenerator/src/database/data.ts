@@ -42,8 +42,8 @@ export class DB {
             name text not null,
             user_name text not null,
             is_public integer not null,
-            constraint CK_Theme_User_Name check (user_name != ''),
-            constraint CK_Theme_Name check (name != ''),
+            constraint CK_Theme_User_Name check (trim(user_name) != ''),
+            constraint CK_Theme_Name check (trim(name) != ''),
             constraint CK_Theme_Unique unique (name, user_name)
         ) strict`);
 
@@ -52,7 +52,7 @@ export class DB {
             selector text not null,
             theme_id integer not null,
             constraint FK_Theme foreign key (theme_id) references Theme(id),
-            constraint CK_ElementStyle_Selector check (selector != '')
+            constraint CK_ElementStyle_Selector check (trim(selector) != '')
         ) strict`);
 
         await connection.run(`create table if not exists Style(
@@ -61,8 +61,8 @@ export class DB {
             value text not null,
             element_style_id integer not null,
             constraint FK_Element_Style foreign key (element_style_id) references Element_Style(id),
-            constraint CK_Style_Property check (property != ''),
-            constraint CK_Style_Value check (value != '')
+            constraint CK_Style_Property check (trim(property) != ''),
+            constraint CK_Style_Value check (trim(value) != '')
         ) strict`);
 
         await connection.run(`create table if not exists Project (
@@ -71,8 +71,8 @@ export class DB {
             user_name text not null,
             theme_id integer not null,
             constraint FK_Theme foreign key (theme_id) references Theme(id),
-            constraint CK_Project_Name check (name != ''),
-            constraint CK_Project_User_Name check (user_name != ''),
+            constraint CK_Project_Name check (trim(name) != ''),
+            constraint CK_Project_User_Name check (trim(user_name) != ''),
             constraint CK_Project_Unique unique (name, user_name)
         ) strict`);
 
@@ -82,7 +82,7 @@ export class DB {
             name text not null,
             project_id integer not null,
             constraint FK_Project foreign key (project_id) references Project(id),
-            constraint CK_File_Name check (name != '')
+            constraint CK_File_Name check (trim(name) != '')
         ) strict`);
 
         this.tableInitDone = true;

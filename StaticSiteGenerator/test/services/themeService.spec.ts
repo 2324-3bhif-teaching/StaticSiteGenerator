@@ -38,6 +38,9 @@ describe("ThemeService", () => {
             await expect(async () => {
                 await service.createTheme({userName: "", name: "theme", isPublic: false})
             }).rejects.toThrow('SQLITE_CONSTRAINT: CHECK constraint failed: CK_Theme_User_Name');
+            await expect(async () => {
+                await service.createTheme({userName: "   ", name: "theme", isPublic: false})
+            }).rejects.toThrow('SQLITE_CONSTRAINT: CHECK constraint failed: CK_Theme_User_Name');
             await unit.complete(true);
         });
         test('should not create with invalid name', async () => {
@@ -45,6 +48,9 @@ describe("ThemeService", () => {
             const service = new ThemeService(unit);
             await expect(async () => {
                 await service.createTheme({userName: "user1", name: "", isPublic: false})
+            }).rejects.toThrow('SQLITE_CONSTRAINT: CHECK constraint failed: CK_Theme_Name');
+            await expect(async () => {
+                await service.createTheme({userName: "user1", name: "   ", isPublic: false})
             }).rejects.toThrow('SQLITE_CONSTRAINT: CHECK constraint failed: CK_Theme_Name');
             await unit.complete(true);
         });
