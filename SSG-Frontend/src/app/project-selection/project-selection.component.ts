@@ -20,11 +20,14 @@ export class ProjectSelectionComponent {
   constructor(public dialog: MatDialog) { }
 
   ngOnInit() {
-    this.projects = [{ name: "MyAwesomeProject", theme: "Renschi's Theme" },
-    { name: "Lukas-Main", theme: "Kriegerkatze's Theme" }]
+    this.projects = [
+      { name: "MyAwesomeProject", theme: "Renschi's Theme" },
+      { name: "Lukas-Main", theme: "Kriegerkatze's Theme" },
+      { name: "ProjectX", theme: "X's Theme" },
+      { name: "ProjectY", theme: "Y's Theme" },
+      { name: "ProjectZ", theme: "Z's Theme" }
+    ];
   }
-
-
 
   handleNewProjectCreation(newProject: Project) {
     if (newProject === undefined || newProject.name === "") {
@@ -45,6 +48,10 @@ export class ProjectSelectionComponent {
       }
       this.handleNewProjectCreation(result)
     });
+  }
+
+  deleteProject(idx: number) {
+    this.projects.splice(idx, 1);
   }
 }
 

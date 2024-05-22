@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Project } from '../../project-selection/project-selection.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -12,7 +12,12 @@ import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 })
 export class ProjectComponent {
   @Input() project: Project = { name: "", theme: "" };
+  @Output() deleteRequest = new EventEmitter<Project>();
 
   faEdit = faEdit;
   faTrash = faTrash;
+
+  deleteMe() {
+    this.deleteRequest.emit(this.project);
+  }
 }

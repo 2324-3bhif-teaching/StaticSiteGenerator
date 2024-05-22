@@ -8,6 +8,7 @@
 
 
     <div class="flex flex-col justify-center items-center">
-        <app-project *ngFor="let project of projects" [project]="project"></app-project>
+        <app-project *ngFor="let project of projects; index as idx" [project]="project"
+            (deleteRequest)="deleteProject(idx)"></app-project>
     </div>
 </main>
