@@ -93,12 +93,13 @@ export class DB {
     public static async ensureTablesCleared(connection: Database): Promise<void> {
         try {
             await DB.beginTransaction(connection);
-            await connection.run('delete from ElementStyle');
-            await connection.run('delete from File');
-            await connection.run('delete from Project');
-            await connection.run('delete from Style');
-            await connection.run('delete from Theme');
+            await connection.run('drop table ElementStyle');
+            await connection.run('drop table File');
+            await connection.run('drop table Project');
+            await connection.run('drop table Style');
+            await connection.run('drop table Theme');
             await DB.commitTransaction(connection);
+            this.tableInitDone = false;
         } catch (error) {
             await DB.rollbackTransaction(connection);
             console.log(error);
