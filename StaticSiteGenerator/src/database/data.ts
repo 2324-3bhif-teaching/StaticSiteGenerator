@@ -51,7 +51,7 @@ export class DB {
             id integer primary key autoincrement,
             selector text not null,
             theme_id integer not null,
-            constraint FK_Theme foreign key (theme_id) references Theme(id),
+            constraint FK_Theme foreign key (theme_id) references Theme(id) on delete cascade,
             constraint CK_ElementStyle_Selector check (trim(selector) != '')
         ) strict`);
 
@@ -60,7 +60,7 @@ export class DB {
             property text not null,
             value text not null,
             element_style_id integer not null,
-            constraint FK_Element_Style foreign key (element_style_id) references Element_Style(id),
+            constraint FK_Element_Style foreign key (element_style_id) references Element_Style(id) on delete cascade,
             constraint CK_Style_Property check (trim(property) != ''),
             constraint CK_Style_Value check (trim(value) != '')
         ) strict`);
@@ -81,7 +81,7 @@ export class DB {
             file_index integer not null,
             name text not null,
             project_id integer not null,
-            constraint FK_Project foreign key (project_id) references Project(id),
+            constraint FK_Project foreign key (project_id) references Project(id) on delete cascade,
             constraint CK_File_Name check (trim(name) != '')
         ) strict`);
 
