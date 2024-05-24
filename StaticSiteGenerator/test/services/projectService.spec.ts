@@ -16,18 +16,29 @@ const testThemeData: ThemeData = {userName: "user1", name: "theme1", isPublic: t
 describe("ProjectService", () => {
     beforeAll(async () => {
         await setupTestData();
+        const unit: Unit = await Unit.create(true);
+        const themeService: ThemeService = new ThemeService(unit);
+        
+        await themeService.insertTheme({
+            userName: DefaultTheme.userName,
+            name: DefaultTheme.name,
+            isPublic: DefaultTheme.isPublic
+        });
+        await themeService.insertTheme(testThemeData);
+          
+        unit.complete(true);
     });
 
     describe("insertProject", () => {
-        for(const testProject of testProjectData){
-            test("should create project", async () => {
-                const unit: Unit = await Unit.create(false);
-                const projectService: ProjectService = new ProjectService(unit);
+        test("should create projects", async () => {
+            const unit: Unit = await Unit.create(false);
+            const projectService: ProjectService = new ProjectService(unit);
+            for(const testProject of testProjectData){
                 const res: boolean = await projectService.insertProject(testProject.userName, testProject.name);
-                await unit.complete(true);
                 expect(res).toBeTruthy();
-            });
-        }
+            }
+            await unit.complete(true);
+        });
 
         test("should not create duplicate project", async () => {
             const testProject: Project = testProjectData[0];
@@ -78,26 +89,24 @@ describe("ProjectService", () => {
         });
     });
 
-    describe("selectAllProjects", async () => {
-        const unit: Unit = await Unit.create(true);
-        const projectService: ProjectService = new ProjectService(unit);
-        const selectedProjects: Project[] = await projectService.selectAllProjects(testProjectData[0].userName);
-        expect(selectedProjects.length).toBe(testProjectData.length);
-        for(let i: number = 0; i < selectedProjects.length; i++){
-            expect(selectedProjects[i].id).toBe(testProjectData[i].id);
-            expect(selectedProjects[i].name).toBe(testProjectData[i].name);
-            expect(selectedProjects[i].themeId).toBe(testProjectData[i].themeId);
-            expect(selectedProjects[i].userName).toBe(testProjectData[i].userName);
-        }
-        await unit.complete();
+    describe("selectAllProjects", () => {
+        test("should select all", async () => {
+            const unit: Unit = await Unit.create(true);
+            const projectService: ProjectService = new ProjectService(unit);
+            const selectedProjects: Project[] = await projectService.selectAllProjects(testProjectData[0].userName);
+            expectToBeSame(selectedProjects, testProjectData);
+            await unit.complete();
+        });
     });
 
     describe("updateProject", () => {
         test("should update", async () => {
             const testProject: Project = testProjectData[0];
+            const newName: string = "Static Test Generator";
+            testProject.name = newName;
             const unit: Unit = await Unit.create(false);
             const projectService: ProjectService = new ProjectService(unit);
-            const rs: boolean = await projectService.updateProject(testProject.userName, testProject.id, "Static Test Generator");
+            const rs: boolean = await projectService.updateProject(testProject.userName, testProject.id, newName);
             expect(rs).toBeTruthy();
             await unit.complete(true);
         });
@@ -123,18 +132,15 @@ describe("ProjectService", () => {
         });
     });
 
-    describe("updateProjectTheme", async () => {
-        const unit: Unit = await Unit.create(false);
-        const themeService: ThemeService = new ThemeService(unit);
-        await themeService.insertTheme(testThemeData);
-        unit.complete(true);
-    
+    describe("updateProjectTheme", () => {
 
         test("should update", async () => {
             const testProject: Project = testProjectData[0];
+            const newId: number = 2;
+            testProject.id = newId;
             const unit: Unit = await Unit.create(false);
             const projectService: ProjectService = new ProjectService(unit);
-            const rs: boolean = await projectService.updateProjectTheme(testProject.userName, testProject.id, 2);
+            const rs: boolean = await projectService.updateProjectTheme(testProject.userName, testProject.id, newId);
             expect(rs).toBeTruthy();
             await unit.complete(true);
         });
@@ -151,6 +157,43 @@ describe("ProjectService", () => {
     });
 
     describe("deleteProject", () => {
+        test("should delete", async () => {
+            const testProject: Project = testProjectData[1];
+            const unit: Unit = await Unit.create(false);
+            const projectService: ProjectService = new ProjectService(unit);
+            const rs: boolean = await projectService.deleteProject(testProject.userName, testProject.id);
+            testProjectData.splice(1, 1);
+            await unit.complete(true);
+            expect(rs).toBeTruthy();
+        });
 
+        test("should not delete nonexisting project", async () => {
+            const testProject: Project = testProjectData[0];
+            const unit: Unit = await Unit.create(false);
+            const projectService: ProjectService = new ProjectService(unit);
+            const rs: boolean = await projectService.deleteProject(testProject.userName, testProject.id);
+            await unit.complete(true);
+            expect(rs).toBeFalsy();
+        });
+    });
+
+    describe("database change", () => {
+        test("updated project name, theme id and deleted project", async () => {
+            const unit: Unit = await Unit.create(true);
+            const projectService = new ProjectService(unit);
+            const selectedProjects = await projectService.selectAllProjects(testProjectData[0].userName);
+            expectToBeSame(selectedProjects, testProjectData);
+            unit.complete();
+        });
     });
 });
+
+function expectToBeSame(arr1: Project[], arr2: Project[]): void{
+    expect(arr1.length).toBe(arr2.length);
+    for(let i: number = 0; i < arr1.length; i++){
+        expect(arr1[i].id).toBe(arr2[i].id);
+        expect(arr1[i].name).toBe(arr2[i].name);
+        expect(arr1[i].themeId).toBe(arr2[i].themeId);
+        expect(arr1[i].userName).toBe(arr2[i].userName);
+    }
+}
