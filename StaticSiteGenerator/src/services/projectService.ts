@@ -13,24 +13,24 @@ export class ProjectService extends ServiceBase {
         return await stmt.all<Project[]>();
     }
 
-    public async insertProject(userName: string, projectName: string): Promise<Project> {
+    public async insertProject(userName: string, projectName: string): Promise<boolean> {
         const stmt: Statement = await this.unit.prepare(`insert into Project (name, user_name, theme_id) values (?1, ?2, ?3)`, {1: projectName, 2: userName, 3: DefaultTheme.id});
-        return await stmt.all<Project>();
+        return await this.executeStmt(stmt);
     }
 
-    public async updateProject(userName: string, id: number, newName: string): Promise<void> {
+    public async updateProject(userName: string, id: number, newName: string): Promise<boolean> {
         const stmt: Statement = await this.unit.prepare(`update Project set name = ?1 where userName = ?2 and id = ?3`, {1: newName, 2: userName, 3: id});
-        await stmt.run();
+        return await this.executeStmt(stmt);
     }
 
-    public async updateProjectTheme(userName: string, id: number, themeId: number): Promise<void> {
+    public async updateProjectTheme(userName: string, id: number, themeId: number): Promise<boolean> {
         const stmt: Statement = await this.unit.prepare(`update Project set theme_id = ?1 where userName = ?2 and id = ?3`, {1: themeId, 2: userName, 3: id});
-        await stmt.run();
+        return await this.executeStmt(stmt);
     }
 
-    public async deleteProject(userName: string, id: number): Promise<void> {
+    public async deleteProject(userName: string, id: number): Promise<boolean> {
         const stmt: Statement = await this.unit.prepare(`delete from Project where userName = ?1 and id = ?2`, {1: userName, 2: id});
-        await stmt.run();
+        return await this.executeStmt(stmt);
     }
 }
 

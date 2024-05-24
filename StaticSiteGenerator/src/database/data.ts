@@ -1,6 +1,7 @@
 import { Database as Driver } from "sqlite3";
 import { open, Database } from "sqlite";
 import {Theme} from "../theme";
+import { DefaultTheme } from "../constants";
 
 export const dbFileName = 'StaticSiteGenerator.db';
 
@@ -105,7 +106,7 @@ export class DB {
     }
 
     public static async ensureTablesPopulated(connection: Database) : Promise<void> {
-        const defTheme = await connection.get(`Select Count(*) as cnt from theme where name = '${Theme.DefaultName}' and user_name = '${DB.SystemUserName}'`);
+        const defTheme = await connection.get(`Select Count(*) as cnt from theme where name = '${DefaultTheme.name}' and user_name = '${DefaultTheme.userName}'`);
 
         if(defTheme.cnt === 1) {
             return;
@@ -113,7 +114,7 @@ export class DB {
 
         await DB.beginTransaction(connection);
         try {
-            await connection.run(`Insert into THEME (user_name, name, is_public) Values ('${DB.SystemUserName}','${Theme.DefaultName}',1)`);
+            await connection.run(`Insert into THEME (user_name, name, is_public) Values ('${DefaultTheme.userName}','${DefaultTheme.name}',${DefaultTheme.isPublic ? 1 : 0})`);
             await DB.commitTransaction(connection);
         }
         catch (error)
