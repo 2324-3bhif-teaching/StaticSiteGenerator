@@ -12,13 +12,13 @@ const asciidoctorInstance = Asciidoctor();
 export function generateCss(theme: Theme): string {
     const styles = theme.getStyles();
 
-    let outputCss : string = "";
+    let outputCss: string = "";
 
-    styles.forEach((value : Style[], key : string) => {
-        
-        
+    styles.forEach((value: Style[], key: string) => {
+
+
         let elementCss = `${key} {`;
-        value.forEach((style : Style) => {
+        value.forEach((style: Style) => {
             elementCss += `${style.toString()}`;
         });
         elementCss += "}";
@@ -40,29 +40,32 @@ export async function convertFile(project: Project, fileIndex: number): Promise<
 
     const dir = './output';
 
-    if (!fs.existsSync(dir)){
+    if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir);
     }
-    
+
 
     const converted = asciidoctorInstance.convert(content,
-        {to_file:path.basename(file.path) + `.html`,
-        to_dir:dir,
-        attributes: {
-            'stylesheet': `./${project.theme.name}.css`,
-            'copycss': true
+        {
+            to_file: path.basename(file.path) + `.html`,
+            to_dir: dir,
+            attributes: {
+                'stylesheet': `./${project.theme.name}.css`,
+                'copycss': true
+            }
         }
-    }
     ).toString();
 
     const css = generateCss(project.theme);
     await fsPromises.writeFile(`./output/${project.theme.name}.css`, css);
+    await fsPromises.appendFile(dir + "/" + path.basename(file.path) + `.html`, `<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.js"></script>
+    <script>hljs.highlightAll();</script> <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/default.min.css"> <style> .hljs{ background:transparent;}</style>`);
 
     return converted;
 }
 
 export function convertProject(project: Project): string[] {
-    let content  : string[]= [];
+    let content: string[] = [];
 
     project.files.forEach(async (file) => {
         content.push(await convertFile(project, file.index));

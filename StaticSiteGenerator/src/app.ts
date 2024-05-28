@@ -14,7 +14,7 @@ import { Style } from "./style";
 
 const app = express();
 
-if(process.env.SECRET_KEY === undefined){
+if (process.env.SECRET_KEY === undefined) {
     throw new Error("Secret was undefined")
 }
 
@@ -58,34 +58,21 @@ app.listen(3000, async () => {
     //await DB.createDBConnection();
 
     test();
-    async function test(){
-        const theme = new Theme("test","TestTheme",false);
+    async function test() {
+        const theme = new Theme("test", "TestTheme", false);
 
-        theme.addStyle("*",new Style("font-family", "Arial, sans-serif"));
+        theme.addStyle("*", new Style("font-family", "Helvetica"), new Style("color", "#34495E"));
+        theme.addStyle("h1,h2,h3", new Style("margin-top", "4rem"))
 
-        theme.addStyle("body", 
-        new Style("background-color", "black"),
-        new Style("color", "white"));
+        theme.addStyle("body", new Style("background-color", "#FFFFFF"), new Style("padding-left", "6rem"))
+        theme.addStyle("a", new Style("color", "#42B983"), new Style("font-weight", "bold"));
+        theme.addStyle("pre", new Style("background-color", "#42B98355"),
+            new Style("padding", "1rem"), new Style("border-radius", "0.3rem"), new Style("line-height", "120%"), new Style("border-left", "6px solid #42B983"));
 
-        theme.addStyle("p", 
-            new Style("color", "white"));
 
-        theme.addStyle("h1, h2, h3, h4, h5, h6", 
-            new Style("color", "white"));
+        const project: Project = { name: "test", theme: theme, files: [{ index: 0, path: "./test/test.adoc" }] };
 
-        theme.addStyle("a", 
-            new Style("color", "white"));
-
-        theme.addStyle("code", 
-            new Style("color", "white"));
-
-        theme.addStyle("pre", 
-            new Style("background-color", "#333333"),
-            new Style("color", "white"));
-
-        const project : Project = {name: "test", theme:theme , files: [{index: 0, path: "./test/test.adoc"}]};
-
-        const content = await convertFile(project,0);
+        const content = await convertFile(project, 0);
         console.log(content);
     }
 });
