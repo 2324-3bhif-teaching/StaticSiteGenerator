@@ -1,5 +1,4 @@
-import { throws } from "assert";
-import { Style } from "../src/model";
+import { Style } from "../src/style";
 
 describe("ToString", () => {
     test('should convert to correctly formatted string', () => {
