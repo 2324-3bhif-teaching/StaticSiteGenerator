@@ -16,16 +16,18 @@ const testThemeData: ThemeData = {userName: "user1", name: "theme1", isPublic: t
 describe("ProjectService", () => {
     beforeAll(async () => {
         await setupTestData();
-        const unit: Unit = await Unit.create(true);
+        const unit: Unit = await Unit.create(false);
         const themeService: ThemeService = new ThemeService(unit);
         
-        await themeService.insertTheme({
+        let rs: boolean = await themeService.insertTheme({
             userName: DefaultTheme.userName,
             name: DefaultTheme.name,
             isPublic: DefaultTheme.isPublic
         });
-        await themeService.insertTheme(testThemeData);
-          
+        expect(rs).toBeTruthy();
+        rs = await themeService.insertTheme(testThemeData);
+        expect(rs).toBeTruthy();
+
         unit.complete(true);
     });
 
