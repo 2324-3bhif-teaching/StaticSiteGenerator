@@ -26,14 +26,13 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: StaticSiteGenerator/
-          working-directory: StaticSiteGenerator/
+          cache-dependency-path: ./StaticSiteGenerator
       - name: Install dependencies
         run: npm ci
-        working-directory: StaticSiteGenerator/
+        working-directory: ./StaticSiteGenerator
       - name: Build the project
         run: npm run build --if-present
-        working-directory: StaticSiteGenerator/
+        working-directory: ./StaticSiteGenerator
       - name: Run tests
         run: npm test
-        working-directory: StaticSiteGenerator/
+        working-directory: ./StaticSiteGenerator
