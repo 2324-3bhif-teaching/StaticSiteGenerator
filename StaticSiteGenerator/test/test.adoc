@@ -1,3 +1,4 @@
+
 = AsciiDoc Recommended Practices
 Dan Allen
 v1.0-HEAD, 2016-12-21
@@ -192,14 +193,14 @@ All of these challenges are solved by declaring the URLs in attributes.
 
 You simply assign the URL to a short, easy to remember attribute:
 
-[source,asciidoc]
+[source,adoc]
 ----
 :url-issues: https://github.com/asciidoctor/asciidoctor/issues
 ----
 
 Then you reference this attribute whenever you want to use the URL in your document, such as to make a link:
 
-[source,asciidoc]
+[source,adoc]
 ----
 Submit bug fixes and feature requests to the {url-issues}[issue tracker].
 ----
@@ -411,8 +412,6 @@ To force the start of a new list, offset the two lists by an empty line comment:
 ....
 
 == Literal Text
-
-TODO
 
 backticks vs plus and passthough stuffs
 

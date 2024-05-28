@@ -51,15 +51,15 @@ export async function convertFile(project: Project, fileIndex: number): Promise<
             to_dir: dir,
             attributes: {
                 'stylesheet': `./${project.theme.name}.css`,
-                'copycss': true
+                'copycss': true,
+                'source-highlighter': 'highlight.js'
             }
         }
     ).toString();
 
     const css = generateCss(project.theme);
     await fsPromises.writeFile(`./output/${project.theme.name}.css`, css);
-    await fsPromises.appendFile(dir + "/" + path.basename(file.path) + `.html`, `<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.js"></script>
-    <script>hljs.highlightAll();</script> <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/default.min.css"> <style> .hljs{ background:transparent;}</style>`);
+    await fsPromises.appendFile(dir + "/" + path.basename(file.path) + `.html`, `<style> .hljs{ background:transparent;}</style>`);
 
     return converted;
 }
