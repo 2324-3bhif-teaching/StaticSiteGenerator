@@ -1,10 +1,10 @@
-name: "docker-build-push-dev"
+name: "docker-build-push-release"
 
 on:
  push:
-  branches: [ main ]
+  branches: [ release ]
  pull_request:
-  branches: [ main ]
+  branches: [ release ]
     
 jobs:
  build-and-push:
@@ -28,4 +28,4 @@ jobs:
      with:
       context: ./StaticSiteGenerator
       push: true
-      tags: ${{ secrets.DOCKERHUB_USERNAME }}/static_site_generator:dev
+      tags: ${{ secrets.DOCKERHUB_USERNAME }}/static_site_generator:release
