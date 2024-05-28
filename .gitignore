@@ -1,5 +1,4 @@
 node_modules/
 *.db
-package-lock.json
 coverage/
 .idea
