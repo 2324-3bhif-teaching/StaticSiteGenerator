@@ -10,10 +10,3 @@ export interface Project {
     theme: Theme,
     files: File[]
 }
-
-export interface User {
-    name: string,
-    password: string,
-    themes: Theme[],
-    projects: Project[]
-}

@@ -45,7 +45,6 @@ entity File
 entity User
 {
   * name
-  password
 }
 
 Theme "1" -- "n" ElementStyles
