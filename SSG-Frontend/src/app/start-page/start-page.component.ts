@@ -14,7 +14,7 @@ export class StartPageComponent {
   async handleLoginPressed() {
     await this.login();
 
-    document.location.pathname = "/project-selection";
+    window.location.pathname = "/project-selection";
   }
 
   isLoggedIn = false;
@@ -27,6 +27,7 @@ export class StartPageComponent {
   }
 
   async login(): Promise<void> {
+
     if (this.isLoggedIn) {
       return;
     }
