@@ -16,3 +16,5 @@
 | 27.04.2024 | 1h | Docker workflow build und push hinzugefügt |-|
 | 01.05.2024 | 2h 30min | Project Router ohne Keycloak und ohne Fileverwaltung implementiert + Meilensteine umbenannt | #23|
 | 09.05.2024 | 3h | Tried to understand Keycloak and started using it | #22 #23 |
+| 22.05.2024 | 2h | Implemented Project Service and Tests | #23 |
+| 24.05.2024 | 2h | Project Service Tests | #23 |
