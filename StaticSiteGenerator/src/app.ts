@@ -59,18 +59,27 @@ app.listen(3000, async () => {
 
     test();
     async function test() {
-        const theme = new Theme("test", "TestTheme", false);
+        const lightTheme = new Theme("test", "TestTheme", false);
 
-        theme.addStyle("*", new Style("font-family", "Helvetica"), new Style("color", "#34495E"));
-        theme.addStyle("h1,h2,h3", new Style("margin-top", "4rem"))
+        lightTheme.addStyle("*", new Style("font-family", "Helvetica"), new Style("color", "#34495E"));
+        lightTheme.addStyle("h1,h2,h3", new Style("margin-top", "4rem"))
 
-        theme.addStyle("body", new Style("background-color", "#FFFFFF"), new Style("padding-left", "6rem"))
-        theme.addStyle("a", new Style("color", "#42B983"), new Style("font-weight", "bold"));
-        theme.addStyle("pre", new Style("background-color", "#42B98355"),
+        lightTheme.addStyle("body", new Style("background-color", "#FFFFFF"), new Style("padding-left", "6rem"))
+        lightTheme.addStyle("a", new Style("color", "#42B983"), new Style("font-weight", "bold"));
+        lightTheme.addStyle("pre", new Style("background-color", "#42B98355"),
             new Style("padding", "1rem"), new Style("border-radius", "0.3rem"), new Style("line-height", "120%"), new Style("border-left", "6px solid #42B983"));
 
+        const darkTheme = new Theme("test", "DarkTheme", false);
 
-        const project: Project = { name: "test", theme: theme, files: [{ index: 0, path: "./test/test.adoc" }] };
+        darkTheme.addStyle("*", new Style("font-family", "Helvetica"), new Style("color", "#AAA"));
+        darkTheme.addStyle("h1,h2,h3", new Style("margin-top", "4rem"))
+
+        darkTheme.addStyle("body", new Style("background-color", "#222"), new Style("padding-left", "6rem"))
+        darkTheme.addStyle("a", new Style("color", "#42B983"), new Style("font-weight", "bold"));
+        darkTheme.addStyle("pre", new Style("background-color", "#42B98355"),
+            new Style("padding", "1rem"), new Style("border-radius", "0.3rem"), new Style("line-height", "120%"), new Style("border-left", "6px solid #42B983"));
+
+        const project: Project = { name: "test", theme: lightTheme, files: [{ index: 0, path: "./test/test.adoc" }] };
 
         const content = await convertFile(project, 0);
         console.log(content);
