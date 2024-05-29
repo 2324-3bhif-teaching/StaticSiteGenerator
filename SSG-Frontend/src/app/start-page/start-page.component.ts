@@ -22,7 +22,7 @@ export class StartPageComponent {
   constructor(private keycloakService: KeycloakService) {
     this.isLoggedIn = this.keycloakService.isLoggedIn();
     this.keycloakService.getToken().then(token => {
-      console.log(token);
+      sessionStorage.setItem("jwt","Bearer " + token);
     });
   }
 

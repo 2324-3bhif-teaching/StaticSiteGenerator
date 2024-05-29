@@ -11,5 +11,5 @@ import { KeycloakService } from 'keycloak-angular';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-
+  public mainUrl:string = "https://localhost:3000/";
 }
