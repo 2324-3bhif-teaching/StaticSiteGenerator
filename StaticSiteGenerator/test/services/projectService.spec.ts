@@ -14,19 +14,17 @@ const testProjectData: Project[] = [
 const testThemeData: ThemeData = {userName: "user1", name: "theme1", isPublic: true};
 
 describe("ProjectService", () => {
-    beforeAll(async () => {
+    beforeEach(async () => {
         await setupTestData();
         const unit: Unit = await Unit.create(false);
         const themeService: ThemeService = new ThemeService(unit);
         
-        let rs: boolean = await themeService.insertTheme({
+        await themeService.insertTheme({
             userName: DefaultTheme.userName,
             name: DefaultTheme.name,
             isPublic: DefaultTheme.isPublic
         });
-        expect(rs).toBeTruthy();
-        rs = await themeService.insertTheme(testThemeData);
-        expect(rs).toBeTruthy();
+        await themeService.insertTheme(testThemeData);
 
         unit.complete(true);
     });
@@ -81,13 +79,17 @@ describe("ProjectService", () => {
         });
 
         test("should create with default theme", async () => {
-            const unit: Unit = await Unit.create(true);
+            const unit: Unit = await Unit.create(false);
             const projectService: ProjectService = new ProjectService(unit);
+            for(const project of testProjectData){
+                await projectService.insertProject(project.userName, project.name);
+            }
+            await unit.complete(true);
             const projects: Project[] = await projectService.selectAllProjects(testProjectData[0].userName);
             for(const project of projects){
                 expect(project.themeId).toBe(DefaultTheme.id);
             }
-            await unit.complete();
+            await unit.complete(true);
         });
     });
 
