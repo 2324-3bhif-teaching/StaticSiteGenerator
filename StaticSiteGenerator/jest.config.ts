@@ -14,6 +14,7 @@ module.exports = {
         "^.+\\.(ts|tsx)$": "ts-jest",
     },
     collectCoverage: true,
+    maxWorkers: 1
 };
 
 export default config;

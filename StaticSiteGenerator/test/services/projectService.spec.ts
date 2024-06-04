@@ -28,7 +28,6 @@ describe("ProjectService", () => {
 
         await unit.complete(true);
     });
-
     describe("insertProject", () => {
         test("should create projects", async () => {
             const unit: Unit = await Unit.create(false);
@@ -45,51 +44,39 @@ describe("ProjectService", () => {
             const unit: Unit = await Unit.create(false);
             const projectService: ProjectService = new ProjectService(unit);
             await projectService.insertProject(testProject.userName, testProject.name);
-            try{
-                await expect(async () => {
-                    await projectService.insertProject(testProject.userName, testProject.name);
-                }).rejects.toThrow('SQLITE_CONSTRAINT: UNIQUE constraint failed: Project.name, Project.user_name');
-            }
-            finally{
-                expectToBeSame(await projectService.selectAllProjects(testProjectData[0].userName), [testProjectData[0]]);
-                unit.complete(false);
-            }
+            await expect(async () => {
+                await projectService.insertProject(testProject.userName, testProject.name);
+            }).rejects.toThrow('SQLITE_CONSTRAINT: UNIQUE constraint failed: Project.name, Project.user_name');
+            expectToBeSame(await projectService.selectAllProjects(testProjectData[0].userName), [testProjectData[0]]);
+            await unit.complete(true);
         });
 
         test("should not create with empty project name", async () => {
             const testProject: Project = testProjectData[0];
             const unit: Unit = await Unit.create(false);
             const projectService: ProjectService = new ProjectService(unit);
-            try{
-                await expect(async () => {
-                    await projectService.insertProject(testProject.userName, "");
-                }).rejects.toThrow('SQLITE_CONSTRAINT: CHECK constraint failed: CK_Project_Name');
-                await expect(async () => {
-                    await projectService.insertProject(testProject.userName, "   ");
-                }).rejects.toThrow('SQLITE_CONSTRAINT: CHECK constraint failed: CK_Project_Name');
-            }
-            finally{
-                expectToBeSame(await projectService.selectAllProjects(testProjectData[0].userName), []);
-                await unit.complete(false);
-            }
+            await expect(async () => {
+                await projectService.insertProject(testProject.userName, "");
+            }).rejects.toThrow('SQLITE_CONSTRAINT: CHECK constraint failed: CK_Project_Name');
+            await expect(async () => {
+                await projectService.insertProject(testProject.userName, "   ");
+            }).rejects.toThrow('SQLITE_CONSTRAINT: CHECK constraint failed: CK_Project_Name');
+            expectToBeSame(await projectService.selectAllProjects(testProjectData[0].userName), []);
+            await unit.complete(true);
         });
 
         test("should not create with empty user name", async () => {
             const testProject: Project = testProjectData[0];
             const unit: Unit = await Unit.create(false);
             const projectService: ProjectService = new ProjectService(unit);
-            try{
-                await expect(async () => {
-                    await projectService.insertProject("", testProject.name);
-                }).rejects.toThrow(new Error('SQLITE_CONSTRAINT: CHECK constraint failed: CK_Project_User_Name'));
-                await expect(async () => {
-                    await projectService.insertProject("   ", testProject.name);
-                }).rejects.toThrow(new Error('SQLITE_CONSTRAINT: CHECK constraint failed: CK_Project_User_Name'));
-            }
-            finally{
-                expectToBeSame(await projectService.selectAllProjects(testProjectData[0].userName), []);
-                await unit.complete(false);
-            }
+            await expect(async () => {
+                await projectService.insertProject("", testProject.name);
+            }).rejects.toThrow(new Error('SQLITE_CONSTRAINT: CHECK constraint failed: CK_Project_User_Name'));
+            await expect(async () => {
+                await projectService.insertProject("   ", testProject.name);
+            }).rejects.toThrow(new Error('SQLITE_CONSTRAINT: CHECK constraint failed: CK_Project_User_Name'));
+            expectToBeSame(await projectService.selectAllProjects(testProjectData[0].userName), []);
+            await unit.complete(true);
         });
 
         test("should create with default theme", async () => {
@@ -98,10 +85,10 @@ describe("ProjectService", () => {
             const unit = await Unit.create(true);
             const projectService = new ProjectService(unit);
             const projects: Project[] = await projectService.selectAllProjects(testProjectData[0].userName);
+            await unit.complete();
             for (const project of projects) {
                 expect(project.themeId).toBe(DefaultTheme.id);
             }
-            await unit.complete();
         });
     });
 
@@ -112,8 +99,8 @@ describe("ProjectService", () => {
             const unit: Unit = await Unit.create(true);
             const projectService: ProjectService = new ProjectService(unit);
             const selectedProjects: Project[] = await projectService.selectAllProjects(testProjectData[0].userName);
-            expectToBeSame(selectedProjects, testProjectData);
             await unit.complete();
+            expectToBeSame(selectedProjects, testProjectData);
         });
     });
 
@@ -130,9 +117,9 @@ describe("ProjectService", () => {
             expect(rs).toBeTruthy();
 
             const projects: Project[] = await projectService.selectAllProjects(testProject.userName);
+            await unit.complete(true);
             expect(projects.length).toBe(1);
             expect(projects[0].name).toBe(newName);
-            await unit.complete(true);
         });
 
         test("should not update empty project name", async () => {
@@ -142,17 +129,13 @@ describe("ProjectService", () => {
 
             const unit: Unit = await Unit.create(false);
             const projectService: ProjectService = new ProjectService(unit);
-            try{
-                await expect(async () => {
-                    await projectService.updateProject(testProject.userName, testProject.id, "");
-                }).rejects.toThrow('SQLITE_CONSTRAINT: CHECK constraint failed: CK_Project_Name');
-            }
-            finally{
-                const projects: Project[] = await projectService.selectAllProjects(testProject.userName);
-                expect(projects.length).toBe(1);
-                expect(projects[0].name).toBe(testProject.name);
-                await unit.complete(false);
-            }
+            await expect(async () => {
+                await projectService.updateProject(testProject.userName, testProject.id, "");
+            }).rejects.toThrow('SQLITE_CONSTRAINT: CHECK constraint failed: CK_Project_Name');
+            const projects: Project[] = await projectService.selectAllProjects(testProject.userName);
+            await unit.complete(true);
+            expect(projects.length).toBe(1);
+            expect(projects[0].name).toBe(testProject.name);
         });
 
         test("should not update to existing project name", async () => {
@@ -162,18 +145,14 @@ describe("ProjectService", () => {
 
             const unit: Unit = await Unit.create(false);
             const projectService: ProjectService = new ProjectService(unit);
-            try{
-                await expect(async () => {
-                    await projectService.updateProject(testProject.userName, testProject.id, "AI Sign Language");
-                }).rejects.toThrow('SQLITE_CONSTRAINT: UNIQUE constraint failed: Project.name, Project.user_name');
-            }
-            finally{
-                const projects: Project[] = await projectService.selectAllProjects(testProject.userName);
-                expect(projects.length).toBe(4);
-                expect(projects[0].name).toBe(testProject.name);
-                expectToBeSame(projects, testProjectData);
-                await unit.complete(false);
-            }
+            await expect(async () => {
+                await projectService.updateProject(testProject.userName, testProject.id, "AI Sign Language");
+            }).rejects.toThrow('SQLITE_CONSTRAINT: UNIQUE constraint failed: Project.name, Project.user_name');
+            const projects: Project[] = await projectService.selectAllProjects(testProject.userName);
+            await unit.complete(true);
+            expect(projects.length).toBe(4);
+            expect(projects[0].name).toBe(testProject.name);
+            expectToBeSame(projects, testProjectData);
         });
     });
 
@@ -191,9 +170,9 @@ describe("ProjectService", () => {
             expect(rs).toBeTruthy();
 
             const projects: Project[] = await projectService.selectAllProjects(testProject.userName);
+            await unit.complete(true);
             expect(projects.length).toBe(1);
             expect(projects[0].themeId).toBe(newId);
-            await unit.complete(true);
         });
 
         test("should not update nonexisting theme id", async () => {
@@ -203,17 +182,13 @@ describe("ProjectService", () => {
 
             const unit: Unit = await Unit.create(false);
             const projectService: ProjectService = new ProjectService(unit);
-            try{
-                await expect(async () => {
-                    await projectService.updateProjectTheme(testProject.userName, testProject.id, 3);
-                }).rejects.toThrow('SQLITE_CONSTRAINT: FOREIGN KEY constraint failed');
-            }
-            finally{
-                const projects: Project[] = await projectService.selectAllProjects(testProject.userName);
-                expect(projects.length).toBe(1);
-                expect(projects[0].themeId).toBe(testProject.themeId);
-                await unit.complete(false);
-            }
+            await expect(async () => {
+                await projectService.updateProjectTheme(testProject.userName, testProject.id, 3);
+            }).rejects.toThrow('SQLITE_CONSTRAINT: FOREIGN KEY constraint failed');
+            const projects: Project[] = await projectService.selectAllProjects(testProject.userName);
+            await unit.complete(true);
+            expect(projects.length).toBe(1);
+            expect(projects[0].themeId).toBe(testProject.themeId);
         });
     });
 
@@ -229,8 +204,8 @@ describe("ProjectService", () => {
             expect(rs).toBeTruthy();
 
             const projects: Project[] = await projectService.selectAllProjects(testProject.userName);
-            expect(projects.length).toBe(0);
             await unit.complete(true);
+            expect(projects.length).toBe(0);
         });
 
         test("should not delete nonexisting project", async () => {
@@ -244,8 +219,8 @@ describe("ProjectService", () => {
             expect(rs).toBeFalsy();
 
             const projects: Project[] = await projectService.selectAllProjects(testProject.userName);
-            expect(projects.length).toBe(1);
             await unit.complete(true);
+            expect(projects.length).toBe(1);
         });
     });
 });
