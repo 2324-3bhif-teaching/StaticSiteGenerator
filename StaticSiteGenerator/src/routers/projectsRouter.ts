@@ -40,7 +40,7 @@ projectRouter.post("/", [keycloak.protect()], async (req: any, res: any) : Promi
 });
 
 //patch a project name; new name in the body
-projectRouter.patch("/:id", [keycloak.protect()], async (req: any, res: any) : Promise<void> => {
+projectRouter.patch("/name/:id", [keycloak.protect()], async (req: any, res: any) : Promise<void> => {
     const unit: Unit = await Unit.create(false);
     const projectService: ProjectService = new ProjectService(unit);
     try{
@@ -57,7 +57,7 @@ projectRouter.patch("/:id", [keycloak.protect()], async (req: any, res: any) : P
 });
 
 //patch a project themeId; themeId in the body
-projectRouter.patch("/:id", [keycloak.protect()], async (req: any, res: any) : Promise<void> => {
+projectRouter.patch("/theme/:id", [keycloak.protect()], async (req: any, res: any) : Promise<void> => {
     const unit: Unit = await Unit.create(false);
     const projectService: ProjectService = new ProjectService(unit);
     try{
