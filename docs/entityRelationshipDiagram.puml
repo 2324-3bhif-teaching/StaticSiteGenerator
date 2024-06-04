@@ -1,56 +1,48 @@
-@startuml a
+@startuml
 hide empty fields
 hide empty methods
 
-entity Theme
+entity Project
 {
-  * userName <<FK>>
-  * name
-  --
-  isPublic
+  * id
+  name
+  user_name
+  theme_id <<FK>>
 }
 
-entity ElementStyles
+entity Theme
 {
-  * tag
-  * userName <<FK>>
-  * themeName <<FK>>
-  * styleProperty <<FK>>
-  * styleValue <<FK>>
+  * id
+  name
+  user_name
+  is_public
+}
+
+entity Element_Style
+{
+  * id
+  selector
+  theme_id <<FK>>
 }
 
 entity Style
 {
-  * property
-  * value
-}
-
-entity Project
-{
-  * name
-  * userName <<FK>>
-  --
-  themeName <<FK>>
-  themeOwner <<FK>>
+  * id
+  property
+  value
+  element_style_id <<FK>>
 }
 
 entity File
 {
-  * projectName <<FK>>
-  * userName <<FK>>
-  * index
-  * path
+  * id
+  index
+  name
+  project_id <<FK>>
 }
 
-entity User
-{
-  * name
-  password
-}
-
-Theme "1" -- "n" ElementStyles
-ElementStyles "1" -- "n" Style
-User "1" -- "n" Project
+Theme "1" -- "n" Element_Style
+Element_Style "1" -- "n" Style
 Project "1" -- "1" Theme
 Project "1" -- "n" File
 
