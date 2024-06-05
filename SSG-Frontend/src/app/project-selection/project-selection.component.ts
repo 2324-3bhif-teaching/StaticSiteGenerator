@@ -3,6 +3,7 @@ import { ProjectComponent } from '../components/project/project.component';
 import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { ProjectModalComponent } from '../components/project-modal/project-modal.component';
+import { Project, ProjectService } from '../services/project.service';
 
 
 @Component({
@@ -17,16 +18,12 @@ export class ProjectSelectionComponent {
 
   public projects: Project[] = [];
 
-  constructor(public dialog: MatDialog) { }
+  constructor(public dialog: MatDialog,private projectService:ProjectService) { }
 
   ngOnInit() {
-    this.projects = [
-      { name: "MyAwesomeProject", theme: "Renschi's Theme" },
-      { name: "Lukas-Main", theme: "Kriegerkatze's Theme" },
-      { name: "ProjectX", theme: "X's Theme" },
-      { name: "ProjectY", theme: "Y's Theme" },
-      { name: "ProjectZ", theme: "Z's Theme" }
-    ];
+    this.projectService.getAllProjects().subscribe((projects) => {
+      this.projects = projects;
+    });
   }
 
   handleNewProjectCreation(newProject: Project) {
@@ -35,6 +32,7 @@ export class ProjectSelectionComponent {
     }
 
     this.projects.push(newProject);
+    this.projectService.postProject(newProject.name);
   }
 
   openProjectModal(): void {
@@ -51,12 +49,9 @@ export class ProjectSelectionComponent {
   }
 
   deleteProject(idx: number) {
+    const prj = this.projects[idx];
+    this.projectService.deleteProject(prj.id);
     this.projects.splice(idx, 1);
+
   }
 }
-
-export interface Project {
-  name: string,
-  theme: string
-}
-
