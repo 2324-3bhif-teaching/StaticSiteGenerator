@@ -1,19 +1,14 @@
 import {Theme} from "./theme";
 
 export interface File {
+    id: number,
     index: number,
-    path: string
+    path: string,
+    projId: number
 }
 
 export interface Project {
+    id: number
     name: string,
-    theme: Theme,
-    files: File[]
-}
-
-export interface User {
-    name: string,
-    password: string,
-    themes: Theme[],
-    projects: Project[]
+    theme: Theme
 }
