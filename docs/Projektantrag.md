@@ -2,9 +2,8 @@
 
 ## Ist-Zustand
 
-Wenn man schnell eine simple und schöne Website mit Documentation oder Code Highlighting machen will, dann muss man HTML
-benutzten und mit CSS mühsam die Fonts und Colors verändern und Code Highlighting mit komischer Syntax implementieren.
+Es ist mühsam und langsam eine Webseite mit HTML zu machen und mit CSS zu stylen. Codehighlighting ist schwierig richtig umzusetzen. Das schreiben einer Dokumentation in HTML ist unangenehm.
 
 ## Soll-Zustand
 
-Es gibt eine Website welche Markdown Files in eine statische Website konvertieren kann. Hierbei ist es möglich Designs auszuwählen und zu erstellen. Diese Designs können mit anderen Benutzern geteilt werden. Die statische Website kann als Projekt des Users auf unserer Website gespeichert werden. Für die statische Website kann automatisch eine Inhaltsangabe generieren.
+Du kannst Dokumentation normal mit Markdown schreiben und dann einfach in HTML konvertieren lassen. Der Style der Webseite kann einfach verändert werden. Es muss nicht immer jedes Theme selbst gemacht werden, da man schon vorhandene eigene und Themes von anderen einfach anwenden kann. Codehighlighting wird automatisch konvertiert und man muss sich keine weiteren Gedanken darüber machen.
