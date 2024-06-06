@@ -6,6 +6,9 @@ import Asciidoctor from 'asciidoctor';
 import fs from 'fs';
 import fsPromises from 'fs/promises';
 import path from "path";
+import { FileService } from "./services/fileService";
+import { Unit } from "./database/unit";
+
 const asciidoctorInstance = Asciidoctor();
 
 
@@ -29,47 +32,44 @@ export function generateCss(theme: Theme): string {
     return outputCss;
 }
 
-export async function convertFile(project: Project, fileIndex: number): Promise<string> {
-    const file = project.files.find((file) => file.index === fileIndex);
+export async function convertFile(fileId: number): Promise<void> {
+    const unit = await Unit.create(true);
+    const fileService = new FileService(unit);
+    
+    const file = await fileService.getFilePath(fileId);
 
     if (file === undefined) {
         throw new Error("File not found");
     }
 
-    const content = await readFile(file.path, "utf-8");
+    const content = await readFile(file, "utf-8");
 
-    const dir = './output';
-
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir);
-    }
-
-
-    const converted = asciidoctorInstance.convert(content,
+    asciidoctorInstance.convert(content,
         {
-            to_file: path.basename(file.path) + `.html`,
-            to_dir: dir,
+            to_file: path.basename(file) + `.html`,
+            to_dir: path.dirname(file),
             attributes: {
-                'stylesheet': `./${project.theme.name}.css`,
+                'stylesheet': `./${path.basename(file)}.css`,
                 'copycss': true,
                 'source-highlighter': 'highlight.js'
             }
         }
-    ).toString();
+    );
 
-    const css = generateCss(project.theme);
-    await fsPromises.writeFile(`./output/${project.theme.name}.css`, css);
-    await fsPromises.appendFile(dir + "/" + path.basename(file.path) + `.html`, `<style> .hljs{ background:transparent;}</style>`);
+    await fsPromises.appendFile(path.dirname(file)+ path.basename(file) + `.html`, `<style> .hljs{ background:transparent;}</style>`);
 
-    return converted;
 }
 
-export function convertProject(project: Project): string[] {
+export async function convertProject(userName:string,project: Project): Promise<string[]> {
     let content: string[] = [];
 
-    project.files.forEach(async (file) => {
-        content.push(await convertFile(project, file.index));
+    const unit = await Unit.create(true);
+    const fileService = new FileService(unit);
+
+    (await fileService.selectFilesOfProject(userName,project.id)).forEach(file =>{
+        convertFile(file.id);
     });
 
+    
     return content;
 }
