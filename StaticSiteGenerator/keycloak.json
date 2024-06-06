@@ -1,0 +1,7 @@
+{
+    "bearer-only": true,
+    "auth-server-url": "https://auth.htl-leonding.ac.at",
+    "realm": "htl-leonding",
+    "ssl-required": "external",
+    "resource": "htlleonding-service"
+  }

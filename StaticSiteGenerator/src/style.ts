@@ -17,6 +17,6 @@ export class Style {
     }
 
     public toString(): string {
-        return `${this._property}: ${this._value}`;
+        return `${this._property}: ${this._value};`;
     }
 }
