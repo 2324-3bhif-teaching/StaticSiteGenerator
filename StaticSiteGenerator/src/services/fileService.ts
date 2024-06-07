@@ -27,15 +27,11 @@ export class FileService extends ServiceBase {
         }
 
         public async insertFile(projectId: number, fileName: string): Promise<boolean> {
+            const maxIndex: number = await this.getMaxIndex(projectId) ?? -1;
             const stmt: Statement = await this.unit.prepare(`
-                select max(file_index) as maxIndex 
-                from File 
-                where project_id = ?1`, {1: projectId});
-            const maxIndex: number = (await stmt.get<{maxIndex: number}>())?.maxIndex ?? -1;
-            const stmt2: Statement = await this.unit.prepare(`
                 insert into File (file_index, name, project_id) 
                 values (?1, ?2, ?3)`, {1: maxIndex + 1, 2: fileName, 3: projectId});
-            return await this.executeStmt(stmt2);
+            return await this.executeStmt(stmt);
         }
 
         public async deleteFile(fileId: number): Promise<boolean> {
@@ -60,6 +56,7 @@ export class FileService extends ServiceBase {
             if (fileData === null) {
                 return false;
             }
+            newIndex = Math.min(Math.max(newIndex, 0), await this.getMaxIndex(fileData.project_id) ?? 0);
             if (fileData.file_index === newIndex) {
                 return true;
             }
@@ -111,6 +108,14 @@ export class FileService extends ServiceBase {
         private async getFileData(fileId: number): Promise<FileData | null> {
             let stmt: Statement = await this.unit.prepare(`select file_index, project_id from File where id = ?1`, {1: fileId});
             return await stmt.get<FileData>() ?? null;
+        }
+
+        private async getMaxIndex(projectId: number): Promise<number | undefined> {
+            const stmt: Statement = await this.unit.prepare(`
+                select max(file_index) as maxIndex 
+                from File 
+                where project_id = ?1`, {1: projectId});
+            return (await stmt.get<{maxIndex: number}>())?.maxIndex;
         }
 }
 

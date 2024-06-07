@@ -29,6 +29,22 @@ const updatedFiles: File[] = [
     {id: 5, index: 4, name: "test5"}
 ];
 
+const updatedFiles2: File[] = [
+        {id: 2, index: 0, name: "test2"},
+        {id: 1, index: 1, name: "test1"},
+        {id: 3, index: 2, name: "test3"},
+        {id: 4, index: 3, name: "test4"},
+        {id: 5, index: 4, name: "test5"}
+    ];
+
+const updatedFiles3: File[] = [
+    {id: 1, index: 0, name: "test1"},
+    {id: 3, index: 1, name: "test3"},
+    {id: 4, index: 2, name: "test4"},
+    {id: 5, index: 3, name: "test5"},
+    {id: 2, index: 4, name: "test2"}
+];
+
 const projectId: number = 1;
 
 describe("FileService", (): void => {
@@ -49,7 +65,14 @@ describe("FileService", (): void => {
         test('should insert a file', async (): Promise<void> => {
             const unit: Unit = await Unit.create(false);
             await insertFiles(unit);
+            const fileService: FileService = new FileService(unit);
+
+            const projectService: ProjectService = new ProjectService(unit);
+            await projectService.insertProject("testUser2", "testProject2");
+
+            const result: boolean = await fileService.insertFile(2, "test1");
             await unit.complete(true);
+            expect(result).toBeTruthy();
             expect(await selectFiles(projectId)).toStrictEqual(files);
         });
         test('should insert a file with existing name', async (): Promise<void> => {
@@ -107,6 +130,24 @@ describe("FileService", (): void => {
             await unit.complete(true);
             expect(result).toBeTruthy();
             expect(await selectFiles(projectId)).toStrictEqual(files);
+        });
+        test('should clamp index to 0', async (): Promise<void> => {
+            const unit: Unit = await Unit.create(false);
+            await insertFiles(unit);
+            const fileService: FileService = new FileService(unit);
+            const result: boolean = await fileService.updateFileIndex(2, -1);
+            await unit.complete(true);
+            expect(result).toBeTruthy();
+            expect(await selectFiles(projectId)).toStrictEqual(updatedFiles2);
+        });
+        test('should clamp index to max', async (): Promise<void> => {
+            const unit: Unit = await Unit.create(false);
+            await insertFiles(unit);
+            const fileService: FileService = new FileService(unit);
+            const result: boolean = await fileService.updateFileIndex(2, 5);
+            await unit.complete(true);
+            expect(result).toBeTruthy();
+            expect(await selectFiles(projectId)).toStrictEqual(updatedFiles3);
         });
     });
 
