@@ -1,13 +1,19 @@
 <div class="bg-gray-900 h-screen text-gray-300 flex justify-center text-center ">
     <div class="container mx-auto p-6">
-        <input type="text" [(ngModel)]="searchText" class="bg-gray-900 text-gray-300 border-4 border-gray-950 rounded-lg p-2 mb-4 w-full" placeholder="Search themes...">
+        <input type="text" [(ngModel)]="searchText"
+            class="bg-gray-900 text-gray-300 border-4 border-gray-950 rounded-lg p-2 mb-4 w-full"
+            placeholder="Search themes...">
+        <button
+            class="rounded-lg bg-gray-900 border-gray-700 hover:text-gray-300 border-4 hover:border-blue-500 text-white p-3 my-4 transition-all"
+            (click)="uploadFileClicked()">Upload Theme</button>
+
         <div class="grid grid-cols-3 gap-4">
             <ng-container *ngFor="let theme of filteredThemes">
-                <app-theme-element *ngIf="theme" [theme]="theme" [@fadeInOut]/>
+                <app-theme-element *ngIf="theme" [theme]="theme" [@fadeInOut] />
             </ng-container>
         </div>
         @if (filteredThemes.length === 0) {
-            <h1 class="text-center text-3xl text-gray-500 mt-72">No Theme Found!</h1>
+        <h1 class="text-center text-3xl text-gray-500 mt-72">No Theme Found!</h1>
         }
     </div>
 </div>

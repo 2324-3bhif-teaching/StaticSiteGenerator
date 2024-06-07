@@ -8,8 +8,8 @@ import { trigger, transition, style, animate } from '@angular/animations';
 @Component({
   selector: 'app-theme-selection',
   templateUrl: './theme-selection.component.html',
-  standalone:true,
-  imports: [FormsModule,CommonModule,ThemeElementComponent],
+  standalone: true,
+  imports: [FormsModule, CommonModule, ThemeElementComponent],
   styleUrls: ['./theme-selection.component.css'],
   animations: [
     trigger('fadeInOut', [
@@ -27,7 +27,7 @@ export class ThemeSelectionComponent {
   public themes: Theme[] = [];
   public searchText: string = '';
 
-  constructor(private themeService: ThemeService) {}
+  constructor(private themeService: ThemeService) { }
 
   ngOnInit() {
     this.themeService.getAllPublicThemes().subscribe((value) => {
@@ -50,5 +50,9 @@ export class ThemeSelectionComponent {
       return this.themes;
     }
     return this.themes.filter(theme => theme.name.toLowerCase().includes(this.searchText.toLowerCase()));
+  }
+
+  uploadFileClicked() {
+    window.location.pathname = "/upload-adoc";
   }
 }
