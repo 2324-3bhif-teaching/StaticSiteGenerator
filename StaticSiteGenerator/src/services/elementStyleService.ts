@@ -17,7 +17,7 @@ export class ElementStyleService extends ServiceBase{
         return await this.executeStmt(stmt);
     }
 
-    public async patchElementStyle(selector: string, id: number): Promise<boolean>{
+    public async updateElementStyle(selector: string, id: number): Promise<boolean>{
         const stmt: Statement = await this.unit.prepare(`update Element_Style set selector = ?1 where id = ?2`, {1: selector, 2: id});
         return await this.executeStmt(stmt);
     }

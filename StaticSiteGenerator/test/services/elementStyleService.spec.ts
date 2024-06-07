@@ -85,6 +85,76 @@ describe("ElementStyleService", () => {
             }, true);
         });
     });
+
+    describe("updateElementStyle", () => {
+        test("should update selector", async () => {
+            const data: ElementStyleData = {
+                selector: "*",
+                themeId: 1
+            };
+            const newSelector: string = "h1";
+
+            await execute( async (service: ElementStyleService) => {
+                await service.insertElementStyle(data);
+            }, false, true);
+
+            await execute( async (service: ElementStyleService) => {
+                const rs: boolean = await service.updateElementStyle(newSelector, 1);
+                expect(rs).toBeTruthy();
+            }, false, true);
+
+            await execute( async (service: ElementStyleService) => {
+                const selected: ElementStyleData[] = await service.selectAllElementStyles(1);
+                expect(selected.length).toBe(1);
+                expect(selected[0].selector).toBe(newSelector);
+            }, true);
+        });
+
+        test("should not update to empty selector", async () => {
+            async function expectThrow(newSelector: string){
+                await execute( async (service: ElementStyleService) => {
+                    expect( async () => {
+                        await service.updateElementStyle(newSelector, 1);
+                    }).rejects.toThrow('SQLITE_CONSTRAINT: CHECK constraint failed: CK_ElementStyle_Selector');
+                }, false, false);
+            }
+            
+            const data: ElementStyleData = {
+                selector: "*",
+                themeId: 1
+            };
+
+            await execute( async (service: ElementStyleService) => {
+                await service.insertElementStyle(data);
+            }, false, true);
+
+            await expectThrow("");
+            await expectThrow("    ");
+        });
+    });
+
+    describe("deleteElementStyle", () => {
+        test("should delete element style", async () => {
+            const data: ElementStyleData = {
+                selector: "*",
+                themeId: 1
+            };
+
+            await execute( async (service: ElementStyleService) => {
+                await service.insertElementStyle(data);
+            }, false, true);
+
+            await execute( async (service: ElementStyleService) => {
+                const rs: boolean = await service.deleteElementStyle(1);
+                expect(rs).toBeTruthy();
+            }, false, true);
+
+            await execute( async (service: ElementStyleService) => {
+                const selected: ElementStyleData[] = await service.selectAllElementStyles(1);
+                expect(selected.length).toBe(0);
+            }, true);
+        });
+    });
 });
 
 async function execute(exe: (service: ElementStyleService) => Promise<void>, readonly: boolean, commit: boolean | null = null){
