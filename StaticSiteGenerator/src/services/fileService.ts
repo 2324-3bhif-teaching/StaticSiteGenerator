@@ -11,7 +11,8 @@ export class FileService extends ServiceBase {
         public async selectFilesOfProject(projectId: number): Promise<File[]> {
             const stmt: Statement = await this.unit.prepare(`
                 select id, file_index, name from File 
-                where project_id = ?1`,
+                where project_id = ?1
+                order by file_index`,
                 {1: projectId});
             return (await stmt.all<{id: number, file_index: number, name: string}[]>())
                 .map(file => {
@@ -36,35 +37,75 @@ export class FileService extends ServiceBase {
         }
 
         public async deleteFile(fileId: number): Promise<boolean> {
-            let stmt: Statement = await this.unit.prepare(`select file_index, project_id from File where id = ?1`, {1: fileId});
-            const fileData: {file_index: number, project_id: number} | undefined =
-                await stmt.get<{file_index: number, project_id: number}>();
+            const fileData: FileData | undefined = await this.getFileData(fileId);
             if (!fileData) {
                 return false;
             }
-            stmt = await this.unit.prepare(`
+
+            const stmt = await this.unit.prepare(`
                 delete from File 
                 where id = ?1`,
                 { 1: fileId });
-            await this.shiftFileIndices(fileData.project_id, fileData.file_index + 1, -1);
-            return await this.executeStmt(stmt);
+            const result: boolean = await this.executeStmt(stmt);
+
+            await this.shiftFileIndices(fileData.project_id, -1, fileData.file_index + 1);
+
+            return result
         }
 
-        public async updateFileIndex(userName: string, fileId: number, newIndex: number): Promise<boolean> {
-            return false;
+        public async updateFileIndex(fileId: number, newIndex: number): Promise<boolean> {
+            const fileData: FileData | undefined = await this.getFileData(fileId);
+            if (!fileData) {
+                return false;
+            }
+            if (fileData.file_index === newIndex) {
+                return true;
+            }
+
+            const delta: number = fileData.file_index < newIndex ? -1 : 1;
+            const start: number = fileData.file_index < newIndex ? fileData.file_index + 1 : newIndex;
+            const end: number = fileData.file_index < newIndex ? newIndex : fileData.file_index - 1;
+            await this.shiftFileIndices(fileData.project_id, delta, start, end);
+
+            const stmt: Statement = await this.unit.prepare(`
+                update File set file_index = ?1 
+                where id = ?2`,
+                {1: newIndex, 2: fileId});
+            return await this.executeStmt(stmt);
         }
 
         public async getFilePath(fileId: number): Promise<string> {
             return "";
         }
 
-        private async shiftFileIndices(projectId: number, start: number, delta: number): Promise<boolean> {
-            const stmt: Statement = await this.unit.prepare(`
+        private async shiftFileIndices(projectId: number, delta: number, start: number, end: number | null = null): Promise<boolean> {
+            let stmt: Statement;
+            if (end === null) {
+                stmt = await this.unit.prepare(`
                 update File set file_index = file_index + ?1 
-                where file_index >= ?2 and project_id = ?3`,
+                where file_index >= ?2
+                and project_id = ?3`,
                 {1: delta, 2: start, 3: projectId});
+            }
+            else {
+                stmt = await this.unit.prepare(`
+                update File set file_index = file_index + ?1 
+                where file_index between ?2 and ?3 
+                and project_id = ?4`,
+                {1: delta, 2: start, 3: end, 4: projectId});
+            }
             return await this.executeStmt(stmt);
         }
+
+        private async getFileData(fileId: number): Promise<FileData | undefined> {
+            let stmt: Statement = await this.unit.prepare(`select file_index, project_id from File where id = ?1`, {1: fileId});
+            return await stmt.get<FileData>();
+        }
+}
+
+interface FileData {
+    file_index: number,
+    project_id: number
 }
 
 export interface File {
