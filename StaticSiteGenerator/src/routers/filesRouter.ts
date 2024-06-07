@@ -107,3 +107,25 @@ filesRouter.delete("/:fileId", [keycloak.protect()], async (req: any, res: any):
         await unit.complete(false);
     }
 });
+
+filesRouter.patch("/:fileId", [keycloak.protect()], async (req: any, res: any): Promise<void> => {
+    const unit: Unit = await Unit.create(false);
+    const fileService: FileService = new FileService(unit);
+    try {
+        if (!await fileService.ownsFile(req.kauth.grant.access_token.content.preferred_username, req.params.fileId)) {
+            res.sendStatus(StatusCodes.FORBIDDEN);
+            await unit.complete(false);
+            return;
+        }
+
+        await fileService.updateFileIndex(req.params.fileId, req.body.index);
+
+        await unit.complete(true);
+        res.sendStatus(StatusCodes.OK);
+    }
+    catch (error) {
+        console.log(error);
+        res.sendStatus(StatusCodes.BAD_REQUEST);
+        await unit.complete(false);
+    }
+});
