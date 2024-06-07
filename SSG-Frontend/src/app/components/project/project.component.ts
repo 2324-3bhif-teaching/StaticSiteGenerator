@@ -4,6 +4,7 @@ import { Theme } from '../../services/theme.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { KeycloakService } from 'keycloak-angular';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-project',
@@ -18,6 +19,20 @@ export class ProjectComponent {
   faEdit = faEdit;
   faTrash = faTrash;
 
+  constructor(private themeService:ThemeService){}
+
+  ngOnInit(){
+    this.themeService.getAllPublicThemes().subscribe((themes) => {
+      const defTheme = themes.find(theme => theme.id == 1);
+
+      if(defTheme === undefined){
+        return;
+      }
+
+      console.log(defTheme);
+      this.project.theme = defTheme;
+    });
+  }
 
   deleteMe() {
     this.deleteRequest.emit(this.project);

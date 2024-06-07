@@ -13,23 +13,25 @@ export class ProjectService {
   private projectURL: string = this.baseService.BASE_URL + this.baseService.PROJECTS_URL;
 
   getAllProjects(){
-    return this.http.get<Project[]>(`${this.projectURL}/`);
+    const s = this.http.get<Project[]>(`${this.projectURL}/`);
+    console.log(s)
+    return s;
   }
 
   postProject(name:string){
-    this.http.post(`${this.projectURL}/`,name);
+    return this.http.post(`${this.projectURL}/`,{name});
   }
 
   patchProjectName(id:number,name:string){
-    this.http.patch(`${this.projectURL}/name/${id}`,name);
+    return this.http.patch(`${this.projectURL}/name/${id}`,{name});
   }
 
   patchThemeId(id:number,newThemeId:number){
-    this.http.patch(`${this.projectURL}/theme/${id}`,newThemeId);
+    return this.http.patch(`${this.projectURL}/theme/${id}`,{newThemeId});
   }
 
   deleteProject(id:number){
-    this.http.delete(`${this.projectURL}/${id}`);
+    return this.http.delete(`${this.projectURL}/${id}`);
   }  
 }
 

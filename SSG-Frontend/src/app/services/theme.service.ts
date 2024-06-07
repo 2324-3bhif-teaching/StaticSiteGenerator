@@ -20,19 +20,19 @@ export class ThemeService {
   }
 
   postTheme(theme:Theme){
-    this.http.post(this.themeURL + "/",theme);
+    return this.http.post(this.themeURL + "/",{theme});
   }
 
   patchThemeName(id:number,name:string){
-    this.http.patch(`${this.themeURL}/name/${id}`,name);
+    return this.http.patch(`${this.themeURL}/name/${id}`,{name});
   }
 
   patchThemePublicity(id:number,isPublic:boolean){
-    this.http.patch(`${this.themeURL}/isPublic/${id}`,isPublic);
+    return this.http.patch(`${this.themeURL}/isPublic/${id}`,{isPublic});
   }
 
   deleteTheme(id:number){
-    this.http.delete(`${this.themeURL}/${id}`)
+    return this.http.delete(`${this.themeURL}/${id}`)
   }
 
 }
