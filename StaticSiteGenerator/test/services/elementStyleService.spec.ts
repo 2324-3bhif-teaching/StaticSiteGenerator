@@ -1,15 +1,15 @@
 import { DefaultTheme } from "../../src/constants";
 import { Unit } from "../../src/database/unit";
-import { ElementStyleData, ElementStyleService } from "../../src/services/elementStyleService";
+import { ElementStyle, ElementStyleData, ElementStyleService } from "../../src/services/elementStyleService";
 import { ThemeData, ThemeService } from "../../src/services/themeService";
 import { setupTestData } from "../database/testData";
 
 const testElementStyleData: ElementStyleData[] = [
     {selector: "body", themeId: 1},
-    {selector: "*", themeId: 1},
     {selector: "div > h1", themeId: 1},
-    {selector: "h1", themeId: 1},
-    {selector: "body > h1:first-child, body > div > h1:first-child", themeId: 1}
+    {selector: "body > h1:first-child, body > div > h1:first-child", themeId: 1},
+    {selector: "*", themeId: 1},
+    {selector: "h1", themeId: 1}
 ];
 
 describe("ElementStyleService", () => {
@@ -33,15 +33,15 @@ describe("ElementStyleService", () => {
                     const rs: boolean = await service.insertElementStyle(elementStyle);
                     expect(rs).toBeTruthy();
                 }
-            }, true, true);
+            }, false, true);
         });
 
         test("should not insert with empty selector", async () => {
-            async function expectThrow(){
+            async function expectThrow(elementStyle: ElementStyleData){
                 await execute(async (service: ElementStyleService) => {
                     expect(async () => {
                         await service.insertElementStyle(elementStyle);
-                    }).toThrow();
+                    }).rejects.toThrow('SQLITE_CONSTRAINT: CHECK constraint failed: CK_ElementStyle_Selector');
                 }, false, false);
             };
             
@@ -49,13 +49,52 @@ describe("ElementStyleService", () => {
                 selector: "",
                 themeId: 1
             };
+            await expectThrow(elementStyle);
+            elementStyle.selector = "    ";
+            await expectThrow(elementStyle);
+        });
+
+        test("should not insert with nonexisting themeId", async () => {
+            await execute(async (service: ElementStyleService) => {
+                expect(async () => {
+                    await service.insertElementStyle(
+                        {
+                            selector: "*",
+                            themeId: 2
+                        });
+                }).rejects.toThrow('SQLITE_CONSTRAINT: FOREIGN KEY constraint failed');
+            }, false, false);
+        });
+    });
+
+    describe("selectAllElementStyles", () => {
+        test("should select all", async () => {
+            await execute(async (service: ElementStyleService) => {
+                for(const data of testElementStyleData){
+                    await service.insertElementStyle(data);
+                }
+            }, false, true);
+
+            await execute(async (service: ElementStyleService) => {
+                const selected: ElementStyle[] = await service.selectAllElementStyles(DefaultTheme.id);
+                expect(selected.length).toBe(testElementStyleData.length);
+                for(let i: number = 0; i < selected.length; i++){
+                    expect(selected[i].selector).toBe(testElementStyleData[i].selector);
+                    expect(selected[i].themeId).toBe(testElementStyleData[i].themeId);
+                }
+            }, true);
         });
     });
 });
 
 async function execute(exe: (service: ElementStyleService) => Promise<void>, readonly: boolean, commit: boolean | null = null){
     const unit: Unit = await Unit.create(readonly);
-    const service: ElementStyleService = new ElementStyleService(unit);
-    await exe(service);
-    await unit.complete(commit);
+    try{
+        const service: ElementStyleService = new ElementStyleService(unit);
+        await exe(service);
+        commit === null ? await unit.complete() : await unit.complete(commit);
+    }
+    catch(error){
+        commit === null ? await unit.complete() : await unit.complete(false);
+    }
 }
