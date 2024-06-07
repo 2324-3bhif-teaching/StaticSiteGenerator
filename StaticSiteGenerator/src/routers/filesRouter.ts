@@ -90,16 +90,18 @@ filesRouter.delete("/:fileId", [keycloak.protect()], async (req: any, res: any):
             await unit.complete(false);
             return;
         }
+        const filePath: string | null = await fileService.getFilePath(req.params.fileId);
+        if (filePath === null) {
+            res.sendStatus(StatusCodes.NOT_FOUND);
+            await unit.complete(false);
+            return;
+        }
 
-        const result: boolean = await fileService.deleteFile(req.params.fileId);
+        await fileService.deleteFile(req.params.fileId);
+        await fs.rm(filePath);
 
         await unit.complete(true);
-        if (result) {
-            res.sendStatus(StatusCodes.OK);
-        }
-        else {
-            res.sendStatus(StatusCodes.NOT_FOUND);
-        }
+        res.sendStatus(StatusCodes.OK);
     }
     catch (error) {
         console.log(error);
