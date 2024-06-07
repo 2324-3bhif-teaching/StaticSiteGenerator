@@ -153,44 +153,44 @@ describe("FileService", (): void => {
 
     describe("getFilePath", (): void => {
         test('should get file path', async (): Promise<void> => {
-            const unit: Unit = await Unit.create(false);
+            const unit: Unit = await Unit.create(true);
             await insertFiles(unit);
             const fileService: FileService = new FileService(unit);
             const result: string | null = await fileService.getFilePath(1);
-            await unit.complete(true);
+            await unit.complete();
             expect(result).toBe(join(FileLocation, "testUser/1/test1"));
         });
         test('should not get file path of non-existing file', async (): Promise<void> => {
-            const unit: Unit = await Unit.create(false);
+            const unit: Unit = await Unit.create(true);
             const fileService: FileService = new FileService(unit);
             const result: string | null = await fileService.getFilePath(0);
-            await unit.complete(true);
+            await unit.complete();
             expect(result).toBe(null);
         });
     });
 
     describe("ownsFile", (): void => {
         test('should own file', async (): Promise<void> => {
-            const unit: Unit = await Unit.create(false);
+            const unit: Unit = await Unit.create(true);
             await insertFiles(unit);
             const fileService: FileService = new FileService(unit);
             const result: boolean = await fileService.ownsFile("testUser", 1);
-            await unit.complete(true);
+            await unit.complete();
             expect(result).toBeTruthy();
         });
         test('should not own file', async (): Promise<void> => {
-            const unit: Unit = await Unit.create(false);
+            const unit: Unit = await Unit.create(true);
             await insertFiles(unit);
             const fileService: FileService = new FileService(unit);
             const result: boolean = await fileService.ownsFile("testUser2", 1);
-            await unit.complete(true);
+            await unit.complete();
             expect(result).toBeFalsy();
         });
         test('should not own non-existing file', async (): Promise<void> => {
-            const unit: Unit = await Unit.create(false);
+            const unit: Unit = await Unit.create(true);
             const fileService: FileService = new FileService(unit);
             const result: boolean = await fileService.ownsFile("testUser", 0);
-            await unit.complete(true);
+            await unit.complete();
             expect(result).toBeFalsy();
         });
     });

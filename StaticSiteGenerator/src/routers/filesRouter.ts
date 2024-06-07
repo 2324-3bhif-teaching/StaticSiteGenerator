@@ -65,11 +65,17 @@ filesRouter.post("/", [keycloak.protect(), upload.single("file")], async (req: a
             await unit.complete(false);
             return;
         }
+        const projectPath: string | null = await projectService.getProjectPath(req.body.projectId);
+        if (projectPath === null) {
+            res.sendStatus(StatusCodes.BAD_REQUEST);
+            await unit.complete(false);
+            return;
+        }
 
         await fileService.insertFile(req.body.projectId, req.file.originalname);
 
-        await fs.mkdir(join(__dirname, "../../", FileLocation, req.body.projectId.toString()), {recursive: true});
-        await fs.rename(req.file.path, join(__dirname, "../../", FileLocation, req.body.projectId.toString(), req.file.originalname));
+        await fs.mkdir(join(__dirname, "../../",  projectPath), {recursive: true});
+        await fs.rename(req.file.path, join(__dirname, "../../", projectPath, req.file.originalname));
 
         await unit.complete(true);
         res.sendStatus(StatusCodes.CREATED);
