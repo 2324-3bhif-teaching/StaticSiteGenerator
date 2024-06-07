@@ -117,7 +117,7 @@ describe("FileService", (): void => {
             const fileService: FileService = new FileService(unit);
             const result: string | null = await fileService.getFilePath(1);
             await unit.complete(true);
-            expect(result).toBe(join(FileLocation, "testUser", "1", "test1"));
+            expect(result).toBe(join(FileLocation, "testUser/1/test1"));
         });
         test('should not get file path of non-existing file', async (): Promise<void> => {
             const unit: Unit = await Unit.create(false);
