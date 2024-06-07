@@ -35,16 +35,35 @@ export class FileService extends ServiceBase {
             return await this.executeStmt(stmt2);
         }
 
-        public async deleteFile(userName: string, projectId: number, fileId: number): Promise<boolean> {
-            return false;
+        public async deleteFile(fileId: number): Promise<boolean> {
+            let stmt: Statement = await this.unit.prepare(`select file_index, project_id from File where id = ?1`, {1: fileId});
+            const fileData: {file_index: number, project_id: number} | undefined =
+                await stmt.get<{file_index: number, project_id: number}>();
+            if (!fileData) {
+                return false;
+            }
+            stmt = await this.unit.prepare(`
+                delete from File 
+                where id = ?1`,
+                { 1: fileId });
+            await this.shiftFileIndices(fileData.project_id, fileData.file_index + 1, -1);
+            return await this.executeStmt(stmt);
         }
 
-        public async updateFileIndex(userName: string, projectId: number, fileId: number, newIndex: number): Promise<boolean> {
+        public async updateFileIndex(userName: string, fileId: number, newIndex: number): Promise<boolean> {
             return false;
         }
 
         public async getFilePath(fileId: number): Promise<string> {
             return "";
+        }
+
+        private async shiftFileIndices(projectId: number, start: number, delta: number): Promise<boolean> {
+            const stmt: Statement = await this.unit.prepare(`
+                update File set file_index = file_index + ?1 
+                where file_index >= ?2 and project_id = ?3`,
+                {1: delta, 2: start, 3: projectId});
+            return await this.executeStmt(stmt);
         }
 }
 

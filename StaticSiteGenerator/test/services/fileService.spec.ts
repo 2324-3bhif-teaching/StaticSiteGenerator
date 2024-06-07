@@ -13,6 +13,13 @@ const files: File[] = [
     {id: 5, index: 4, name: "test5"}
 ];
 
+const shiftedFiles: File[] = [
+    {id: 1, index: 0, name: "test1"},
+    {id: 2, index: 1, name: "test2"},
+    {id: 4, index: 2, name: "test4"},
+    {id: 5, index: 3, name: "test5"}
+];
+
 const projectId: number = 1;
 
 describe("FileService", () => {
@@ -32,10 +39,7 @@ describe("FileService", () => {
     describe("insertFile", () => {
         test('should insert a file', async () => {
             const unit: Unit = await Unit.create(false);
-            const fileService: FileService = new FileService(unit);
-            for (const file of files) {
-                expect(await fileService.insertFile(projectId, file.name)).toBeTruthy();
-            }
+            await insertFiles(unit);
             await unit.complete(true);
             expect(await selectFiles(projectId)).toStrictEqual(files);
         });
@@ -47,9 +51,35 @@ describe("FileService", () => {
                 await fileService.insertFile(projectId, files[0].name)
             }).rejects.toThrow('SQLITE_CONSTRAINT: UNIQUE constraint failed: File.name, File.project_id');
             await unit.complete(true);
+            expect(await selectFiles(projectId)).toStrictEqual([files[0]]);
+        });
+    });
+
+    describe("deleteFile", () => {
+        test('should delete a file', async () => {
+            const unit: Unit = await Unit.create(false);
+            await insertFiles(unit);
+            const fileService: FileService = new FileService(unit);
+            expect(await fileService.deleteFile(3)).toBeTruthy();
+            await unit.complete(true);
+            expect(await selectFiles(projectId)).toStrictEqual(shiftedFiles);
+        });
+        test('should not delete a non-existing file', async () => {
+            const unit: Unit = await Unit.create(false);
+            const fileService: FileService = new FileService(unit);
+            const result: boolean = await fileService.deleteFile(1);
+            await unit.complete(true);
+            expect(result).toBeFalsy();
         });
     });
 });
+
+async function insertFiles(unit: Unit) {
+    const fileService: FileService = new FileService(unit);
+    for (const file of files) {
+        expect(await fileService.insertFile(projectId, file.name)).toBeTruthy();
+    }
+}
 
 async function selectFiles(projectId: number): Promise<File[]> {
     const unit: Unit = await Unit.create(true);
