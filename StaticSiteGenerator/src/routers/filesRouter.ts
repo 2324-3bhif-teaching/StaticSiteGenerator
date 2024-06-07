@@ -10,6 +10,7 @@ import {StatusCodes} from "http-status-codes";
 import {FileLocation} from "../constants";
 import * as fs from "fs/promises";
 import {ProjectService} from "../services/projectService";
+import {File} from "../services/fileService";
 
 export const filesRouter: Router = express.Router();
 const keycloak: Keycloak.Keycloak = new Keycloak({ store: memoryStore });
@@ -37,7 +38,13 @@ filesRouter.get("/:projectId", [keycloak.protect()], async (req: any, res: any):
             res.sendStatus(StatusCodes.FORBIDDEN);
             return;
         }
-        res.status(StatusCodes.OK).send(await fileService.selectFilesOfProject(req.params.projectId));
+        const files: File[] = await fileService.selectFilesOfProject(req.params.projectId);
+        if (files.length === 0) {
+            res.sendStatus(StatusCodes.NOT_FOUND);
+        }
+        else {
+            res.status(StatusCodes.OK).send(files);
+        }
     }
     catch (error) {
         console.log(error);
@@ -51,7 +58,14 @@ filesRouter.get("/:projectId", [keycloak.protect()], async (req: any, res: any):
 filesRouter.post("/", [keycloak.protect(), upload.single("file")], async (req: any, res: any): Promise<void> => {
     const unit: Unit = await Unit.create(false);
     const fileService: FileService = new FileService(unit);
+    const projectService: ProjectService = new ProjectService(unit);
     try {
+        if (!await projectService.ownsProject(req.kauth.grant.access_token.content.preferred_username, req.body.projectId)) {
+            res.sendStatus(StatusCodes.FORBIDDEN);
+            await unit.complete(false);
+            return;
+        }
+
         await fileService.insertFile(req.body.projectId, req.file.originalname);
 
         await fs.mkdir(join(__dirname, "../../", FileLocation, req.body.projectId.toString()), {recursive: true});
@@ -59,6 +73,33 @@ filesRouter.post("/", [keycloak.protect(), upload.single("file")], async (req: a
 
         await unit.complete(true);
         res.sendStatus(StatusCodes.CREATED);
+    }
+    catch (error) {
+        console.log(error);
+        res.sendStatus(StatusCodes.BAD_REQUEST);
+        await unit.complete(false);
+    }
+});
+
+filesRouter.delete("/:fileId", [keycloak.protect()], async (req: any, res: any): Promise<void> => {
+    const unit: Unit = await Unit.create(false);
+    const fileService: FileService = new FileService(unit);
+    try {
+        if (!await fileService.ownsFile(req.kauth.grant.access_token.content.preferred_username, req.params.fileId)) {
+            res.sendStatus(StatusCodes.FORBIDDEN);
+            await unit.complete(false);
+            return;
+        }
+
+        const result: boolean = await fileService.deleteFile(req.params.fileId);
+
+        await unit.complete(true);
+        if (result) {
+            res.sendStatus(StatusCodes.OK);
+        }
+        else {
+            res.sendStatus(StatusCodes.NOT_FOUND);
+        }
     }
     catch (error) {
         console.log(error);
