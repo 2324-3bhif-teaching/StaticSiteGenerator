@@ -55,7 +55,6 @@ projectRouter.patch("/name/:id", [keycloak.protect()], async (req: any, res: any
         await unit.complete(false);
     }
 });
-
 //patch a project themeId; themeId in the body
 projectRouter.patch("/theme/:id", [keycloak.protect()], async (req: any, res: any) : Promise<void> => {
     const unit: Unit = await Unit.create(false);

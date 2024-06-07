@@ -53,6 +53,8 @@ app.get('/logout', keycloak.protect(), (req: any, res) => {
     res.redirect('/');
 });
 
+
+
 app.listen(3000, async () => {
     console.log("Server listening on port 3000");
 });

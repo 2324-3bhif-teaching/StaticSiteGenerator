@@ -1,0 +1,24 @@
+<div class="bg-gray-900 h-screen text-gray-300 flex flex-col items-center justify-center text-center">
+    <div class="form-group mt-8 scale-150">
+        <label for="file"
+            class="cursor-pointer bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded inline-flex items-center transition-all">
+            <fa-icon [icon]="faFileArchive" class="mr-6" />
+            Choose File
+        </label>
+        <!-- Add enctype to your form -->
+        <form (submit)="uploadFile()" enctype="multipart/form-data">
+            <input type="file" id="file" name="file" class="hidden" (change)="handleFileInput($event)">
+            <button type="submit" class=" cursor-pointer mt-16 bg-green-500 hover:bg-green-600
+                text-white py-2 px-4 rounded inline-flex items-center transition-all"><fa-icon class="mr-6"
+                    [icon]="faUpload" />
+                Upload</button>
+        </form>
+
+    </div>
+    @if (!validFile) {
+    <div class="p-4 mt-6 rounded-lg bg-red-500 flex flex-row">
+        <fa-icon [icon]="faInfo" class="mr-6" />
+        <h1>Please upload a valid adoc file!</h1>
+    </div>
+    }
+</div>
