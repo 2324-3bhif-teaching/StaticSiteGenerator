@@ -15,7 +15,10 @@ const keycloak: Keycloak.Keycloak = new Keycloak({ store: memoryStore });
 
 const storage: StorageEngine = multer.diskStorage({
     destination: (_, file, cb) => {
-        cb(null, join(__dirname, "../../", FileLocation , "temp", uuidv4()));
+        cb(null, join(__dirname, "../../", FileLocation , "temp"));
+    },
+    filename: (_, file, cb) => {
+        cb(null, `${uuidv4()}.${file.originalname}`);
     }
 });
 
@@ -28,12 +31,10 @@ filesRouter.post("/", [keycloak.protect(), upload.single("file")], async (req: a
     const unit: Unit = await Unit.create(false);
     const fileService: FileService = new FileService(unit);
     try {
-        await fileService.insertFile(req.body.projectId, req.file.filename);
+        await fileService.insertFile(req.body.projectId, req.file.originalname);
 
-        const pathWanted: string = join(__dirname, "../../", FileLocation, req.body.projectId.toString(), req.file.filename);
-        await fs.access(pathWanted);
         await fs.mkdir(join(__dirname, "../../", FileLocation, req.body.projectId.toString()), {recursive: true});
-        await fs.rename(req.file.path, pathWanted);
+        await fs.rename(req.file.path, join(__dirname, "../../", FileLocation, req.body.projectId.toString(), req.file.originalname));
 
         await unit.complete(true);
         res.sendStatus(StatusCodes.CREATED);
