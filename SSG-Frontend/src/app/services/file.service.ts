@@ -11,7 +11,11 @@ export class FileService {
 
   private filesURL: string = this.baseService.BASE_URL + this.baseService.FILES_URL;
 
-  postFile(formData: any) {
+  postFile(file: File) {
+    const formData: FormData = new FormData();
+    formData.append('file', file, file.name);
+    formData.append('projectId', '1');
+
     return this.http.post(this.filesURL, formData);
   }
 }

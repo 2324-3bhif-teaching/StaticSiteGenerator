@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faInfo, faUpload, faFileArchive } from '@fortawesome/free-solid-svg-icons';
 import { FileService } from '../../services/file.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-file-upload',
   standalone: true,
-  imports: [FaIconComponent],
+  imports: [FaIconComponent, FormsModule],
   templateUrl: './file-upload.component.html',
   styleUrl: './file-upload.component.css'
 })
@@ -36,15 +37,11 @@ export class FileUploadComponent {
   }
 
   uploadFile() {
-    const formData: FormData = new FormData();
-
     if (this.fileToUpload === null) {
       return;
     }
 
-    formData.append('file', this.fileToUpload, this.fileToUpload.name);
-
-    this.fileService.postFile(formData).subscribe(data => {
+    this.fileService.postFile(this.fileToUpload).subscribe(data => {
       console.log(data);
     });
   }

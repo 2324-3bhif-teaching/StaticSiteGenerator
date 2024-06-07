@@ -56,19 +56,27 @@ filesRouter.get("/:projectId", [keycloak.protect()], async (req: any, res: any):
 });
 
 filesRouter.post("/", [keycloak.protect(), upload.single("file")], async (req: any, res: any): Promise<void> => {
+    if (req.file === undefined) {
+        res.sendStatus(StatusCodes.BAD_REQUEST);
+        return;
+    }
     const unit: Unit = await Unit.create(false);
     const fileService: FileService = new FileService(unit);
     const projectService: ProjectService = new ProjectService(unit);
     try {
+        console.log(req.file);
+        console.log(req.body);
         if (!await projectService.ownsProject(req.kauth.grant.access_token.content.preferred_username, req.body.projectId)) {
             res.sendStatus(StatusCodes.FORBIDDEN);
             await unit.complete(false);
+            await fs.rm(req.file.path);
             return;
         }
         const projectPath: string | null = await projectService.getProjectPath(req.body.projectId);
         if (projectPath === null) {
             res.sendStatus(StatusCodes.BAD_REQUEST);
             await unit.complete(false);
+            await fs.rm(req.file.path);
             return;
         }
 
