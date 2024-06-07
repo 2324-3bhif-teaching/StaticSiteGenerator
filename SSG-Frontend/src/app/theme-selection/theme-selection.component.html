@@ -1,9 +1,9 @@
-<div class="bg-gray-900 h-screen text-gray-300 flex justify-center text-center">
+<div class="bg-gray-900 h-screen text-gray-300 flex justify-center text-center ">
     <div class="container mx-auto p-6">
-        <input type="text" [(ngModel)]="searchText" class="bg-gray-800 text-gray-300 rounded-lg p-2 mb-4 w-full" placeholder="Search themes...">
+        <input type="text" [(ngModel)]="searchText" class="bg-gray-900 text-gray-300 border-4 border-gray-950 rounded-lg p-2 mb-4 w-full" placeholder="Search themes...">
         <div class="grid grid-cols-3 gap-4">
             <ng-container *ngFor="let theme of filteredThemes">
-                <app-theme-element *ngIf="theme" [theme]="theme"/>
+                <app-theme-element *ngIf="theme" [theme]="theme" [@fadeInOut]/>
             </ng-container>
         </div>
         @if (filteredThemes.length === 0) {

@@ -3,14 +3,25 @@ import { ThemeService, Theme } from '../services/theme.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ThemeElementComponent } from '../components/theme-element/theme-element.component';
-
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-theme-selection',
   templateUrl: './theme-selection.component.html',
   standalone:true,
   imports: [FormsModule,CommonModule,ThemeElementComponent],
-  styleUrls: ['./theme-selection.component.css']
+  styleUrls: ['./theme-selection.component.css'],
+  animations: [
+    trigger('fadeInOut', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('150ms', style({ opacity: 1 })),
+      ]),
+      transition(':leave', [
+        animate('150ms', style({ opacity: 0 }))
+      ])
+    ])
+  ]
 })
 export class ThemeSelectionComponent {
   public themes: Theme[] = [];
