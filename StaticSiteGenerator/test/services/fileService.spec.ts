@@ -3,8 +3,8 @@ import {Unit} from "../../src/database/unit";
 import {ProjectService} from "../../src/services/projectService";
 import {FileService, File} from "../../src/services/fileService";
 import {ThemeService} from "../../src/services/themeService";
-import {DefaultTheme} from "../../src/constants";
-import express from "express";
+import {DefaultTheme, FileLocation} from "../../src/constants";
+import { join } from "path";
 
 const files: File[] = [
     {id: 1, index: 0, name: "test1"},
@@ -31,7 +31,7 @@ const updatedFiles: File[] = [
 
 const projectId: number = 1;
 
-describe("FileService", () => {
+describe("FileService", (): void => {
     beforeEach(async (): Promise<void> => {
         await setupTestData();
         const unit: Unit = await Unit.create(false);
@@ -40,19 +40,19 @@ describe("FileService", () => {
         await themeService.insertTheme(DefaultTheme);
 
         const projectService: ProjectService = new ProjectService(unit);
-        await projectService.insertProject("test", "test");
+        await projectService.insertProject("testUser", "testProject");
 
         await unit.complete(true);
     });
 
-    describe("insertFile", () => {
-        test('should insert a file', async () => {
+    describe("insertFile", (): void => {
+        test('should insert a file', async (): Promise<void> => {
             const unit: Unit = await Unit.create(false);
             await insertFiles(unit);
             await unit.complete(true);
             expect(await selectFiles(projectId)).toStrictEqual(files);
         });
-        test('should insert a file with existing name', async () => {
+        test('should insert a file with existing name', async (): Promise<void> => {
             const unit: Unit = await Unit.create(false);
             const fileService: FileService = new FileService(unit);
             expect(await fileService.insertFile(projectId, files[0].name)).toBeTruthy();
@@ -64,8 +64,8 @@ describe("FileService", () => {
         });
     });
 
-    describe("deleteFile", () => {
-        test('should delete a file', async () => {
+    describe("deleteFile", (): void => {
+        test('should delete a file', async (): Promise<void> => {
             const unit: Unit = await Unit.create(false);
             await insertFiles(unit);
             const fileService: FileService = new FileService(unit);
@@ -73,7 +73,7 @@ describe("FileService", () => {
             await unit.complete(true);
             expect(await selectFiles(projectId)).toStrictEqual(shiftedFiles);
         });
-        test('should not delete a non-existing file', async () => {
+        test('should not delete a non-existing file', async (): Promise<void> => {
             const unit: Unit = await Unit.create(false);
             const fileService: FileService = new FileService(unit);
             const result: boolean = await fileService.deleteFile(1);
@@ -82,7 +82,7 @@ describe("FileService", () => {
         });
     });
 
-    describe("updateFileIndex", () => {
+    describe("updateFileIndex", (): void => {
         test('should update a file index', async (): Promise<void> => {
             const unit: Unit = await Unit.create(false);
             await insertFiles(unit);
@@ -107,6 +107,24 @@ describe("FileService", () => {
             await unit.complete(true);
             expect(result).toBeTruthy();
             expect(await selectFiles(projectId)).toStrictEqual(files);
+        });
+    });
+
+    describe("getFilePath", (): void => {
+        test('should get file path', async (): Promise<void> => {
+            const unit: Unit = await Unit.create(false);
+            await insertFiles(unit);
+            const fileService: FileService = new FileService(unit);
+            const result: string | null = await fileService.getFilePath(1);
+            await unit.complete(true);
+            expect(result).toBe(join(FileLocation, "testUser", "1", "test1"));
+        });
+        test('should not get file path of non-existing file', async (): Promise<void> => {
+            const unit: Unit = await Unit.create(false);
+            const fileService: FileService = new FileService(unit);
+            const result: string | null = await fileService.getFilePath(0);
+            await unit.complete(true);
+            expect(result).toBe(null);
         });
     });
 });

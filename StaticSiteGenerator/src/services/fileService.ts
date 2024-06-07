@@ -1,6 +1,8 @@
 import {ServiceBase} from "../database/serviceBase";
 import {Unit} from "../database/unit";
 import {Statement} from "sqlite";
+import { join } from "path/win32";
+import {FileLocation} from "../constants";
 
 export class FileService extends ServiceBase {
 
@@ -37,12 +39,12 @@ export class FileService extends ServiceBase {
         }
 
         public async deleteFile(fileId: number): Promise<boolean> {
-            const fileData: FileData | undefined = await this.getFileData(fileId);
-            if (!fileData) {
+            const fileData: FileData | null = await this.getFileData(fileId);
+            if (fileData === null) {
                 return false;
             }
 
-            const stmt = await this.unit.prepare(`
+            const stmt: Statement = await this.unit.prepare(`
                 delete from File 
                 where id = ?1`,
                 { 1: fileId });
@@ -54,8 +56,8 @@ export class FileService extends ServiceBase {
         }
 
         public async updateFileIndex(fileId: number, newIndex: number): Promise<boolean> {
-            const fileData: FileData | undefined = await this.getFileData(fileId);
-            if (!fileData) {
+            const fileData: FileData | null = await this.getFileData(fileId);
+            if (fileData === null) {
                 return false;
             }
             if (fileData.file_index === newIndex) {
@@ -74,8 +76,17 @@ export class FileService extends ServiceBase {
             return await this.executeStmt(stmt);
         }
 
-        public async getFilePath(fileId: number): Promise<string> {
-            return "";
+        public async getFilePath(fileId: number): Promise<string | null> {
+            const stmt: Statement = await this.unit.prepare(`
+                select p.user_name as userName, f.project_id as projectId, f.name as name from File f
+                inner join Project p on p.id = f.project_id
+                where f.id = ?1`,
+                {1: fileId});
+            const pathData: FilePathData | undefined = await stmt.get<FilePathData>();
+            if (pathData === undefined) {
+                return null;
+            }
+            return join(FileLocation, pathData.userName, pathData.projectId.toString(), pathData.name);
         }
 
         private async shiftFileIndices(projectId: number, delta: number, start: number, end: number | null = null): Promise<boolean> {
@@ -97,10 +108,16 @@ export class FileService extends ServiceBase {
             return await this.executeStmt(stmt);
         }
 
-        private async getFileData(fileId: number): Promise<FileData | undefined> {
+        private async getFileData(fileId: number): Promise<FileData | null> {
             let stmt: Statement = await this.unit.prepare(`select file_index, project_id from File where id = ?1`, {1: fileId});
-            return await stmt.get<FileData>();
+            return await stmt.get<FileData>() ?? null;
         }
+}
+
+interface FilePathData {
+    userName: string,
+    projectId: number,
+    name: string
 }
 
 interface FileData {
