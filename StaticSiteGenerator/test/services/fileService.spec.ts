@@ -168,6 +168,32 @@ describe("FileService", (): void => {
             expect(result).toBe(null);
         });
     });
+
+    describe("ownsFile", (): void => {
+        test('should own file', async (): Promise<void> => {
+            const unit: Unit = await Unit.create(false);
+            await insertFiles(unit);
+            const fileService: FileService = new FileService(unit);
+            const result: boolean = await fileService.ownsFile("testUser", 1);
+            await unit.complete(true);
+            expect(result).toBeTruthy();
+        });
+        test('should not own file', async (): Promise<void> => {
+            const unit: Unit = await Unit.create(false);
+            await insertFiles(unit);
+            const fileService: FileService = new FileService(unit);
+            const result: boolean = await fileService.ownsFile("testUser2", 1);
+            await unit.complete(true);
+            expect(result).toBeFalsy();
+        });
+        test('should not own non-existing file', async (): Promise<void> => {
+            const unit: Unit = await Unit.create(false);
+            const fileService: FileService = new FileService(unit);
+            const result: boolean = await fileService.ownsFile("testUser", 0);
+            await unit.complete(true);
+            expect(result).toBeFalsy();
+        });
+    });
 });
 
 async function insertFiles(unit: Unit): Promise<void> {

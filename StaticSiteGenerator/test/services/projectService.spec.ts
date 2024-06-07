@@ -223,6 +223,34 @@ describe("ProjectService", () => {
             expect(projects.length).toBe(1);
         });
     });
+
+    describe("ownsProject", () => {
+        test("should own project", async () => {
+            await insertProject(testProjectData[0]);
+
+            const unit: Unit = await Unit.create(false);
+            const projectService: ProjectService = new ProjectService(unit);
+            const rs: boolean = await projectService.ownsProject(testProjectData[0].userName, testProjectData[0].id);
+            await unit.complete(true);
+            expect(rs).toBeTruthy();
+        });
+        test("should not own project", async () => {
+            await insertProject(testProjectData[0]);
+
+            const unit: Unit = await Unit.create(false);
+            const projectService: ProjectService = new ProjectService(unit);
+            const rs: boolean = await projectService.ownsProject("someone", testProjectData[0].id);
+            await unit.complete(true);
+            expect(rs).toBeFalsy();
+        });
+        test("should not own non-existing project", async () => {
+            const unit: Unit = await Unit.create(false);
+            const projectService: ProjectService = new ProjectService(unit);
+            const rs: boolean = await projectService.ownsProject(testProjectData[0].userName, testProjectData[0].id);
+            await unit.complete(true);
+            expect(rs).toBeFalsy();
+        });
+    });
 });
 
 function expectToBeSame(arr1: Project[], arr2: Project[]): void {

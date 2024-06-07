@@ -27,6 +27,21 @@ const upload: Multer = multer(
         storage: storage
     });
 
+filesRouter.get("/:projectId", [keycloak.protect()], async (req: any, res: any): Promise<void> => {
+    const unit: Unit = await Unit.create(true);
+    const fileService: FileService = new FileService(unit);
+    try {
+        res.status(StatusCodes.OK).send(await fileService.selectFilesOfProject(req.params.projectId));
+    }
+    catch (error) {
+        console.log(error);
+        res.sendStatus(StatusCodes.BAD_REQUEST);
+    }
+    finally {
+        await unit.complete();
+    }
+});
+
 filesRouter.post("/", [keycloak.protect(), upload.single("file")], async (req: any, res: any): Promise<void> => {
     const unit: Unit = await Unit.create(false);
     const fileService: FileService = new FileService(unit);

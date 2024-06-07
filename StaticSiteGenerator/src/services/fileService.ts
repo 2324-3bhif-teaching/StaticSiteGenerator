@@ -73,6 +73,15 @@ export class FileService extends ServiceBase {
             return await this.executeStmt(stmt);
         }
 
+        public async ownsFile(userName: string, fileId: number): Promise<boolean> {
+            const stmt: Statement = await this.unit.prepare(`
+                select count(*) as count from File f
+                inner join Project p on p.id = f.project_id
+                where f.id = ?1 and p.user_name = ?2`,
+                {1: fileId, 2: userName});
+            return ((await stmt.get<{count: number}>())?.count ?? 0) >= 1;
+        }
+
         public async getFilePath(fileId: number): Promise<string | null> {
             const stmt: Statement = await this.unit.prepare(`
                 select p.user_name as userName, f.project_id as projectId, f.name as name from File f
