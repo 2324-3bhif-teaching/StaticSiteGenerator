@@ -39,6 +39,15 @@ describe("FileService", () => {
             await unit.complete(true);
             expect(await selectFiles(projectId)).toStrictEqual(files);
         });
+        test('should insert a file with existing name', async () => {
+            const unit: Unit = await Unit.create(false);
+            const fileService: FileService = new FileService(unit);
+            expect(await fileService.insertFile(projectId, files[0].name)).toBeTruthy();
+            await expect(async (): Promise<void> => {
+                await fileService.insertFile(projectId, files[0].name)
+            }).rejects.toThrow('SQLITE_CONSTRAINT: UNIQUE constraint failed: File.name, File.project_id');
+            await unit.complete(true);
+        });
     });
 });
 
