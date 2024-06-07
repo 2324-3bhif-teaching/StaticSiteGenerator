@@ -9,6 +9,7 @@ import {FileService} from "../services/fileService";
 import {StatusCodes} from "http-status-codes";
 import {FileLocation} from "../constants";
 import * as fs from "fs/promises";
+import {ProjectService} from "../services/projectService";
 
 export const filesRouter: Router = express.Router();
 const keycloak: Keycloak.Keycloak = new Keycloak({ store: memoryStore });
@@ -30,7 +31,12 @@ const upload: Multer = multer(
 filesRouter.get("/:projectId", [keycloak.protect()], async (req: any, res: any): Promise<void> => {
     const unit: Unit = await Unit.create(true);
     const fileService: FileService = new FileService(unit);
+    const projectService: ProjectService = new ProjectService(unit);
     try {
+        if (!await projectService.ownsProject(req.kauth.grant.access_token.content.preferred_username, req.params.projectId)) {
+            res.sendStatus(StatusCodes.FORBIDDEN);
+            return;
+        }
         res.status(StatusCodes.OK).send(await fileService.selectFilesOfProject(req.params.projectId));
     }
     catch (error) {

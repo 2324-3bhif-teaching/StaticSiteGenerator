@@ -33,8 +33,8 @@ export class ProjectService extends ServiceBase {
         return await this.executeStmt(stmt);
     }
 
-    public async ownsProject(userName: string, id: number): Promise<boolean> {
-        const stmt: Statement = await this.unit.prepare(`select count(*) as count from Project where user_name = ?1 and id = ?2`, {1: userName, 2: id});
+    public async ownsProject(userName: string, projectId: number): Promise<boolean> {
+        const stmt: Statement = await this.unit.prepare(`select count(*) as count from Project where user_name = ?1 and id = ?2`, {1: userName, 2: projectId});
         return ((await stmt.get<{count: number}>())?.count ?? 0) >= 1;
     }
 }
