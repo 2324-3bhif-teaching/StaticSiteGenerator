@@ -15,3 +15,6 @@
 | 15.05.2024 | 2h 30min | Asciidoc Parser und Methoden fertiggestellt | #13, #14 |
 | 22.05.2024 | 3h | Simple Start Seite erstellt und Designt, sowie die Angular Komponenten für die Projektbearbeitung begonnen  | #25, #26 |
 | 22.05.2024 | 3h 30min | Projektlöschung implementiert und Keycloak hinzugefügt| #25, #26 |
+| 05.06.2024 | 3h | Angular Services implementiert | #25, #26 |
+| 06.06.2024 | 2h | Angular Services in Verbindung mit Frontend gebracht | #25, #26 |
+| 07.06.2024 | 1h | Angular Services behoben | #25, #26 |
