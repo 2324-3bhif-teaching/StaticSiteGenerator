@@ -1,7 +1,7 @@
 import {ServiceBase} from "../database/serviceBase";
 import {Unit} from "../database/unit";
 import {Statement} from "sqlite";
-import { join } from "path/win32";
+import { join } from "path";
 import {FileLocation} from "../constants";
 
 export class FileService extends ServiceBase {
