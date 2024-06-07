@@ -76,3 +76,6 @@ Content-Type: application/json
 {
   "token": "abc"
 }
+
+###
+POST http://localhost:3000/api/projects

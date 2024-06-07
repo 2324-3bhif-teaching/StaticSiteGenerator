@@ -2,5 +2,7 @@ node_modules/
 *.db
 coverage/
 .idea
+.vscode
+.angular
 */.env
 */output
