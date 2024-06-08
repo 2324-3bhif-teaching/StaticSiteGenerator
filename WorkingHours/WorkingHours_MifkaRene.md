@@ -18,3 +18,4 @@
 | 05.06.2024 | 3h       | Angular Services implementiert                                                                                       | #25, #26 |
 | 06.06.2024 | 2h       | Angular Services in Verbindung mit Frontend gebracht                                                                 | #25, #26 |
 | 07.06.2024 | 5h 30min | Angular Services behoben                                                                                             | #25, #26 |
+| 08.06.2024 | 1h 15min | Frontend Project Editing                                                                                             | #25, #26 |
