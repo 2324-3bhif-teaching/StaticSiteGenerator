@@ -35,7 +35,7 @@ filesRouter.get("/:projectId", [keycloak.protect()], async (req: any, res: any):
     const projectService: ProjectService = new ProjectService(unit);
     try {
         if (!await projectService.ownsProject(req.kauth.grant.access_token.content.preferred_username, req.params.projectId)) {
-            res.sendStatus(StatusCodes.FORBIDDEN);
+            res.sendStatus(StatusCodes.BAD_REQUEST);
             return;
         }
         const files: File[] = await fileService.selectFilesOfProject(req.params.projectId);
@@ -64,14 +64,9 @@ filesRouter.post("/", [keycloak.protect(), upload.single("file")], async (req: a
     const fileService: FileService = new FileService(unit);
     const projectService: ProjectService = new ProjectService(unit);
     try {
-        if (!await projectService.ownsProject(req.kauth.grant.access_token.content.preferred_username, req.body.projectId)) {
-            res.sendStatus(StatusCodes.FORBIDDEN);
-            await unit.complete(false);
-            await fs.rm(req.file.path);
-            return;
-        }
         const projectPath: string | null = await projectService.getProjectPath(req.body.projectId);
-        if (projectPath === null) {
+        if (projectPath === null
+            || !await projectService.ownsProject(req.kauth.grant.access_token.content.preferred_username, req.body.projectId)) {
             res.sendStatus(StatusCodes.BAD_REQUEST);
             await unit.complete(false);
             await fs.rm(req.file.path);
@@ -98,7 +93,7 @@ filesRouter.delete("/:fileId", [keycloak.protect()], async (req: any, res: any):
     const fileService: FileService = new FileService(unit);
     try {
         if (!await fileService.ownsFile(req.kauth.grant.access_token.content.preferred_username, req.params.fileId)) {
-            res.sendStatus(StatusCodes.FORBIDDEN);
+            res.sendStatus(StatusCodes.BAD_REQUEST);
             await unit.complete(false);
             return;
         }
@@ -127,7 +122,7 @@ filesRouter.patch("/:fileId", [keycloak.protect()], async (req: any, res: any): 
     const fileService: FileService = new FileService(unit);
     try {
         if (!await fileService.ownsFile(req.kauth.grant.access_token.content.preferred_username, req.params.fileId)) {
-            res.sendStatus(StatusCodes.FORBIDDEN);
+            res.sendStatus(StatusCodes.BAD_REQUEST);
             await unit.complete(false);
             return;
         }
