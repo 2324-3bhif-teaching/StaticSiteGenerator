@@ -80,13 +80,13 @@ filesRouter.post("/", [keycloak.protect(), upload.single("file")], async (req: a
             return;
         }
 
-        await fileService.insertFile(req.body.projectId, req.file.originalname);
+        const result: boolean = await fileService.insertFile(req.body.projectId, req.file.originalname);
 
         await fs.mkdir(join(__dirname, "../../",  projectPath), {recursive: true});
         await fs.rename(req.file.path, join(__dirname, "../../", projectPath, req.file.originalname));
 
         await unit.complete(true);
-        res.sendStatus(StatusCodes.CREATED);
+        res.status(StatusCodes.CREATED).send(result);
     }
     catch (error) {
         console.log(error);
@@ -111,11 +111,11 @@ filesRouter.delete("/:fileId", [keycloak.protect()], async (req: any, res: any):
             return;
         }
 
-        await fileService.deleteFile(req.params.fileId);
+        const result: boolean = await fileService.deleteFile(req.params.fileId);
         await fs.rm(filePath);
 
         await unit.complete(true);
-        res.sendStatus(StatusCodes.OK);
+        res.status(StatusCodes.OK).send(result);
     }
     catch (error) {
         console.log(error);
@@ -134,10 +134,10 @@ filesRouter.patch("/:fileId", [keycloak.protect()], async (req: any, res: any): 
             return;
         }
 
-        await fileService.updateFileIndex(req.params.fileId, req.body.index);
+        const result: boolean = await fileService.updateFileIndex(req.params.fileId, req.body.index);
 
         await unit.complete(true);
-        res.sendStatus(StatusCodes.OK);
+        res.status(StatusCodes.OK).send(result);
     }
     catch (error) {
         console.log(error);
