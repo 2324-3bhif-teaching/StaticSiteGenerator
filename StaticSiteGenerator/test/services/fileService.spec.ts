@@ -75,7 +75,7 @@ describe("FileService", (): void => {
             expect(result).toBeTruthy();
             expect(await selectFiles(projectId)).toStrictEqual(files);
         });
-        test('should insert a file with existing name', async (): Promise<void> => {
+        test('should not insert a file with existing name', async (): Promise<void> => {
             const unit: Unit = await Unit.create(false);
             const fileService: FileService = new FileService(unit);
             expect(await fileService.insertFile(projectId, files[0].name)).toBeTruthy();
