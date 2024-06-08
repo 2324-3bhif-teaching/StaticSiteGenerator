@@ -4,6 +4,7 @@ import { memoryStore } from "../app";
 import { Unit } from "../database/unit";
 import { StatusCodes } from "http-status-codes";
 import { StyleData, StyleService } from "../services/styleService";
+import {ElementStyleService} from "../services/elementStyleService";
 
 export const styleRouter = express.Router();
 const keycloak: Keycloak.Keycloak = new Keycloak({ store: memoryStore });
@@ -12,7 +13,12 @@ const keycloak: Keycloak.Keycloak = new Keycloak({ store: memoryStore });
 styleRouter.get("/elementStyle/:id", [keycloak.protect], async (req: any, res: any) => {
     const unit: Unit = await Unit.create(true);
     const service: StyleService = new StyleService(unit);
+    const elementStyleService = new ElementStyleService(unit);
     try{
+        if (!await elementStyleService.isAllowedToUseElementStyle(req.kauth.grant.access_token.content.preferred_username, req.params.id)) {
+            res.sendStatus(StatusCodes.BAD_REQUEST);
+            return;
+        }
         res.status(StatusCodes.OK).send(await service.selectAll(Number.parseInt(req.params.id)));
     }
     catch(error){
@@ -28,7 +34,12 @@ styleRouter.get("/elementStyle/:id", [keycloak.protect], async (req: any, res: a
 styleRouter.post("/", [keycloak.protect], async (req: any, res: any) => {
     const unit: Unit = await Unit.create(true);
     const service: StyleService = new StyleService(unit);
+    const elementStyleService = new ElementStyleService(unit);
     try{
+        if (!await elementStyleService.ownsElementStyle(req.kauth.grant.access_token.content.preferred_username, req.body.elementStyleId)) {
+            res.sendStatus(StatusCodes.BAD_REQUEST);
+            return;
+        }
         res.status(StatusCodes.CREATED).send(await service.insertStyle(req.body as StyleData));
     }
     catch(error){
@@ -42,6 +53,10 @@ styleRouter.patch("/:id/property", [keycloak.protect], async (req: any, res: any
     const unit: Unit = await Unit.create(true);
     const service: StyleService = new StyleService(unit);
     try{
+        if (!await service.ownsStyle(req.kauth.grant.access_token.content.preferred_username, req.params.id)) {
+            res.sendStatus(StatusCodes.BAD_REQUEST);
+            return;
+        }
         res.status(StatusCodes.CREATED).send(await service.updateStyleProperty(Number.parseInt(req.params.id), req.body.newProperty));
     }
     catch(error){
@@ -51,10 +66,14 @@ styleRouter.patch("/:id/property", [keycloak.protect], async (req: any, res: any
 });
 
 //patch the value of a style
-styleRouter.post("/:id/value", [keycloak.protect], async (req: any, res: any) => {
+styleRouter.patch("/:id/value", [keycloak.protect], async (req: any, res: any) => {
     const unit: Unit = await Unit.create(true);
     const service: StyleService = new StyleService(unit);
     try{
+        if (!await service.ownsStyle(req.kauth.grant.access_token.content.preferred_username, req.params.id)) {
+            res.sendStatus(StatusCodes.BAD_REQUEST);
+            return;
+        }
         res.status(StatusCodes.CREATED).send(await service.updateStyleValue(Number.parseInt(req.params.id), req.body.newValue));
     }
     catch(error){
@@ -64,10 +83,14 @@ styleRouter.post("/:id/value", [keycloak.protect], async (req: any, res: any) =>
 });
 
 //delete a style
-styleRouter.post("/:id", [keycloak.protect], async (req: any, res: any) => {
+styleRouter.delete("/:id", [keycloak.protect], async (req: any, res: any) => {
     const unit: Unit = await Unit.create(true);
     const service: StyleService = new StyleService(unit);
     try{
+        if (!await service.ownsStyle(req.kauth.grant.access_token.content.preferred_username, Number.parseInt(req.params.id))) {
+            res.sendStatus(StatusCodes.BAD_REQUEST);
+            return;
+        }
         res.status(StatusCodes.CREATED).send(await service.deleteStyle(Number.parseInt(req.params.id)));
     }
     catch(error){

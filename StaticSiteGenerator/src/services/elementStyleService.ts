@@ -35,6 +35,16 @@ export class ElementStyleService extends ServiceBase{
             where t.user_name = ?1`);
         return ((await stmt.get<{count: number}>())?.count ?? 0) >= 1;
     }
+
+    public async isAllowedToUseElementStyle(userName: string, elementStyleId: number): Promise<boolean> {
+        const stmt: Statement = await this.unit.prepare(`
+            select count(*) as count 
+            from Element_Style e
+            inner join Theme t on e.theme_id = t.id
+            where e.id = ?1 and (t.user_name = ?2 or t.is_public != 0)`,
+            {1: elementStyleId, 2: userName});
+        return ((await stmt.get<{count: number}>())?.count ?? 0) >= 1;
+    }
 }
 
 export interface ElementStyleData{

@@ -210,9 +210,48 @@ describe("ElementStyleService", () => {
                 expect(rs).toBeFalsy();
             }, true);
         });
-        test("should not own nonexisting element style", async () => {
+        test("should not own non-existing element style", async () => {
             await execute(async (service: ElementStyleService) => {
                 const rs: boolean = await service.ownsElementStyle(DefaultTheme.userName, 1);
+                expect(rs).toBeFalsy();
+            }, true);
+        });
+    });
+
+    describe("isAllowedToUseElementStyle", () => {
+        test("should be allowed to use element style", async () => {
+            const data: ElementStyleData = {
+                selector: "*",
+                themeId: 1
+            };
+
+            await execute(async (service: ElementStyleService) => {
+                await service.insertElementStyle(data);
+            }, false, true);
+
+            await execute(async (service: ElementStyleService) => {
+                const rs: boolean = await service.isAllowedToUseElementStyle(DefaultTheme.userName, 1);
+                expect(rs).toBeTruthy();
+            }, true);
+        });
+        test("should not be allowed to use element style", async () => {
+            const data: ElementStyleData = {
+                selector: "*",
+                themeId: 1
+            };
+
+            await execute(async (service: ElementStyleService) => {
+                await service.insertElementStyle(data);
+            }, false, true);
+
+            await execute(async (service: ElementStyleService) => {
+                const rs: boolean = await service.isAllowedToUseElementStyle("user1", 1);
+                expect(rs).toBeFalsy();
+            }, true);
+        });
+        test("should not be allowed to use non-existing element style", async () => {
+            await execute(async (service: ElementStyleService) => {
+                const rs: boolean = await service.isAllowedToUseElementStyle(DefaultTheme.userName, 1);
                 expect(rs).toBeFalsy();
             }, true);
         });

@@ -48,7 +48,7 @@ describe("Style Service", () => {
         test("should not insert empty property", async () => {
             async function expectThrow(style: StyleData):Promise<void> {
                 await execute(async (sService: StyleService) => {
-                    expect(async () => {
+                    await expect(async () => {
                         await sService.insertStyle(style);
                     }).rejects.toThrow('SQLITE_CONSTRAINT: CHECK constraint failed: CK_Style_Property');
                 }, false, false);
@@ -68,7 +68,7 @@ describe("Style Service", () => {
         test("should not insert empty value", async () => {
             async function expectThrow(style: StyleData): Promise<void> {
                 await execute(async (sService: StyleService) => {
-                    expect(async () => {
+                    await expect(async () => {
                         await sService.insertStyle(style);
                     }).rejects.toThrow('SQLITE_CONSTRAINT: CHECK constraint failed: CK_Style_Value');
                 }, false, false);
@@ -93,7 +93,7 @@ describe("Style Service", () => {
             }
 
             await execute(async (service: StyleService) => {
-                expect(async () => {
+                await expect(async () => {
                     await service.insertStyle(style);
                 }).rejects.toThrow('SQLITE_CONSTRAINT: FOREIGN KEY constraint failed');
             }, false, false);
@@ -152,7 +152,7 @@ describe("Style Service", () => {
         test("should not update to empty property", async () => {
             async function expectThrow(newProperty: string){
                 await execute(async (service: StyleService) => {
-                    expect(async () => {
+                    await expect(async () => {
                         await service.updateStyleProperty(1, newProperty);
                     }).rejects.toThrow('SQLITE_CONSTRAINT: CHECK constraint failed: CK_Style_Property');
                 }, false, false);
@@ -203,7 +203,7 @@ describe("Style Service", () => {
         test("should not update to empty value", async () => {
             async function expectThrow(newValue: string){
                 await execute(async (service: StyleService) => {
-                    expect(async () => {
+                    await expect(async () => {
                         await service.updateStyleValue(1, newValue);
                     }).rejects.toThrow('SQLITE_CONSTRAINT: CHECK constraint failed: CK_Style_Value');
                 }, false, false);
@@ -268,6 +268,47 @@ describe("Style Service", () => {
                 expect(rs[0].property).toBe(style.property);
                 expect(rs[0].value).toBe(style.value);
                 expect(rs[0].elementStyleId).toBe(style.elementStyleId);
+            }, true);
+        });
+    });
+
+    describe("ownsStyle", () => {
+        test("should own style", async () => {
+            const style: StyleData = {
+                property: "margin",
+                value: "10px",
+                elementStyleId: 1
+            };
+
+            await execute(async (styleService: StyleService) => {
+                await styleService.insertStyle(style);
+            }, false, true);
+
+            await execute(async (service: StyleService) => {
+                const rs: boolean = await service.ownsStyle(DefaultTheme.userName, 1);
+                expect(rs).toBeTruthy();
+            }, true);
+        });
+        test("should not own style", async () => {
+            const style: StyleData = {
+                property: "margin",
+                value: "10px",
+                elementStyleId: 1
+            };
+
+            await execute(async (styleService: StyleService) => {
+                await styleService.insertStyle(style);
+            }, false, true);
+
+            await execute(async (service: StyleService) => {
+                const rs: boolean = await service.ownsStyle("non-existing", 1);
+                expect(rs).toBeFalsy();
+            }, true);
+        });
+        test("should not own non-existing style", async () => {
+            await execute(async (service: StyleService) => {
+                const rs: boolean = await service.ownsStyle(DefaultTheme.userName, 1);
+                expect(rs).toBeFalsy();
             }, true);
         });
     });

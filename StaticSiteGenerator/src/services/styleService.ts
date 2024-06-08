@@ -31,6 +31,17 @@ export class StyleService extends ServiceBase{
         const stmt: Statement = await this.unit.prepare(`delete from Style where id = ?1`, {1: id});
         return await this.executeStmt(stmt);
     }
+
+    public async ownsStyle(userName: string, styleId: number): Promise<boolean> {
+        const stmt: Statement = await this.unit.prepare(`
+            select count(*) as count 
+            from Style s
+            inner join Element_Style e on s.element_style_id = e.id
+            inner join Theme t on e.theme_id = t.id
+            where t.user_name = ?1 and s.id = ?2`,
+            {1: userName, 2: styleId});
+        return ((await stmt.get<{count: number}>())?.count ?? 0) >= 1;
+    }
 }
 
 export interface StyleData{
