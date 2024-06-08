@@ -1,11 +1,11 @@
-import express from "express";
+import express, {Router} from "express";
 import Keycloak from "keycloak-connect";
 import { Unit } from "../database/unit";
 import { memoryStore } from "../app";
 import { ProjectService } from "../services/projectService";
 import { StatusCodes } from "http-status-codes";
 
-export const projectRouter = express.Router();
+export const projectRouter: Router = express.Router();
 const keycloak: Keycloak.Keycloak = new Keycloak({ store: memoryStore });
 
 //get all projects of a user

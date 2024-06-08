@@ -1,8 +1,9 @@
-import { DefaultTheme } from "../../src/constants";
+import {DefaultTheme, FileLocation} from "../../src/constants";
 import { Unit } from "../../src/database/unit";
 import { Project, ProjectService } from "../../src/services/projectService";
 import { ThemeData, ThemeService } from "../../src/services/themeService";
 import { setupTestData } from "../database/testData";
+import {join} from "path";
 
 const testProjectData: Project[] = [
     { id: 1, name: "Static Site Generator", userName: "SSG", themeId: 1 },
@@ -221,6 +222,55 @@ describe("ProjectService", () => {
             const projects: Project[] = await projectService.selectAllProjects(testProject.userName);
             await unit.complete(true);
             expect(projects.length).toBe(1);
+        });
+    });
+
+    describe("ownsProject", () => {
+        test("should own project", async () => {
+            await insertProject(testProjectData[0]);
+
+            const unit: Unit = await Unit.create(true);
+            const projectService: ProjectService = new ProjectService(unit);
+            const rs: boolean = await projectService.ownsProject(testProjectData[0].userName, testProjectData[0].id);
+            await unit.complete();
+            expect(rs).toBeTruthy();
+        });
+        test("should not own project", async () => {
+            await insertProject(testProjectData[0]);
+
+            const unit: Unit = await Unit.create(true);
+            const projectService: ProjectService = new ProjectService(unit);
+            const rs: boolean = await projectService.ownsProject("someone", testProjectData[0].id);
+            await unit.complete();
+            expect(rs).toBeFalsy();
+        });
+        test("should not own non-existing project", async () => {
+            const unit: Unit = await Unit.create(true);
+            const projectService: ProjectService = new ProjectService(unit);
+            const rs: boolean = await projectService.ownsProject(testProjectData[0].userName, testProjectData[0].id);
+            await unit.complete();
+            expect(rs).toBeFalsy();
+        });
+    });
+
+    describe("getProjectPath", () => {
+        test("should get project path", async () => {
+            await insertProject(testProjectData[0]);
+
+            const unit: Unit = await Unit.create(true);
+            const projectService: ProjectService = new ProjectService(unit);
+            const path: string | null = await projectService.getProjectPath(testProjectData[0].id);
+            await unit.complete();
+            expect(path).toBe(join(FileLocation, testProjectData[0].userName, testProjectData[0].id.toString()));
+        });
+        test("should not get project path", async () => {
+            await insertProject(testProjectData[0]);
+
+            const unit: Unit = await Unit.create(true);
+            const projectService: ProjectService = new ProjectService(unit);
+            const path: string | null = await projectService.getProjectPath(testProjectData[0].id + 1);
+            await unit.complete();
+            expect(path).toBeNull();
         });
     });
 });

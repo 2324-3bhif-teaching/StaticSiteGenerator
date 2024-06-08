@@ -6,6 +6,7 @@ import { DB } from "./database/data";
 import session from 'express-session';
 import Keycloak from 'keycloak-connect';
 import "dotenv/config";
+import {filesRouter} from "./routers/filesRouter";
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use(keycloak.middleware({
 
 app.use("/api/projects", projectRouter);
 app.use("/api/themes", themeRouter);
+app.use("/api/files", filesRouter);
 
 // Protected route
 app.get('/protected', [keycloak.protect()], (req: any, res: any) => {

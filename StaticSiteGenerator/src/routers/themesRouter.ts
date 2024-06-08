@@ -1,11 +1,11 @@
-import express from "express";
+import express, {Router} from "express";
 import { StatusCodes } from "http-status-codes";
 import {Unit} from "../database/unit";
 import {ThemeService } from "../services/themeService";
 import { memoryStore } from "../app";
 import Keycloak from "keycloak-connect";
 
-export const themeRouter = express.Router();
+export const themeRouter: Router = express.Router();
 const keycloak: Keycloak.Keycloak = new Keycloak({ store: memoryStore });
 
 themeRouter.get('/', async (_, res): Promise<void> => {
