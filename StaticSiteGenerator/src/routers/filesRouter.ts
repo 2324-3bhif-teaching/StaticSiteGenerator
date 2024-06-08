@@ -38,9 +38,7 @@ filesRouter.get("/:projectId", [keycloak.protect()], async (req: any, res: any):
             res.sendStatus(StatusCodes.FORBIDDEN);
             return;
         }
-        console.log(req.params.projectId);
         const files: File[] = await fileService.selectFilesOfProject(req.params.projectId);
-        console.log(files);
         if (files.length === 0) {
             res.sendStatus(StatusCodes.NOT_FOUND);
         }
