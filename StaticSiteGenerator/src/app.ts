@@ -9,6 +9,7 @@ import "dotenv/config";
 
 import { elementStyleRouter } from "./routers/elementStyleRouter";
 import { styleRouter } from "./routers/styleRouter";
+import {filesRouter} from "./routers/filesRouter";
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.use("/api/projects", projectRouter);
 app.use("/api/themes", themeRouter);
 app.use("/api/elementStyles", elementStyleRouter);
 app.use("/api/styles", styleRouter);
+app.use("/api/files", filesRouter);
 
 // Protected route
 app.get('/protected', [keycloak.protect()], (req: any, res: any) => {
