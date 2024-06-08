@@ -5,3 +5,8 @@
 <p (click)="onFileDelete()">Delete</p>
 <p (click)="onFileUpdate(-1)">Up</p>
 <p (click)="onFileUpdate(1)">Down</p>
+<label for="file">Choose File</label>
+<form (submit)="uploadFile()" enctype="multipart/form-data">
+  <input type="file" id="file" name="file" class="hidden" (change)="handleFileInput($event)">
+  <button type="submit">Upload</button>
+</form>

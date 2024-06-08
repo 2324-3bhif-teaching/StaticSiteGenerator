@@ -66,8 +66,6 @@ filesRouter.post("/", [keycloak.protect(), upload.single("file")], async (req: a
     const fileService: FileService = new FileService(unit);
     const projectService: ProjectService = new ProjectService(unit);
     try {
-        console.log(req.file);
-        console.log(req.body);
         if (!await projectService.ownsProject(req.kauth.grant.access_token.content.preferred_username, req.body.projectId)) {
             res.sendStatus(StatusCodes.FORBIDDEN);
             await unit.complete(false);
