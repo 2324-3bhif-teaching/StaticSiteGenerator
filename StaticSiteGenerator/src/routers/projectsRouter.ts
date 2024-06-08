@@ -4,6 +4,7 @@ import { Unit } from "../database/unit";
 import { memoryStore } from "../app";
 import { ProjectService } from "../services/projectService";
 import { StatusCodes } from "http-status-codes";
+import * as fs from "fs/promises";
 
 export const projectRouter: Router = express.Router();
 const keycloak: Keycloak.Keycloak = new Keycloak({ store: memoryStore });
@@ -77,6 +78,13 @@ projectRouter.delete("/:id", [keycloak.protect()], async (req: any, res: any) : 
     const unit: Unit = await Unit.create(false);
     const projectService: ProjectService = new ProjectService(unit);
     try{
+        const projectPath: string | null = await projectService.getProjectPath(req.params.id);
+        if (projectPath === null) {
+            res.sendStatus(StatusCodes.BAD_REQUEST);
+            await unit.complete(false);
+            return;
+        }
+        await fs.rm(projectPath, {recursive: true});
         res.status(StatusCodes.OK).send(
             await projectService.deleteProject(
                 req.kauth.grant.access_token.content.preferred_username, req.params.id));

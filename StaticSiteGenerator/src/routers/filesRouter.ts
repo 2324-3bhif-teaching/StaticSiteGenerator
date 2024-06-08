@@ -35,12 +35,10 @@ filesRouter.get("/:projectId", [keycloak.protect()], async (req: any, res: any):
     const projectService: ProjectService = new ProjectService(unit);
     try {
         if (!await projectService.ownsProject(req.kauth.grant.access_token.content.preferred_username, req.params.projectId)) {
-            res.sendStatus(StatusCodes.FORBIDDEN);
+            res.sendStatus(StatusCodes.BAD_REQUEST);
             return;
         }
-        console.log(req.params.projectId);
         const files: File[] = await fileService.selectFilesOfProject(req.params.projectId);
-        console.log(files);
         if (files.length === 0) {
             res.sendStatus(StatusCodes.NOT_FOUND);
         }
@@ -66,27 +64,22 @@ filesRouter.post("/", [keycloak.protect(), upload.single("file")], async (req: a
     const fileService: FileService = new FileService(unit);
     const projectService: ProjectService = new ProjectService(unit);
     try {
-        if (!await projectService.ownsProject(req.kauth.grant.access_token.content.preferred_username, req.body.projectId)) {
-            res.sendStatus(StatusCodes.FORBIDDEN);
-            await unit.complete(false);
-            await fs.rm(req.file.path);
-            return;
-        }
         const projectPath: string | null = await projectService.getProjectPath(req.body.projectId);
-        if (projectPath === null) {
+        if (projectPath === null
+            || !await projectService.ownsProject(req.kauth.grant.access_token.content.preferred_username, req.body.projectId)) {
             res.sendStatus(StatusCodes.BAD_REQUEST);
             await unit.complete(false);
             await fs.rm(req.file.path);
             return;
         }
 
-        await fileService.insertFile(req.body.projectId, req.file.originalname);
+        const result: boolean = await fileService.insertFile(req.body.projectId, req.file.originalname);
 
         await fs.mkdir(join(__dirname, "../../",  projectPath), {recursive: true});
         await fs.rename(req.file.path, join(__dirname, "../../", projectPath, req.file.originalname));
 
         await unit.complete(true);
-        res.sendStatus(StatusCodes.CREATED);
+        res.status(StatusCodes.CREATED).send(result);
     }
     catch (error) {
         console.log(error);
@@ -100,7 +93,7 @@ filesRouter.delete("/:fileId", [keycloak.protect()], async (req: any, res: any):
     const fileService: FileService = new FileService(unit);
     try {
         if (!await fileService.ownsFile(req.kauth.grant.access_token.content.preferred_username, req.params.fileId)) {
-            res.sendStatus(StatusCodes.FORBIDDEN);
+            res.sendStatus(StatusCodes.BAD_REQUEST);
             await unit.complete(false);
             return;
         }
@@ -111,11 +104,11 @@ filesRouter.delete("/:fileId", [keycloak.protect()], async (req: any, res: any):
             return;
         }
 
-        await fileService.deleteFile(req.params.fileId);
+        const result: boolean = await fileService.deleteFile(req.params.fileId);
         await fs.rm(filePath);
 
         await unit.complete(true);
-        res.sendStatus(StatusCodes.OK);
+        res.status(StatusCodes.OK).send(result);
     }
     catch (error) {
         console.log(error);
@@ -129,15 +122,15 @@ filesRouter.patch("/:fileId", [keycloak.protect()], async (req: any, res: any): 
     const fileService: FileService = new FileService(unit);
     try {
         if (!await fileService.ownsFile(req.kauth.grant.access_token.content.preferred_username, req.params.fileId)) {
-            res.sendStatus(StatusCodes.FORBIDDEN);
+            res.sendStatus(StatusCodes.BAD_REQUEST);
             await unit.complete(false);
             return;
         }
 
-        await fileService.updateFileIndex(req.params.fileId, req.body.index);
+        const result: boolean = await fileService.updateFileIndex(req.params.fileId, req.body.index);
 
         await unit.complete(true);
-        res.sendStatus(StatusCodes.OK);
+        res.status(StatusCodes.OK).send(result);
     }
     catch (error) {
         console.log(error);
