@@ -9,7 +9,7 @@ export const styleRouter = express.Router();
 const keycloak: Keycloak.Keycloak = new Keycloak({ store: memoryStore });
 
 //get all styles for a style element
-styleRouter.get("/elementStyle/:id", async (req, res) => {
+styleRouter.get("/elementStyle/:id", [keycloak.protect], async (req: any, res: any) => {
     const unit: Unit = await Unit.create(true);
     const service: StyleService = new StyleService(unit);
     try{
@@ -25,7 +25,7 @@ styleRouter.get("/elementStyle/:id", async (req, res) => {
 });
 
 //post a style for a style element
-styleRouter.post("/", async (req, res) => {
+styleRouter.post("/", [keycloak.protect], async (req: any, res: any) => {
     const unit: Unit = await Unit.create(true);
     const service: StyleService = new StyleService(unit);
     try{
@@ -39,7 +39,7 @@ styleRouter.post("/", async (req, res) => {
 });
 
 //patch the property of a style
-styleRouter.patch("/:id/property", async (req, res) => {
+styleRouter.patch("/:id/property", [keycloak.protect], async (req: any, res: any) => {
     const unit: Unit = await Unit.create(true);
     const service: StyleService = new StyleService(unit);
     try{
@@ -53,7 +53,7 @@ styleRouter.patch("/:id/property", async (req, res) => {
 });
 
 //patch the value of a style
-styleRouter.post("/:id/value", async (req, res) => {
+styleRouter.post("/:id/value", [keycloak.protect], async (req: any, res: any) => {
     const unit: Unit = await Unit.create(true);
     const service: StyleService = new StyleService(unit);
     try{
@@ -67,7 +67,7 @@ styleRouter.post("/:id/value", async (req, res) => {
 });
 
 //delete a style
-styleRouter.post("/:id", async (req, res) => {
+styleRouter.post("/:id", [keycloak.protect], async (req: any, res: any) => {
     const unit: Unit = await Unit.create(true);
     const service: StyleService = new StyleService(unit);
     try{
