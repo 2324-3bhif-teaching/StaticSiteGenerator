@@ -154,6 +154,29 @@ describe("ElementStyleService", () => {
                 expect(selected.length).toBe(0);
             }, true);
         });
+
+        test("should not delete nonexisting element style", async () => {
+            const data: ElementStyleData = {
+                selector: "*",
+                themeId: 1
+            };
+
+            await execute( async (service: ElementStyleService) => {
+                await service.insertElementStyle(data);
+            }, false, true);
+
+            await execute(async (service: ElementStyleService) => {
+                const rs: boolean = await service.deleteElementStyle(2);
+                expect(rs).toBeFalsy();
+            }, false, true);
+
+            await execute(async (service: ElementStyleService) => {
+                const rs: ElementStyle[] = await service.selectAllElementStyles(1);
+                expect(rs).toBe(1);
+                expect(rs[0].selector).toBe(data.selector);
+                expect(rs[0].themeId).toBe(data.themeId);
+            }, true);
+        });
     });
 });
 
