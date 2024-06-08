@@ -6,5 +6,4 @@ coverage/
 .angular
 */.env
 */output
-data/*
-!data/temp
+data/
