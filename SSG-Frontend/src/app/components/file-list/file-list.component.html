@@ -1,3 +1,7 @@
 <p *ngFor="let file of files" (click)="activeFile=file" [ngClass]="{'active': file.id === activeFile.id}">
   {{file.name}}
 </p>
+<h1>Options:</h1>
+<p (click)="onFileDelete()">Delete</p>
+<p (click)="onFileUpdate(-1)">Up</p>
+<p (click)="onFileUpdate(1)">Down</p>

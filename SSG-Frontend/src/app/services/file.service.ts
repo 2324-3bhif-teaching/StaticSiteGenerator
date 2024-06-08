@@ -23,6 +23,14 @@ export class FileService {
 
     return this.http.post(this.filesURL, formData);
   }
+
+  deleteFile(fileId: number) {
+    return this.http.delete(`${this.filesURL}/${fileId}`);
+  }
+
+  updateFileIndex(fileId: number, newIndex: number) {
+    return this.http.patch(`${this.filesURL}/${fileId}`, { index: newIndex });
+  }
 }
 
 export interface SSGFile {

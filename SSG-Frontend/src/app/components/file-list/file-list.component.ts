@@ -20,4 +20,23 @@ export class FileListComponent {
       this.files = files;
     });
   }
+
+  onFileDelete() {
+    if (this.activeFile.id !== -1) {
+      this.files = this.files.filter(file => file.id !== this.activeFile.id);
+      this.fileService.deleteFile(this.activeFile.id).subscribe();
+    }
+  }
+
+  onFileUpdate(deltaIndex: number) {
+    if (this.activeFile.id !== -1) {
+      const newIndex: number = this.activeFile.index + deltaIndex;
+      if (newIndex >= 0 && newIndex < this.files.length) {
+        this.files[this.activeFile.index] = this.files[newIndex];
+        this.files[newIndex] = this.activeFile;
+        this.activeFile.index = newIndex;
+        this.fileService.updateFileIndex(this.activeFile.id, newIndex).subscribe();
+      }
+    }
+  }
 }
