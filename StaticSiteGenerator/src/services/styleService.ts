@@ -8,7 +8,7 @@ export class StyleService extends ServiceBase{
     }
 
     public async selectAll(elementStyleId: number): Promise<Style[]>{
-        const stmt: Statement = await this.unit.prepare(`select * from Style where element_style_id = ?1`, {1: elementStyleId});
+        const stmt: Statement = await this.unit.prepare(`select id, property, value, element_style_id as elementStyleId from Style where element_style_id = ?1`, {1: elementStyleId});
         return await stmt.all<Style[]>();
     }
 
@@ -17,8 +17,8 @@ export class StyleService extends ServiceBase{
         return await this.executeStmt(stmt);
     }
 
-    public async updateStyleName(id: number, newName: string): Promise<boolean>{
-        const stmt: Statement = await this.unit.prepare(`update Style set property = ?1 where id = ?2`, {1: newName, 2: id});
+    public async updateStyleProperty(id: number, newProperty: string): Promise<boolean>{
+        const stmt: Statement = await this.unit.prepare(`update Style set property = ?1 where id = ?2`, {1: newProperty, 2: id});
         return await this.executeStmt(stmt);
     }
 
