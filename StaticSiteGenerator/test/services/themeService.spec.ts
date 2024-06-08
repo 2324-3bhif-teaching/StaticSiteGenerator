@@ -167,6 +167,30 @@ describe("ThemeService", (): void => {
         });
     });
 
+    describe("ownsTheme", () => {
+        test('should own theme', async () => {
+            const unit: Unit = await Unit.create(true);
+            const service: ThemeService = new ThemeService(unit);
+            const result: boolean = await service.ownsTheme(testThemes[0].userName, 1);
+            await unit.complete();
+            expect(result).toBeTruthy();
+        });
+        test('should not own non-existing theme', async () => {
+            const unit: Unit = await Unit.create(true);
+            const service: ThemeService = new ThemeService(unit);
+            const result: boolean = await service.ownsTheme(testThemes[0].userName, -1);
+            await unit.complete();
+            expect(result).toBeFalsy();
+        });
+        test('should not own theme of other user', async () => {
+            const unit: Unit = await Unit.create(true);
+            const service: ThemeService = new ThemeService(unit);
+            const result: boolean = await service.ownsTheme(testThemes[0].userName, 3);
+            await unit.complete();
+            expect(result).toBeFalsy();
+        });
+    });
+
     describe("isAllowedToUseTheme", () => {
         test('should allow user to use theme', async () => {
             const unit: Unit = await Unit.create(true);

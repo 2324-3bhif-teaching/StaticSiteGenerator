@@ -36,7 +36,7 @@ elementStyleRouter.post("/", [keycloak.protect], async (req: any, res: any) => {
     const elementStyleService = new ElementStyleService(unit);
     const themeService = new ThemeService(unit);
     try{
-        if (!await themeService.isAllowedToUseTheme(req.kauth.grant.access_token.content.preferred_username, req.body.themeId)){
+        if (!await themeService.ownsTheme(req.kauth.grant.access_token.content.preferred_username, req.body.themeId)) {
             res.sendStatus(StatusCodes.BAD_REQUEST);
             await unit.complete(false);
             return;
@@ -56,6 +56,11 @@ elementStyleRouter.patch("/:id", [keycloak.protect], async (req: any, res: any) 
     const unit = await Unit.create(false);
     const elementStyleService = new ElementStyleService(unit);
     try{
+        if (!await elementStyleService.ownsElementStyle(req.kauth.grant.access_token.content.preferred_username, req.params.id)){
+            res.sendStatus(StatusCodes.BAD_REQUEST);
+            await unit.complete(false);
+            return;
+        }
         res.status(StatusCodes.OK).send(await elementStyleService.updateElementStyle(req.body.selector, req.params.id));
         await unit.complete(true);
     }
@@ -71,6 +76,11 @@ elementStyleRouter.delete("/:id", [keycloak.protect], async (req: any, res: any)
     const unit = await Unit.create(false);
     const elementStyleService = new ElementStyleService(unit);
     try{
+        if (!await elementStyleService.ownsElementStyle(req.kauth.grant.access_token.content.preferred_username, req.params.id)) {
+            res.sendStatus(StatusCodes.BAD_REQUEST);
+            await unit.complete(false);
+            return;
+        }
         res.status(StatusCodes.OK).send(await elementStyleService.deleteElementStyle(req.params.id));
         await unit.complete(true);
     }

@@ -26,6 +26,15 @@ export class ElementStyleService extends ServiceBase{
         const stmt: Statement = await this.unit.prepare(`delete from Element_Style where id = ?1`, {1: id});
         return await this.executeStmt(stmt);
     }
+
+    public async ownsElementStyle(userName: string, elementStyleId: number): Promise<boolean> {
+        const stmt: Statement = await this.unit.prepare(`
+            select count(*) as count 
+            from Element_Style e
+            inner join Theme t on e.theme_id = t.id
+            where t.user_name = ?1`);
+        return ((await stmt.get<{count: number}>())?.count ?? 0) >= 1;
+    }
 }
 
 export interface ElementStyleData{
