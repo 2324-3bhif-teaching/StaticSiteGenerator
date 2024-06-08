@@ -1,7 +1,8 @@
-import { DefaultTheme } from "../constants";
+import {DefaultTheme, FileLocation} from "../constants";
 import {ServiceBase} from "../database/serviceBase";
 import {Unit} from "../database/unit";
 import {Statement} from "sqlite";
+import {join} from "path";
 
 export class ProjectService extends ServiceBase {
     public constructor(unit: Unit) {
@@ -32,6 +33,25 @@ export class ProjectService extends ServiceBase {
         const stmt: Statement = await this.unit.prepare(`delete from Project where user_Name = ?1 and id = ?2`, {1: userName, 2: id});
         return await this.executeStmt(stmt);
     }
+
+    public async ownsProject(userName: string, projectId: number): Promise<boolean> {
+        const stmt: Statement = await this.unit.prepare(`select count(*) as count from Project where user_name = ?1 and id = ?2`, {1: userName, 2: projectId});
+        return ((await stmt.get<{count: number}>())?.count ?? 0) >= 1;
+    }
+
+    public async getProjectPath(projectId: number): Promise<string | null> {
+        const stmt: Statement = await this.unit.prepare(`select user_name as userName, id as projectId from Project where id = ?1`, {1: projectId});
+        const projectPathData: ProjectPathData | undefined = await stmt.get<ProjectPathData>();
+        if (!projectPathData) {
+            return null;
+        }
+        return join(FileLocation, projectPathData.userName, projectPathData.projectId.toString());
+    }
+}
+
+interface ProjectPathData {
+    userName: string,
+    projectId: number
 }
 
 export interface Project {

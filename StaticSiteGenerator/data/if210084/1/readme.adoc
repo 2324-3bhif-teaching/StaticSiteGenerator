@@ -1,0 +1,222 @@
+:sectnums:
+:nofooter:
+:toc: left
+:icons: font
+:data-uri:
+:source-highlighter: highlightjs
+:stem: latexmath
+
+= Exc.01 -- Math Interpreter
+
+== Intro
+
+This time you are going to implement an application which is able to parse and evaluate a mathematical expression entered by the user.
+
+Sample Expressions:
+
+* stem:[2 + 3]
+* stem:[45.02 - 12.98]
+* stem:[0.01 * 6]
+* stem:[78 / 11.4]
+* stem:[+9 * -2]
+
+Since parsing a string like that is such a basic, first-grade task we are going to spice it up a little bit by at least providing a simple GUI.
+Don't worry, all the work has been done for you this time, but you _can_ enjoy the (hopefully good) results of your implementation in a real GUI application -- with the exceptions you are producing being displayed in a message box.
+See <<fig:sample,this screenshot>> for how it will look like.
+
+=== Exceptions
+
+We learnt that in most cases we want to throw common framework exceptions like `ArgumentException` or `InvalidOperationException` to indicate that something went wrong.
+However, in this exercise we are going to create our own exceptions to indicate that something went wrong during parsing or evaluation of an expression.
+This will allow you to learn how to create and work with your own exceptions.
+
+IMPORTANT: You have to implement <<impl:exceptions,those classes>> before doing anything else, or the application can't compile!
+
+=== Bonus Level: Experts Only
+
+NOTE: *All non-experts*: if you do things correctly, you can treat `ReadOnlySpan<char>` just like a `string` and don't have to worry about it any further in this assignment.
+
+For the experts among you, who are starting to become bored by the slow pace we are going at I have included two interesting things they can try out and learn about.
+
+==== What is a `Span`
+
+* A string is immutable, so every time you do something like that a new string is created
+* In this exercise we are doing a lot of string mangling.
+This can lead to a lot of (temporary) strings being created and destroyed.
+For example substrings, trimmed strings, etc.
+* However, all those strings are basically just views on the original string
+* We can _optimize_ this scenario by using a `Span` (or rather `ReadOnlySpan`)
+* A `Span` is a view on a memory region (can be a string, could be _any_ array or 'continuous block of bytes')
+* Go ahead and https://learn.microsoft.com/en-us/dotnet/api/system.span-1?view=net-8.0[read the documentation], it's fascinating 😁
+
+==== Publishing a GUI application
+
+* Consider you want to create an application which can be downloaded or otherwise shipped to users
+* Do you think sending them a zip archive containing the executable and all the (hundreds of) DLLs is a good idea?
+* Can we assume that every user has the .NET runtime installed?
+* Try to _publish_ the application of this assignment:
+.. Remove the `<TreatWarningsAsErrors>true</TreatWarningsAsErrors>` entry from `MathInterpreter.csproj` -- we have to take some warnings here, luckily this is not production code 😎
+.. Run this command and _ignore_ the trim warnings (for the time being): +
+`dotnet publish -c Release -r win-x64 --self-contained true`
+*** Using `Release` configuration (you surely remember the session we did on differences between release and debug builds)
+*** Publishing for a 64-bit Windows machine -- when publishing self-contained the target platform has to be specified, because native binaries are included
+*** Providing a self-contained application which does _not_ require .NET to be installed on the target machine at all, we bring all the parts we need
+.. Navigate to `bin\Release\net7.0\win-x64\publish`
+*** Replace `net7.0` with your current platform
+*** Replace `win-x64` with the target machine (e.g. `linux-arm` for a Raspberry Pi)
+.. You find a `MathInterpreter.exe` there which is a _standalone_ executable of the application that can be copied/shipped around
+*** Ignore the `pdb` file, it's just for debugging
+* That is quite nice! 🥳
+* But you may think 'why is this file so huge (~35MB)'?
+** Remember that it is containing not only your code, but also the GUI framework and the .NET framework and the .NET runtime 😮
+** In fact, _unused_ parts of the framework have already been _trimmed_ (= removed), otherwise it would be 120MB or even bigger 🤯
+*** Those warnings we received are from libraries which do not yet properly indicate which parts can be safely trimmed and which don't
+** There are further optimizations like AOT compiling or having the runtime installed on the machine which can drastically reduce the size of the application, but that is a topic for another year 😉
+
+== Implementation
+
+TIP: The `Const` class contains useful constants you will need in your implementation
+
+[[impl:exceptions]]
+=== Exceptions
+
+As stated before you'll create your own exceptions for this exercise.
+
+[plantuml]
+----
+@startuml
+hide empty members
+
+class Exception {}
+abstract class ExpressionException {
+    #ExpressionException(string, Exception? = null)
+}
+class ExpressionFormatException <<sealed>> {
+    +ExpressionFormatException(string, Exception? = null)
+}
+class OperatorException <<sealed>> {
+    +OperatorException(string)
+}
+class NumberFormatException <<sealed>> {
+    +NumberFormatException(ReadOnlySpan<char>, string? = null)
+    {static} -string FormatMessage(ReadOnlySpan<char>, string? = null)
+}
+class NumberValueException <<sealed>> {
+    +NumberValueException(string)
+}
+
+Exception <|-- ExpressionException
+ExpressionException <|-- ExpressionFormatException
+ExpressionException <|-- OperatorException
+ExpressionException <|-- NumberValueException
+ExpressionException <|-- NumberFormatException
+
+@enduml
+----
+
+* You need to implement these classes first to allow the application to compile
+* *Also add the full XMLDoc for these classes!*
+* Hints:
+** You'll have to call the `base` constructor frequently
+** Mind the _optional_ parameters (e.g. `= null`)!
+
+.`FormatMessage`
+[%collapsible]
+====
+[source,csharp]
+----
+private static string FormatMessage(ReadOnlySpan<char> expression, string? reason = null)
+{
+    reason = string.IsNullOrWhiteSpace(reason) ? string.Empty : $" ({reason})";
+
+    return $"Unable to read number from beginning of '{expression}'{reason}";
+}
+----
+====
+
+=== `ScanResult`
+
+* This is a _struct_ encapsulating result of a scan operation.
+* The implementation is mostly done, but in the constructor you have to check if the length is valid (>= 0) and throw a _proper_ `ArgumentOutOfRangeException` otherwise.
+
+.Experts click here
+[%collapsible]
+====
+
+* You have, of course, read about `Span`
+* Now you can see that `ScanResult` is not _just_ a struct, but a `readonly ref struct`
+* https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/ref-struct[Read about `ref struct`]
+* We _have_ to use this data structure here, because it _contains_ a `Span`, and a `Span` must not escape to the heap, so it may only be used as a field in data structures which will stay on the stack as well
+** => you _can't_ have a `Span` as field of a class!
+** This is a special type used only for special optimization scenarios, so it is obviously not general-purpose and harder to work with than a 'normal' type -- use only when really necessary and applicable!
+
+====
+
+=== `ExpressionScanner`
+
+TIP: Remember to use https://www.geeksforgeeks.org/range-structure-in-c-sharp-8-0/[_ranges_] (e.g. "hello"[1..3] => "el")
+
+* Provides several methods to _scan_ a string and extract a value
+* `ScanNumber`
+** Scans for a whole number
+** A number may have a prefix of `+` or `-`, with the latter indicating a negative number
+*** But if at all, than at most once!
+** Whitespaces are skipped
+** Once a character which is neither a digit nor a whitespace nor an allowed prefix is encountered, the scan is stopped
+** Throw `NumberFormatException` if you encounter a problem
+*** Expected messages: 'Sign is not allowed here', 'Sign may occur only once'
+** Hint: `char.IsDigit`, `char.IsWhiteSpace` & `char.GetNumericValue` still exist
+* `ScanOperand`
+** Scans for an operand, which is a number
+** While `ScanNumber` only readS whole numbers an operand may have a fractional part (e.g. `1.5`)
+** Throw `ExpressionFormatException` if you encounter a problem
+*** Expected messages: 'Unable to parse integral part of number', 'Operand is missing', 'Unable to parse fractional part of number'
+** Hints:
+*** Use `ScanNumber` twice
+*** The integral part may contain a sign, but the fractional part does not
+*** When converting the fractional part (e.g. `1234` => `0.1234`) you will need the number of digits -- that's what the `Length` property of `ScanResult` is for
+*** When adding the fractional part you have to take into account of the integral part is negative or not
+* `ScanOperator`
+** Scans for an operator (`+`, `-`, `*`, `/`)
+** Whitespaces are skipped
+** Other characters are not allowed
+** Throw `OperatorException` if you encounter a problem
+*** Expected messages: 'Empty expression', 'Unknown operator: <OP>'
+** Hints:
+*** Length will always be 1 if parsing was successful
+*** You will need an equivalent of `string.Empty` in your implementation and can use `ReadOnlySpan<char>.Empty` for that
+
+NOTE: The difference between _scanning_ and _parsing_ in this scenario is that when you scan you digest a stream (of characters in our case) one by one until you extracted the desired value -- the _remainder_ of the stream can remain unaffected
+
+=== `MathExpression`
+
+* Represents a mathematical expression (e.g. `-2 * 3`)
+* Upon instantiation the expression is parsed and validated, but not evaluated
+** For validation use the methods of `ExpressionScanner`
+* Calling `Result` will evaluate the expression and return the result
+** This result is then _cached_ for subsequent calls!
+* `ValidateAndParse`
+** Parses the expression and validates it
+** Parts are stored in the appropriate fields
+** Exceptions:
+*** Throw an `OperatorException` with message 'Operator is missing' if no operator is found
+*** Throw an `ExpressionFormatException` with message 'Right operand is missing' if no second operand is found
+*** Throw a `NumberValueException` with message 'Division by zero is not allowed' if operator is `/` and right operand is `0`
+*** _Rethrow_ any other exception with type `ExpressionException`
+*** If you encounter any _other_ exception _wrap_ (inner exception!) it into an `ExpressionFormatException` with message 'Unable to parse expression'
+* `Result`
+** On first call it calculates the result and stores it in the related field
+** On subsequent calls it returns the cached result
+** This method may (theoretically) throw an https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.unreachableexception?view=net-8.0[`UnreachableException`] which _strongly_ indicates that this section of code should never have been reached and the exception was only placed there to satisfy the compiler
+*** If you implement the validation correctly it really won't ever been thrown 😉
+* `ToString`
+** Returns the _sanitized_ expression that will be used for evaluation
+
+=== Sample Run
+
+[[fig:sample]]
+.Success
+image::pics/sample_run_success.png[Sample Run - Success]
+
+.Failure
+image::pics/sample_run_error.png[Sample Run - Failure]

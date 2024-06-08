@@ -83,7 +83,8 @@ export class DB {
             name text not null,
             project_id integer not null,
             constraint FK_Project foreign key (project_id) references Project(id) on delete cascade,
-            constraint CK_File_Name check (trim(name) != '')
+            constraint CK_File_Name check (trim(name) != ''),
+            constraint CK_Unique_File_Name unique (name, project_id)
         ) strict`);
 
         this.tableInitDone = true;
