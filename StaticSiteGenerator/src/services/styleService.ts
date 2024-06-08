@@ -27,7 +27,7 @@ export class StyleService extends ServiceBase{
         return await this.executeStmt(stmt);
     }
 
-    public async deleteStyle(id: number){
+    public async deleteStyle(id: number): Promise<boolean> {
         const stmt: Statement = await this.unit.prepare(`delete from Style where id = ?1`, {1: id});
         return await this.executeStmt(stmt);
     }

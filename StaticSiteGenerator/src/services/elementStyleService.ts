@@ -32,7 +32,8 @@ export class ElementStyleService extends ServiceBase{
             select count(*) as count 
             from Element_Style e
             inner join Theme t on e.theme_id = t.id
-            where t.user_name = ?1`);
+            where t.user_name = ?1 and e.id = ?2`,
+            {1: userName, 2: elementStyleId });
         return ((await stmt.get<{count: number}>())?.count ?? 0) >= 1;
     }
 
