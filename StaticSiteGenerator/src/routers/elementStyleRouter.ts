@@ -29,8 +29,7 @@ elementStyleRouter.post("/", [keycloak.protect], async (req: any, res: any) => {
     const unit = await Unit.create(false);
     const elementStyleService = new ElementStyleService(unit);
     try{
-        await elementStyleService.insertElementStyle(req.body as ElementStyleData);
-        res.sendStatus(StatusCodes.CREATED);
+        res.status(StatusCodes.CREATED).send(await elementStyleService.insertElementStyle(req.body as ElementStyleData));
         await unit.complete(true);
     }
     catch(error){
@@ -45,8 +44,7 @@ elementStyleRouter.patch("/:id", [keycloak.protect], async (req: any, res: any) 
     const unit = await Unit.create(false);
     const elementStyleService = new ElementStyleService(unit);
     try{
-        await elementStyleService.updateElementStyle(req.body.selector, req.params.id);
-        res.sendStatus(StatusCodes.OK);
+        res.status(StatusCodes.OK).send(await elementStyleService.updateElementStyle(req.body.selector, req.params.id));
         await unit.complete(true);
     }
     catch(error){
@@ -61,8 +59,7 @@ elementStyleRouter.delete("/:id", [keycloak.protect], async (req: any, res: any)
     const unit = await Unit.create(false);
     const elementStyleService = new ElementStyleService(unit);
     try{
-        await elementStyleService.deleteElementStyle(req.params.id);
-        res.sendStatus(StatusCodes.OK);
+        res.status(StatusCodes.OK).send(await elementStyleService.deleteElementStyle(req.params.id));
         await unit.complete(true);
     }
     catch(error){

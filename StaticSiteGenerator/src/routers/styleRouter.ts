@@ -29,8 +29,7 @@ styleRouter.post("/", [keycloak.protect], async (req: any, res: any) => {
     const unit: Unit = await Unit.create(true);
     const service: StyleService = new StyleService(unit);
     try{
-        await service.insertStyle(req.body as StyleData);
-        res.sendStatus(StatusCodes.CREATED);
+        res.status(StatusCodes.CREATED).send(await service.insertStyle(req.body as StyleData));
     }
     catch(error){
         console.log(error);
@@ -43,8 +42,7 @@ styleRouter.patch("/:id/property", [keycloak.protect], async (req: any, res: any
     const unit: Unit = await Unit.create(true);
     const service: StyleService = new StyleService(unit);
     try{
-        await service.updateStyleProperty(Number.parseInt(req.params.id), req.body.newProperty)
-        res.sendStatus(StatusCodes.CREATED);
+        res.status(StatusCodes.CREATED).send(await service.updateStyleProperty(Number.parseInt(req.params.id), req.body.newProperty));
     }
     catch(error){
         console.log(error);
@@ -57,8 +55,7 @@ styleRouter.post("/:id/value", [keycloak.protect], async (req: any, res: any) =>
     const unit: Unit = await Unit.create(true);
     const service: StyleService = new StyleService(unit);
     try{
-        await service.updateStyleValue(Number.parseInt(req.params.id), req.body.newValue);
-        res.sendStatus(StatusCodes.CREATED);
+        res.status(StatusCodes.CREATED).send(await service.updateStyleValue(Number.parseInt(req.params.id), req.body.newValue));
     }
     catch(error){
         console.log(error);
@@ -71,8 +68,7 @@ styleRouter.post("/:id", [keycloak.protect], async (req: any, res: any) => {
     const unit: Unit = await Unit.create(true);
     const service: StyleService = new StyleService(unit);
     try{
-        await service.deleteStyle(Number.parseInt(req.params.id));
-        res.sendStatus(StatusCodes.CREATED);
+        res.status(StatusCodes.CREATED).send(await service.deleteStyle(Number.parseInt(req.params.id)));
     }
     catch(error){
         console.log(error);
