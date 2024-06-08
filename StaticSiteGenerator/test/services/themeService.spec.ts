@@ -166,4 +166,61 @@ describe("ThemeService", (): void => {
             expect(themes[0]).toEqual({id: 1, userName: testThemes[0].userName, name: "newName", isPublic: false});
         });
     });
+
+    describe("ownsTheme", () => {
+        test('should own theme', async () => {
+            const unit: Unit = await Unit.create(true);
+            const service: ThemeService = new ThemeService(unit);
+            const result: boolean = await service.ownsTheme(testThemes[0].userName, 1);
+            await unit.complete();
+            expect(result).toBeTruthy();
+        });
+        test('should not own non-existing theme', async () => {
+            const unit: Unit = await Unit.create(true);
+            const service: ThemeService = new ThemeService(unit);
+            const result: boolean = await service.ownsTheme(testThemes[0].userName, -1);
+            await unit.complete();
+            expect(result).toBeFalsy();
+        });
+        test('should not own theme of other user', async () => {
+            const unit: Unit = await Unit.create(true);
+            const service: ThemeService = new ThemeService(unit);
+            const result: boolean = await service.ownsTheme(testThemes[0].userName, 3);
+            await unit.complete();
+            expect(result).toBeFalsy();
+        });
+    });
+
+    describe("isAllowedToUseTheme", () => {
+        test('should allow user to use theme', async () => {
+            const unit: Unit = await Unit.create(true);
+            const service: ThemeService = new ThemeService(unit);
+            const result: boolean = await service.isAllowedToUseTheme(testThemes[0].userName, 1);
+            await unit.complete();
+            expect(result).toBeTruthy();
+        });
+        test('should allow user to use public theme', async () => {
+            const unit: Unit = await Unit.create(true);
+            const service: ThemeService = new ThemeService(unit);
+            await service.updateThemePublic(testThemes[2].userName, 4, true);
+            const result: boolean = await service.isAllowedToUseTheme(testThemes[0].userName, 4);
+            await unit.complete();
+            expect(result).toBeTruthy();
+        });
+        test('should not allow user to use non-existing theme', async () => {
+            const unit: Unit = await Unit.create(true);
+            const service: ThemeService = new ThemeService(unit);
+            const result: boolean = await service.isAllowedToUseTheme(testThemes[0].userName, -1);
+            await unit.complete();
+            expect(result).toBeFalsy();
+        });
+        test('should not allow user to use theme of other user', async () => {
+            const unit: Unit = await Unit.create(true);
+            const service: ThemeService = new ThemeService(unit);
+            await service.updateThemePublic(testThemes[2].userName, 4, false);
+            const result: boolean = await service.isAllowedToUseTheme(testThemes[0].userName, 4);
+            await unit.complete();
+            expect(result).toBeFalsy();
+        });
+    });
 });

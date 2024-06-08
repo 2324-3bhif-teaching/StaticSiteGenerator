@@ -1,7 +1,7 @@
 import { DefaultTheme } from "../../src/constants";
 import { Unit } from "../../src/database/unit";
 import { ElementStyle, ElementStyleData, ElementStyleService } from "../../src/services/elementStyleService";
-import { ThemeData, ThemeService } from "../../src/services/themeService";
+import { ThemeService } from "../../src/services/themeService";
 import { setupTestData } from "../database/testData";
 
 const testElementStyleData: ElementStyleData[] = [
@@ -23,7 +23,7 @@ describe("ElementStyleService", () => {
             name: DefaultTheme.name,
             isPublic: DefaultTheme.isPublic
         });
-        unit.complete(true);
+        await unit.complete(true);
     });
 
     describe("insertElementStyle", () => {
@@ -39,7 +39,7 @@ describe("ElementStyleService", () => {
         test("should not insert with empty selector", async () => {
             async function expectThrow(elementStyle: ElementStyleData){
                 await execute(async (service: ElementStyleService) => {
-                    expect(async () => {
+                    await expect(async () => {
                         await service.insertElementStyle(elementStyle);
                     }).rejects.toThrow('SQLITE_CONSTRAINT: CHECK constraint failed: CK_ElementStyle_Selector');
                 }, false, false);
@@ -56,7 +56,7 @@ describe("ElementStyleService", () => {
 
         test("should not insert with nonexisting themeId", async () => {
             await execute(async (service: ElementStyleService) => {
-                expect(async () => {
+                await expect(async () => {
                     await service.insertElementStyle(
                         {
                             selector: "*",
@@ -113,7 +113,7 @@ describe("ElementStyleService", () => {
         test("should not update to empty selector", async () => {
             async function expectThrow(newSelector: string){
                 await execute( async (service: ElementStyleService) => {
-                    expect( async () => {
+                    await expect( async () => {
                         await service.updateElementStyle(newSelector, 1);
                     }).rejects.toThrow('SQLITE_CONSTRAINT: CHECK constraint failed: CK_ElementStyle_Selector');
                 }, false, false);
@@ -175,6 +175,84 @@ describe("ElementStyleService", () => {
                 expect(rs).toBe(1);
                 expect(rs[0].selector).toBe(data.selector);
                 expect(rs[0].themeId).toBe(data.themeId);
+            }, true);
+        });
+    });
+
+    describe("ownsElementStyle", () => {
+        test("should own element style", async () => {
+            const data: ElementStyleData = {
+                selector: "*",
+                themeId: 1
+            };
+
+            await execute(async (service: ElementStyleService) => {
+                await service.insertElementStyle(data);
+            }, false, true);
+
+            await execute(async (service: ElementStyleService) => {
+                const rs: boolean = await service.ownsElementStyle(DefaultTheme.userName, 1);
+                expect(rs).toBeTruthy();
+            }, true);
+        });
+        test("should not own element style", async () => {
+            const data: ElementStyleData = {
+                selector: "*",
+                themeId: 1
+            };
+
+            await execute(async (service: ElementStyleService) => {
+                await service.insertElementStyle(data);
+            }, false, true);
+
+            await execute(async (service: ElementStyleService) => {
+                const rs: boolean = await service.ownsElementStyle("user1", 1);
+                expect(rs).toBeFalsy();
+            }, true);
+        });
+        test("should not own non-existing element style", async () => {
+            await execute(async (service: ElementStyleService) => {
+                const rs: boolean = await service.ownsElementStyle(DefaultTheme.userName, 1);
+                expect(rs).toBeFalsy();
+            }, true);
+        });
+    });
+
+    describe("isAllowedToUseElementStyle", () => {
+        test("should be allowed to use element style", async () => {
+            const data: ElementStyleData = {
+                selector: "*",
+                themeId: 1
+            };
+
+            await execute(async (service: ElementStyleService) => {
+                await service.insertElementStyle(data);
+            }, false, true);
+
+            await execute(async (service: ElementStyleService) => {
+                const rs: boolean = await service.isAllowedToUseElementStyle(DefaultTheme.userName, 1);
+                expect(rs).toBeTruthy();
+            }, true);
+        });
+        test("should not be allowed to use element style", async () => {
+            const data: ElementStyleData = {
+                selector: "*",
+                themeId: 1
+            };
+
+            await execute(async (service: ElementStyleService) => {
+                await service.insertElementStyle(data);
+            }, false, true);
+
+            await execute(async (service: ElementStyleService) => {
+                const rs: boolean = await service.isAllowedToUseElementStyle("user1", 1);
+                expect(rs).toBeFalsy();
+            }, true);
+        });
+        test("should not be allowed to use non-existing element style", async () => {
+            await execute(async (service: ElementStyleService) => {
+                const rs: boolean = await service.isAllowedToUseElementStyle(DefaultTheme.userName, 1);
+                expect(rs).toBeFalsy();
             }, true);
         });
     });
