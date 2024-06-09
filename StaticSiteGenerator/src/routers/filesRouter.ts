@@ -11,6 +11,7 @@ import {FileLocation} from "../constants";
 import * as fs from "fs/promises";
 import {ProjectService} from "../services/projectService";
 import {File} from "../services/fileService";
+import {ConvertService} from "../services/convertService";
 
 export const filesRouter: Router = express.Router();
 const keycloak: Keycloak.Keycloak = new Keycloak({ store: memoryStore });
@@ -136,5 +137,31 @@ filesRouter.patch("/:fileId", [keycloak.protect()], async (req: any, res: any): 
         console.log(error);
         res.sendStatus(StatusCodes.BAD_REQUEST);
         await unit.complete(false);
+    }
+});
+
+filesRouter.get("/:fileId", [keycloak.protect()], async (req: any, res: any): Promise<void> => {
+    const unit: Unit = await Unit.create(true);
+    const fileService: FileService = new FileService(unit);
+    const convertService: ConvertService = new ConvertService(unit);
+    try {
+        if (!await fileService.ownsFile(req.kauth.grant.access_token.content.preferred_username, req.params.fileId)) {
+            res.sendStatus(StatusCodes.BAD_REQUEST);
+            return;
+        }
+        const filePath: string | null = await fileService.getFilePath(req.params.fileId);
+        if (filePath === null) {
+            res.sendStatus(StatusCodes.NOT_FOUND);
+        }
+        else {
+            res.status(StatusCodes.OK).send(await convertService.convertFile(req.params.fileId));
+        }
+    }
+    catch (error) {
+        console.log(error);
+        res.sendStatus(StatusCodes.BAD_REQUEST);
+    }
+    finally {
+        await unit.complete();
     }
 });

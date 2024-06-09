@@ -4,9 +4,13 @@ import {ServiceBase} from "../database/serviceBase";
 import {ElementStyle, ElementStyleService} from "./elementStyleService";
 import {StyleService} from "./styleService";
 import {Style} from "./styleService";
+import {FileService} from "./fileService";
+import {readFile} from "fs/promises";
+import path from "path";
+import {appendFile} from "fs";
 
 export class ConvertService extends ServiceBase {
-    //private _asciidoctorInstance: any = Asciidoctor();
+    private _asciidoctorInstance: any = Asciidoctor();
 
     constructor(unit: Unit) {
         super(unit);
@@ -34,6 +38,22 @@ export class ConvertService extends ServiceBase {
         }
 
         return outputCss;
+    }
+
+    public async convertFile(fileId: number): Promise<string> {
+        const fileService: FileService = new FileService(this.unit);
+
+        const filePath: string | null = await fileService.getFilePath(fileId);
+
+        if (filePath === null) {
+            throw new Error("File not found");
+        }
+
+        return this._asciidoctorInstance.convertFile(filePath, {
+            to_file: false,
+            standalone: true,
+            attributes: { 'source-highlighter': 'highlight.js' } })
+        + `<style>.hljs{ background:transparent;margin:0;padding:0}</style>`;
     }
 }
 
