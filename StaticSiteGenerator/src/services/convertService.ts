@@ -7,8 +7,6 @@ import {Style} from "./styleService";
 import {FileService} from "./fileService";
 
 export class ConvertService extends ServiceBase {
-    private _asciidoctorInstance: any = Asciidoctor();
-
     constructor(unit: Unit) {
         super(unit);
     }
@@ -46,7 +44,8 @@ export class ConvertService extends ServiceBase {
             throw new Error("File not found");
         }
 
-        return this._asciidoctorInstance.convertFile(filePath, {
+        const asciidoctorInstance = Asciidoctor();
+        return asciidoctorInstance.convertFile(filePath, {
             to_file: false,
             standalone: true,
             attributes: {
@@ -54,7 +53,7 @@ export class ConvertService extends ServiceBase {
                 'linkcss': false,
                 'source-highlighter': 'highlight.js'
             }
-        });
+        }).toString();
     }
 }
 
