@@ -5,27 +5,29 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { KeycloakService } from 'keycloak-angular';
 import { ThemeService } from '../../services/theme.service';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+
 
 @Component({
   selector: 'app-project',
   standalone: true,
-  imports: [FontAwesomeModule],
+  imports: [FontAwesomeModule, RouterLink],
   templateUrl: './project.component.html',
   styleUrls: ['./project.component.css']
 })
 export class ProjectComponent {
-  @Input() project: Project = { id:-1,name: "", theme: {id:-1,userName:"Note",name:"B",isPublic:false} };
+  @Input() project: Project = { id: -1, name: "", theme: { id: -1, userName: "Note", name: "B", isPublic: false } };
   @Output() deleteRequest = new EventEmitter<Project>();
   faEdit = faEdit;
   faTrash = faTrash;
 
-  constructor(private themeService:ThemeService){}
+  constructor(private themeService: ThemeService) { }
 
-  ngOnInit(){
+  ngOnInit() {
     this.themeService.getAllPublicThemes().subscribe((themes) => {
       const defTheme = themes.find(theme => theme.id == 1);
 
-      if(defTheme === undefined){
+      if (defTheme === undefined) {
         return;
       }
 
@@ -36,5 +38,9 @@ export class ProjectComponent {
 
   deleteMe() {
     this.deleteRequest.emit(this.project);
+  }
+
+  handlePass() {
+    document.location.pathname = "edit-project/" + this.project.id.toString();
   }
 }

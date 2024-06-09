@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BaseService } from './base.service';
-import {Project} from "./project.service";
+import { Project } from "./project.service";
 
 @Injectable({
   providedIn: 'root'
@@ -16,10 +16,10 @@ export class FileService {
     return this.http.get<SSGFile[]>(`${this.filesURL}/${projectId}`);
   }
 
-  postFile(file: File) {
+  postFile(file: File, projectId: number) {
     const formData: FormData = new FormData();
     formData.append('file', file, file.name);
-    formData.append('projectId', '1');
+    formData.append('projectId', projectId.toString());
 
     return this.http.post(this.filesURL, formData);
   }
