@@ -1,5 +1,6 @@
 <div class="text-gray-300 bg-gray-900 h-lvh flex flex-col justify-end">
     @if (project.id !== -1) {
-    <app-file-list [project]="project"></app-file-list>
+    <app-file-list [project]="project" (changeActiveFile)="onChangeActiveFileId($event)"></app-file-list>
     }
 </div>
+<app-file-preview [themeId]="themeId" [fileId]="activeFileId"></app-file-preview>
