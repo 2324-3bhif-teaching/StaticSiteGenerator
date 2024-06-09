@@ -4,11 +4,12 @@ import {Unit} from "../database/unit";
 import {ThemeService } from "../services/themeService";
 import { memoryStore } from "../app";
 import Keycloak from "keycloak-connect";
+import {ConvertService} from "../services/convertService";
 
 export const themeRouter: Router = express.Router();
 const keycloak: Keycloak.Keycloak = new Keycloak({ store: memoryStore });
 
-themeRouter.get('/', async (_, res): Promise<void> => {
+themeRouter.get('/', async (_: any, res: any): Promise<void> => {
     const unit: Unit = await Unit.create(true);
     const service: ThemeService = new ThemeService(unit);
     try {
@@ -102,5 +103,25 @@ themeRouter.delete('/:id', [keycloak.protect()],async (req: any, res: any): Prom
         console.log(error);
         await unit.complete(false);
         res.sendStatus(StatusCodes.BAD_REQUEST);
+    }
+});
+
+themeRouter.get('/:id', [keycloak.protect()], async (req: any, res: any): Promise<void> => {
+    const unit: Unit = await Unit.create(true);
+    const themeService: ThemeService = new ThemeService(unit);
+    const styleService: ConvertService = new ConvertService(unit);
+    try {
+        if (!await themeService.isAllowedToUseTheme(req.kauth.grant.access_token.content.preferred_username, req.params.id)) {
+            res.sendStatus(StatusCodes.BAD_REQUEST);
+            return;
+        }
+        res.status(StatusCodes.OK).send(await styleService.convertThemeToCss(req.params.id));
+    }
+    catch (error) {
+        console.log(error);
+        res.sendStatus(StatusCodes.BAD_REQUEST);
+    }
+    finally {
+        await unit.complete();
     }
 });

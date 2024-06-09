@@ -16,10 +16,10 @@ export const filesRouter: Router = express.Router();
 const keycloak: Keycloak.Keycloak = new Keycloak({ store: memoryStore });
 
 const storage: StorageEngine = multer.diskStorage({
-    destination: (_, file, cb) => {
+    destination: (_: any, file: any, cb) => {
         cb(null, join(__dirname, "../../", FileLocation , "temp"));
     },
-    filename: (_, file, cb) => {
+    filename: (_: any, file: any, cb) => {
         cb(null, `${uuidv4()}.${file.originalname}`);
     }
 });
