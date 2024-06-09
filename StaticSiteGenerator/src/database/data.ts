@@ -1,6 +1,5 @@
 import { Database as Driver } from "sqlite3";
 import { open, Database } from "sqlite";
-import {Theme} from "../theme";
 import { DefaultTheme } from "../constants";
 
 export const dbFileName = 'StaticSiteGenerator.db';
