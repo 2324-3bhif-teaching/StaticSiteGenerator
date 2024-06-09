@@ -58,9 +58,20 @@ export class FileListComponent {
     if (this.activeFile.id !== -1) {
       const newIndex: number = this.activeFile.index + deltaIndex;
       if (newIndex >= 0 && newIndex < this.files.length) {
-        this.files[this.activeFile.index] = this.files[newIndex];
+        // Temporarily store the file that will be swapped
+        const fileToSwap = this.files[newIndex];
+
+        // Swap the files in the array
         this.files[newIndex] = this.activeFile;
+        this.files[this.activeFile.index] = fileToSwap;
+
+        // Update the index of the active file
         this.activeFile.index = newIndex;
+
+        // Also update the index of the swapped file
+        fileToSwap.index = this.activeFile.index - deltaIndex;
+
+        // Update the indices in the backend or service as needed
         this.fileService.updateFileIndex(this.activeFile.id, newIndex).subscribe();
       }
     }
@@ -87,5 +98,7 @@ export class FileListComponent {
     this.fileService.postFile(this.fileToUpload, this.project.id).subscribe(data => {
       console.log(data);
     });
+
+    document.location.reload();
   }
 }

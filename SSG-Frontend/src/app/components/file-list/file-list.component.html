@@ -1,8 +1,8 @@
 <div class="flex flex-row text-gray-300">
-  <div class="flex flex-col m-4 bg-gray-800 rounded-lg">
-    <button class="py-2 px-4 m-2 rounded-lg text-lg" *ngFor="let file of files" (click)="handleActiveFile(file)"
+  <div class="flex flex-col m-4 bg-gray-800 rounded-lg max-h-80 min-h-80 scrollbar">
+    <button class="py-2 px-4 m-2 rounded-lg text-lg " *ngFor="let file of files" (click)="handleActiveFile(file)"
       [ngClass]="{'active': file.id === activeFile.id}">
-      {{file.name}}
+      {{ file.index + 1}} {{file.name}}
     </button>
   </div>
 
