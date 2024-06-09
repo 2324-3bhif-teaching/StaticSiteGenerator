@@ -7,6 +7,7 @@ import { ThemeSelectionComponent } from './theme-selection/theme-selection.compo
 import { FileUploadComponent } from './components/file-upload/file-upload.component';
 import { FileListComponent } from "./components/file-list/file-list.component";
 import { EditProjectComponent } from './edit-project/edit-project.component';
+import { ElementStyleComponent } from './components/element-style/element-style.component';
 
 export const routes: Routes = [
     { path: ``, component: StartPageComponent },
@@ -15,4 +16,5 @@ export const routes: Routes = [
     { path: `upload-adoc`, component: FileUploadComponent },
     { path: `file-list`, component: FileListComponent },
     { path: `edit-project/:id`, component: EditProjectComponent },
+    { path: `element-style/:id`, component: ElementStyleComponent}
 ];

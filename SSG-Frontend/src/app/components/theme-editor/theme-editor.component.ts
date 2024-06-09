@@ -13,3 +13,11 @@ export class ThemeEditorComponent {
 
 }
 
+export interface ElementStyleData{
+  selector: string,
+  themeId: number
+};
+
+export interface ElementStyle extends ElementStyleData{
+  id: number
+};

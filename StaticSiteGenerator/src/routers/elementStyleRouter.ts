@@ -10,7 +10,7 @@ export const elementStyleRouter: Router = express.Router();
 const keycloak: Keycloak.Keycloak = new Keycloak({ store: memoryStore });
 
 //get all  element styles from a theme
-elementStyleRouter.get("/themeId/:id", [keycloak.protect], async (req: any, res: any): Promise<void> => {
+elementStyleRouter.get("/themeId/:id", [keycloak.protect()], async (req: any, res: any): Promise<void> => {
     const unit: Unit = await Unit.create(true);
     const elementStyleService: ElementStyleService = new ElementStyleService(unit);
     const themeService: ThemeService = new ThemeService(unit);
@@ -31,7 +31,7 @@ elementStyleRouter.get("/themeId/:id", [keycloak.protect], async (req: any, res:
 });
 
 //post a new element style
-elementStyleRouter.post("/", [keycloak.protect], async (req: any, res: any): Promise<void> => {
+elementStyleRouter.post("/", [keycloak.protect()], async (req: any, res: any): Promise<void> => {
     const unit: Unit = await Unit.create(false);
     const elementStyleService: ElementStyleService = new ElementStyleService(unit);
     const themeService: ThemeService = new ThemeService(unit);
@@ -52,7 +52,7 @@ elementStyleRouter.post("/", [keycloak.protect], async (req: any, res: any): Pro
 });
 
 //patch an element styles selector
-elementStyleRouter.patch("/:id", [keycloak.protect], async (req: any, res: any): Promise<void> => {
+elementStyleRouter.patch("/:id", [keycloak.protect()], async (req: any, res: any): Promise<void> => {
     const unit: Unit = await Unit.create(false);
     const elementStyleService: ElementStyleService = new ElementStyleService(unit);
     try{
@@ -72,7 +72,7 @@ elementStyleRouter.patch("/:id", [keycloak.protect], async (req: any, res: any):
 });
 
 //delete a element style
-elementStyleRouter.delete("/:id", [keycloak.protect], async (req: any, res: any): Promise<void> => {
+elementStyleRouter.delete("/:id", [keycloak.protect()], async (req: any, res: any): Promise<void> => {
     const unit: Unit = await Unit.create(false);
     const elementStyleService: ElementStyleService = new ElementStyleService(unit);
     try{
