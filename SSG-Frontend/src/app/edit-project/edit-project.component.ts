@@ -1,18 +1,20 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { FileListComponent } from '../components/file-list/file-list.component';
 import { Project, ProjectService } from '../services/project.service';
 import { ActivatedRoute } from '@angular/router';
+import {FilePreviewComponent} from "../components/file-preview/file-preview.component";
 
 @Component({
   selector: 'app-edit-project',
   standalone: true,
-  imports: [FileListComponent],
+  imports: [FileListComponent, FilePreviewComponent],
   templateUrl: './edit-project.component.html',
   styleUrl: './edit-project.component.css'
 })
 export class EditProjectComponent {
-
-  project: Project = { id: -1, name: "Default", theme: { id: -1, name: "Def", userName: "Usr", isPublic: false } };
+  protected project: Project = { id: -1, name: "Default", theme: { id: -1, name: "Def", userName: "Usr", isPublic: false } };
+  protected activeFileId: number = -1;
+  protected themeId: number = -1;
 
   constructor(private route: ActivatedRoute, private projectService: ProjectService) {
     this.projectService.getAllProjects().subscribe(val => {
@@ -29,7 +31,16 @@ export class EditProjectComponent {
       }
 
       this.project = corrProj;
+
+      this.projectService.getAllProjects().subscribe(projects => {
+        this.themeId = projects.find(project => project.id === this.project.id)?.id ?? -1;
+      });
     })
   }
 
+  onChangeActiveFileId(fileId: number) {
+    this.activeFileId = fileId;
+    console.log(`ActiveFileId: ${this.activeFileId}`);
+    console.log(`ThemeId: ${this.themeId}`);
+  }
 }

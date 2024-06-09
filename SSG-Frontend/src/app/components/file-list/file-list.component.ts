@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import { FileService, SSGFile } from "../../services/file.service";
 import { CommonModule } from "@angular/common";
 import { faArrowDown, faArrowUp, faDeleteLeft, faFile, faFileArchive, faTrash, faUpload } from "@fortawesome/free-solid-svg-icons";
@@ -16,9 +16,10 @@ import { Project } from '../../services/project.service';
 })
 export class FileListComponent {
   @Input() project: Project = { id: -1, name: "Default", theme: { id: -1, name: "Def", userName: "Usr", isPublic: false } };
+  @Output() changeActiveFile = new EventEmitter<number>();
   private DefaultFile: SSGFile = { id: -1, index: -1, name: "" };
-  public files: SSGFile[] = [];
-  public activeFile: SSGFile = this.DefaultFile;
+  protected files: SSGFile[] = [];
+  protected activeFile: SSGFile = this.DefaultFile;
   faDelete = faTrash;
   faArrowUp = faArrowUp;
   faArrowDown = faArrowDown;
@@ -44,6 +45,7 @@ export class FileListComponent {
     } else {
       this.activeFile = this.DefaultFile;
     }
+    this.changeActiveFile.emit(this.activeFile.id);
   }
 
   onFileDelete(): void {

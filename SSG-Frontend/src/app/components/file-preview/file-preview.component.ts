@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, Renderer2} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {FileService} from "../../services/file.service";
 import {ThemeService} from "../../services/theme.service";
 import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
@@ -13,11 +13,11 @@ import {HtmlLoadedDirective} from "../../directives/html-loaded.directive";
   templateUrl: './file-preview.component.html',
   styleUrl: './file-preview.component.css'
 })
-export class FilePreviewComponent {
-  @Input() fileId: number = 1;
-  @Input() themeId: number = 1;
-  protected fileHtml: SafeHtml = "unloaded";
-  protected readonly hljs = hljs;
+export class FilePreviewComponent implements OnChanges {
+  @Input() fileId: number = -1;
+  @Input() themeId: number = -1;
+  protected fileHtml: SafeHtml = "";
+  private isLoaded = false;
 
   constructor(
     private fileService: FileService,
@@ -25,7 +25,20 @@ export class FilePreviewComponent {
     private sanitizer: DomSanitizer) {
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['fileId'] || changes['themeId']) {
+      this.reloadFilePreview();
+    }
+  }
+
+  protected reloadFilePreview() {
+    console.log(`ThemeId Preview: ${this.themeId}`);
+    console.log(`FileId Preview: ${this.fileId}`);
+    if (this.fileId === -1 || this.themeId === -1) {
+      return;
+    }
     let fileHtml: string = "";
     this.fileService.convertFile(this.fileId).subscribe(html => {
       fileHtml = html.html;
@@ -33,13 +46,14 @@ export class FilePreviewComponent {
     this.themeService.convertTheme(this.themeId).subscribe(css => {
       fileHtml += `<style>${css.css}</style>`;
       this.fileHtml = this.sanitizer.bypassSecurityTrustHtml(fileHtml);
-    });
-    setTimeout(() => {
-      hljs.highlightAll();
+      this.isLoaded = false;
     });
   }
 
   onHtmlLoaded() {
-    hljs.highlightAll();
+    if (!this.isLoaded) {
+      hljs.highlightAll();
+      this.isLoaded = true;
+    }
   }
 }

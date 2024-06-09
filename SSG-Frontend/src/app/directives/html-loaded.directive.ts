@@ -10,8 +10,7 @@ export class HtmlLoadedDirective implements AfterViewChecked {
   constructor(private el: ElementRef) { }
 
   ngAfterViewChecked() {
-    const contentLoaded = this.el.nativeElement.innerHTML.trim().length > 0;
-    if (contentLoaded) {
+    if (this.el.nativeElement.innerHTML.trim().length > 0) {
       this.htmlLoaded.emit();
     }
   }

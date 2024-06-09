@@ -55,15 +55,6 @@ export class ConvertService extends ServiceBase {
                 'source-highlighter': 'highlight.js'
             }
         });
-        /*
-        + `<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-            <!-- and it's easy to individually load additional languages -->
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
-            <script>hljs.highlightAll();</script>
-            <style>.hljs{ background:transparent;margin:0;padding:0}</style>`;
-
-         */
     }
 }
 
