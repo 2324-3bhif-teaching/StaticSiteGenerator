@@ -21,3 +21,4 @@
 | 05.06.2024 | 3h       | File Service entwickelt und Tests erstellt                                                                           | #23      |
 | 06.06.2024 | 3h       | File Service entwickelt und Tests erstellt                                                                           | #23      |
 | 07.06.2024 | 6h       | File Service und File Router entwickelt und Tests erstellt                                                           | #23      |
+| 09.06.2024 | 6h 30min | HTML Preview und Theme Editor                                                                                        | #25, #26 |
