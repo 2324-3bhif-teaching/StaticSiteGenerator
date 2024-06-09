@@ -140,7 +140,7 @@ filesRouter.patch("/:fileId", [keycloak.protect()], async (req: any, res: any): 
     }
 });
 
-filesRouter.get("/:fileId", [keycloak.protect()], async (req: any, res: any): Promise<void> => {
+filesRouter.get("/convert/:fileId", [keycloak.protect()], async (req: any, res: any): Promise<void> => {
     const unit: Unit = await Unit.create(true);
     const fileService: FileService = new FileService(unit);
     const convertService: ConvertService = new ConvertService(unit);
@@ -154,7 +154,9 @@ filesRouter.get("/:fileId", [keycloak.protect()], async (req: any, res: any): Pr
             res.sendStatus(StatusCodes.NOT_FOUND);
         }
         else {
-            res.status(StatusCodes.OK).send(await convertService.convertFile(req.params.fileId));
+            res.status(StatusCodes.OK).send({
+                html: await convertService.convertFile(req.params.fileId)
+            });
         }
     }
     catch (error) {
