@@ -106,7 +106,7 @@ themeRouter.delete('/:id', [keycloak.protect()],async (req: any, res: any): Prom
     }
 });
 
-themeRouter.get('/:id', [keycloak.protect()], async (req: any, res: any): Promise<void> => {
+themeRouter.get('/convert/:id', [keycloak.protect()], async (req: any, res: any): Promise<void> => {
     const unit: Unit = await Unit.create(true);
     const themeService: ThemeService = new ThemeService(unit);
     const styleService: ConvertService = new ConvertService(unit);
@@ -115,7 +115,9 @@ themeRouter.get('/:id', [keycloak.protect()], async (req: any, res: any): Promis
             res.sendStatus(StatusCodes.BAD_REQUEST);
             return;
         }
-        res.status(StatusCodes.OK).send(await styleService.convertThemeToCss(req.params.id));
+        res.status(StatusCodes.OK).send({
+            css: await styleService.convertThemeToCss(req.params.id)
+        });
     }
     catch (error) {
         console.log(error);

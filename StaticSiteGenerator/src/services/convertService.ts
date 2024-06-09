@@ -51,7 +51,7 @@ export class ConvertService extends ServiceBase {
 
         return this._asciidoctorInstance.convertFile(filePath, {
             to_file: false,
-            standalone: true,
+            standalone: false,
             attributes: { 'source-highlighter': 'highlight.js' } })
         + `<style>.hljs{ background:transparent;margin:0;padding:0}</style>`;
     }

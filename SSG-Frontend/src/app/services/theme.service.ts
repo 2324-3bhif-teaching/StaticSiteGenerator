@@ -35,6 +35,9 @@ export class ThemeService {
     return this.http.delete(`${this.themeURL}/${id}`)
   }
 
+  convertTheme(id:number){
+    return this.http.get<{css: string}>(`${this.themeURL}/convert/${id}`);
+  }
 }
 
 export interface ThemeData {
