@@ -1,12 +1,27 @@
-<p *ngFor="let file of files" (click)="activeFile=file" [ngClass]="{'active': file.id === activeFile.id}">
-  {{file.name}}
-</p>
-<h1>Options:</h1>
-<p (click)="onFileDelete()">Delete</p>
-<p (click)="onFileUpdate(-1)">Up</p>
-<p (click)="onFileUpdate(1)">Down</p>
-<label for="file">Choose File</label>
-<form (submit)="uploadFile()" enctype="multipart/form-data">
-  <input type="file" id="file" name="file" class="hidden" (change)="handleFileInput($event)">
-  <button type="submit">Upload</button>
-</form>
+<div class="flex flex-row text-gray-300">
+  <div class="flex flex-col m-4 bg-gray-800 rounded-lg max-h-80 min-h-80 scrollbar">
+    <button class="py-2 px-4 m-2 rounded-lg text-lg " *ngFor="let file of files" (click)="handleActiveFile(file)"
+      [ngClass]="{'active': file.id === activeFile.id}">
+      {{ file.index + 1}} {{file.name}}
+    </button>
+  </div>
+
+  <div class="flex flex-col [&>*]:mb-8 mt-8 w-16">
+    <button class="bg-red-500 hover:bg-red-600 hover:text-gray-400 rounded-sm transition-all" (click)="onFileDelete()">
+      <fa-icon [icon]="faDelete"></fa-icon>
+    </button>
+    <button class="bg-blue-500 hover:bg-blue-600 hover:text-gray-400 rounded-sm transition-all"
+      (click)="onFileUpdate(-1)"><fa-icon [icon]="faArrowUp"></fa-icon></button>
+    <button class="bg-blue-500 hover:bg-blue-600 hover:text-gray-400 rounded-sm transition-all"
+      (click)="onFileUpdate(1)"><fa-icon [icon]="faArrowDown"></fa-icon></button>
+    <label class="bg-green-500 hover:bg-green-600 hover:text-gray-400 rounded-sm transition-all text-center"
+      for="file"><fa-icon [icon]="faFile"></fa-icon></label>
+    <form (submit)="uploadFile()" enctype="multipart/form-data">
+      <input type="file" id="file" name="file" class="hidden" (change)="handleFileInput($event)">
+      <button type="submit"
+        class="bg-green-500 hover:bg-green-600 hover:text-gray-400 rounded-sm transition-all w-16"><fa-icon
+          [icon]="faUpload"></fa-icon></button>
+    </form>
+  </div>
+
+</div>
