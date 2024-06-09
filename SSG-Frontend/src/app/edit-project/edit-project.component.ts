@@ -40,7 +40,5 @@ export class EditProjectComponent {
 
   onChangeActiveFileId(fileId: number) {
     this.activeFileId = fileId;
-    console.log(`ActiveFileId: ${this.activeFileId}`);
-    console.log(`ThemeId: ${this.themeId}`);
   }
 }

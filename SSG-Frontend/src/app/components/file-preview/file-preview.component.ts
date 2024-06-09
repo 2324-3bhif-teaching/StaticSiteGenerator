@@ -34,19 +34,18 @@ export class FilePreviewComponent implements OnChanges {
   }
 
   protected reloadFilePreview() {
-    console.log(`ThemeId Preview: ${this.themeId}`);
-    console.log(`FileId Preview: ${this.fileId}`);
     if (this.fileId === -1 || this.themeId === -1) {
+      this.fileHtml = "";
       return;
     }
     let fileHtml: string = "";
     this.fileService.convertFile(this.fileId).subscribe(html => {
       fileHtml = html.html;
-    });
-    this.themeService.convertTheme(this.themeId).subscribe(css => {
-      fileHtml += `<style>${css.css}</style>`;
-      this.fileHtml = this.sanitizer.bypassSecurityTrustHtml(fileHtml);
-      this.isLoaded = false;
+      this.themeService.convertTheme(this.themeId).subscribe(css => {
+        fileHtml += `<style>${css.css}</style>`;
+        this.fileHtml = this.sanitizer.bypassSecurityTrustHtml(fileHtml);
+        this.isLoaded = false;
+      });
     });
   }
 
