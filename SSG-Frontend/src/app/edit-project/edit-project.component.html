@@ -1,5 +1,11 @@
-<div class="text-gray-300 bg-gray-900 h-lvh flex flex-col justify-end">
-    @if (project.id !== -1) {
-    <app-file-list [project]="project"></app-file-list>
-    }
+<div class="text-gray-300 bg-gray-900 h-dvh flex flex-col">
+    <div class="justify-center">
+        <app-theme-editor></app-theme-editor>
+    </div>
+
+    <div class="justify-end">
+        @if (project.id !== -1) {
+        <app-file-list [project]="project"></app-file-list>
+        }
+    </div>
 </div>

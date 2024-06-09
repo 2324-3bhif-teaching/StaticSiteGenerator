@@ -2,11 +2,12 @@ import { Component, Input } from '@angular/core';
 import { FileListComponent } from '../components/file-list/file-list.component';
 import { Project, ProjectService } from '../services/project.service';
 import { ActivatedRoute } from '@angular/router';
+import { ThemeEditorComponent } from '../components/theme-editor/theme-editor.component';
 
 @Component({
   selector: 'app-edit-project',
   standalone: true,
-  imports: [FileListComponent],
+  imports: [FileListComponent, ThemeEditorComponent],
   templateUrl: './edit-project.component.html',
   styleUrl: './edit-project.component.css'
 })
