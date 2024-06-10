@@ -57,36 +57,7 @@ export class ConvertService extends ServiceBase {
     }
 }
 
-
 /*
-export async function convertFile(fileId: number): Promise<void> {
-    const unit = await Unit.create(true);
-    const fileService = new FileService(unit);
-
-    const file = await fileService.getFilePath(fileId);
-
-    if (file === undefined) {
-        throw new Error("File not found");
-    }
-
-    const content = await readFile(file, "utf-8");
-
-    asciidoctorInstance.convert(content,
-        {
-            to_file: path.basename(file) + `.html`,
-            to_dir: path.dirname(file),
-            attributes: {
-                'stylesheet': `./${path.basename(file)}.css`,
-                'copycss': true,
-                'source-highlighter': 'highlight.js'
-            }
-        }
-    );
-
-    await fsPromises.appendFile(path.dirname(file)+ path.basename(file) + `.html`, `<style> .hljs{ background:transparent;}</style>`);
-
-}
-
 export async function convertProject(userName:string,project: Project): Promise<string[]> {
     let content: string[] = [];
 
@@ -100,4 +71,4 @@ export async function convertProject(userName:string,project: Project): Promise<
 
     return content;
 }
- */
+*/
