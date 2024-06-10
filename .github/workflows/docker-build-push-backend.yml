@@ -1,4 +1,4 @@
-name: "docker-build-push-dev"
+name: "docker-build-push-backend"
 
 on:
  push:
@@ -26,4 +26,4 @@ jobs:
      with:
       context: ./StaticSiteGenerator
       push: true
-      tags: ${{ secrets.DOCKERHUB_USERNAME }}/static_site_generator:dev
+      tags: ${{ secrets.DOCKERHUB_USERNAME }}/static_site_generator:backend
