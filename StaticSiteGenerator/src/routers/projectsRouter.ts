@@ -1,11 +1,12 @@
-import express from "express";
+import express, {Router} from "express";
 import Keycloak from "keycloak-connect";
 import { Unit } from "../database/unit";
 import { memoryStore } from "../app";
 import { ProjectService } from "../services/projectService";
 import { StatusCodes } from "http-status-codes";
+import * as fs from "fs/promises";
 
-export const projectRouter = express.Router();
+export const projectRouter: Router = express.Router();
 const keycloak: Keycloak.Keycloak = new Keycloak({ store: memoryStore });
 
 //get all projects of a user
@@ -55,7 +56,6 @@ projectRouter.patch("/name/:id", [keycloak.protect()], async (req: any, res: any
         await unit.complete(false);
     }
 });
-
 //patch a project themeId; themeId in the body
 projectRouter.patch("/theme/:id", [keycloak.protect()], async (req: any, res: any) : Promise<void> => {
     const unit: Unit = await Unit.create(false);
@@ -78,6 +78,13 @@ projectRouter.delete("/:id", [keycloak.protect()], async (req: any, res: any) : 
     const unit: Unit = await Unit.create(false);
     const projectService: ProjectService = new ProjectService(unit);
     try{
+        const projectPath: string | null = await projectService.getProjectPath(req.params.id);
+        if (projectPath === null) {
+            res.sendStatus(StatusCodes.BAD_REQUEST);
+            await unit.complete(false);
+            return;
+        }
+        await fs.rm(projectPath, {recursive: true});
         res.status(StatusCodes.OK).send(
             await projectService.deleteProject(
                 req.kauth.grant.access_token.content.preferred_username, req.params.id));

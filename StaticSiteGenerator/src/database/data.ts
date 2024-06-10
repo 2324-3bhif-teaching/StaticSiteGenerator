@@ -1,6 +1,5 @@
 import { Database as Driver } from "sqlite3";
 import { open, Database } from "sqlite";
-import {Theme} from "../theme";
 import { DefaultTheme } from "../constants";
 
 export const dbFileName = 'StaticSiteGenerator.db';
@@ -83,7 +82,8 @@ export class DB {
             name text not null,
             project_id integer not null,
             constraint FK_Project foreign key (project_id) references Project(id) on delete cascade,
-            constraint CK_File_Name check (trim(name) != '')
+            constraint CK_File_Name check (trim(name) != ''),
+            constraint CK_Unique_File_Name unique (name, project_id)
         ) strict`);
 
         this.tableInitDone = true;
@@ -115,6 +115,8 @@ export class DB {
         await DB.beginTransaction(connection);
         try {
             await connection.run(`Insert into THEME (user_name, name, is_public) Values ('${DefaultTheme.userName}','${DefaultTheme.name}',${DefaultTheme.isPublic ? 1 : 0})`);
+            await connection.run(`Insert into Element_Style (selector, theme_id) Values ('h2', 1)`);
+            await connection.run(`Insert into Style (property, value, element_style_id) Values ('color', 'red', 1)`);
             await DB.commitTransaction(connection);
         }
         catch (error)

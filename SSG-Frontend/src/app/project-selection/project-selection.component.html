@@ -1,0 +1,14 @@
+<main class="bg-gray-900 h-lvh">
+    <div class="flex justify-end mr-80">
+        <button
+            class="rounded-lg bg-gray-900 border-gray-700 hover:text-gray-300 border-4 hover:border-blue-500 text-white p-3 my-4 transition-all"
+            (click)="openProjectModal()">Create
+            New Project</button>
+    </div>
+
+
+    <div class="flex flex-col justify-center items-center">
+        <app-project *ngFor="let project of projects; index as idx" [project]="project"
+            (deleteRequest)="deleteProject(idx)"></app-project>
+    </div>
+</main>

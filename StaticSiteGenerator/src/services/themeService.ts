@@ -47,6 +47,18 @@ export class ThemeService extends ServiceBase {
         return await this.executeStmt(stmt);
     }
 
+    public async ownsTheme(userName: string, themeId: number): Promise<boolean> {
+        const stmt: Statement = await this.unit.prepare("select count(*) as count from Theme where user_name = ?1 and id = ?2",
+            {1: userName, 2: themeId});
+        return ((await stmt.get<{count: number}>())?.count ?? 0) >= 1;
+    }
+
+    public async isAllowedToUseTheme(userName: string, themeId: number): Promise<boolean> {
+        const stmt: Statement = await this.unit.prepare("select count(*) as count from Theme where id = ?2 and (user_name = ?1 or is_public != 0)",
+            {1: userName, 2: themeId});
+        return ((await stmt.get<{count: number}>())?.count ?? 0) >= 1;
+    }
+
     private normalizeThemes(themes: Theme[]): Theme[] {
         return themes.map(t => {
             return {

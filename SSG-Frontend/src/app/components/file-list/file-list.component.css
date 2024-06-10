@@ -1,0 +1,37 @@
+.scrollbar {
+  overflow-y: auto;
+  /* Show scrollbar only when needed */
+  scrollbar-width: auto;
+  /* For Firefox: Show scrollbar only when needed */
+  scrollbar-color: #555 rgb(37, 37, 37);
+  /* For Firefox: thumb and track color */
+}
+
+/* For WebKit browsers */
+.scrollbar::-webkit-scrollbar {
+  width: 8px;
+  /* Width of the scrollbar */
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  /* Light gray background for the track */
+  border-radius: 10px;
+  /* Rounded corners for the track */
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background: #888;
+  /* Darker gray for the scrollbar handle */
+  border-radius: 10px;
+  /* Rounded corners for the handle */
+}
+
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #555;
+  /* Even darker gray for the handle on hover */
+}
+
+.active {
+  @apply bg-gray-950 transition-all;
+}
