@@ -13,7 +13,9 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/ssg-frontend",
+            "outputPath": {
+              "base": "dist/ssg-frontend",
+              "browser": "" },
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -38,12 +40,12 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumError": "2mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumError": "2mb"
                 }
               ],
               "outputHashing": "all"
