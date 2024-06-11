@@ -5,9 +5,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "main", "release", "stable-*" ]
+    branches: [ "main", "stable-*" ]
   pull_request:
-    branches: [ "main", "release", "stable-*" ]
+    branches: [ "main", "stable-*" ]
 
 jobs:
   build:
@@ -26,13 +26,13 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: ./StaticSiteGenerator
+          cache-dependency-path: ./SSG-Backend
       - name: Install dependencies
         run: npm ci
-        working-directory: ./StaticSiteGenerator
+        working-directory: ./SSG-Backend
       - name: Build the project
         run: npm run build --if-present
-        working-directory: ./StaticSiteGenerator
+        working-directory: ./SSG-Backend
       - name: Run tests
         run: npm test
-        working-directory: ./StaticSiteGenerator
+        working-directory: ./SSG-Backend

@@ -1,0 +1,8 @@
+== test header
+
+[source,javascript]
+----
+function test() {
+	console.log("hello");
+}
+----

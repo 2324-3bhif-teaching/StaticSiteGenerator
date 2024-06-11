@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BaseService } from './base.service';
-import { Project } from "./project.service";
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +29,10 @@ export class FileService {
 
   updateFileIndex(fileId: number, newIndex: number) {
     return this.http.patch(`${this.filesURL}/${fileId}`, { index: newIndex });
+  }
+
+  convertFile(fileId: number) {
+    return this.http.get<{ html: string }>(`${this.filesURL}/convert/${fileId}`);
   }
 }
 

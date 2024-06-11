@@ -1,10 +1,8 @@
-name: "docker-build-push-release"
+name: "docker-build-push-frontend"
 
 on:
  push:
-  branches: [ release ]
- pull_request:
-  branches: [ release ]
+  branches: [ main ]
     
 jobs:
  build-and-push:
@@ -26,6 +24,6 @@ jobs:
    - name: Docker Build
      uses: docker/build-push-action@v4
      with:
-      context: ./StaticSiteGenerator
+      context: ./SSG-Frontend
       push: true
-      tags: ${{ secrets.DOCKERHUB_USERNAME }}/static_site_generator:release
+      tags: ${{ secrets.DOCKERHUB_USERNAME }}/static_site_generator:frontend

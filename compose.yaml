@@ -1,0 +1,23 @@
+﻿services:
+  web:
+    build: "./SSG-Frontend/"
+    ports:
+      - "8080:8080"
+    links:
+        - api
+    networks:
+      - back-tier
+      - front-tier
+      
+  api:
+    build: "./SSG-Backend/"
+    env_file:
+      - ./SSG-Backend/.env
+    networks:
+      - back-tier
+    expose:
+        - "3000"
+
+networks:
+  back-tier: {}
+  front-tier: {}
