@@ -1,17 +1,23 @@
 import { Component, Input } from '@angular/core';
 import { StyleService } from '../../services/style.service';
-import { ThemeService } from '../../services/theme.service';
-import { ElementStyle } from '../theme-editor/theme-editor.component';
 
 @Component({
   selector: 'app-element-style',
-  standalone: true,
-  imports: [],
+  standalone: false,
   templateUrl: './element-style.component.html',
   styleUrl: './element-style.component.css'
 })
 export class ElementStyleComponent {
-  @Input() elementStyle = {id: 1, selector: "Default", theme: { id: -1, name: "Def", userName: "Usr", isPublic: false } };
+  @Input() elementStyle = {
+    id: 1, 
+    selector: "Default", 
+    theme: { 
+      id: -1, 
+      name: "Def", 
+      userName: "Usr", 
+      isPublic: false
+    }
+  };
   public styles: Style[] = [];
 
   constructor(private styleService: StyleService){}
