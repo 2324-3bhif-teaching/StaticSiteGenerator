@@ -1,15 +1,16 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { StyleService } from '../../services/style.service';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-element-style',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './element-style.component.html',
   styleUrl: './element-style.component.css'
 })
-export class ElementStyleComponent {
+export class ElementStyleComponent implements OnChanges{
   @Input() elementStyle = {
     id: 1, 
     selector: "Default", 
@@ -24,13 +25,14 @@ export class ElementStyleComponent {
 
   constructor(private styleService: StyleService){}
 
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
+    if(changes['elementStyle.selector']){
+      console.log(`Selector change: ${changes['elementStyle.selector'].currentValue}`);
+    }
+  }
+
   ngOnInit(): void{
-    //Theme and element style missing because of isOwn check
-    this.styleService.postStyle({
-      elementStyleId: 1,
-      property: "font-size",
-      value: "20px"
-    }).subscribe();
     this.styleService.getAllServicesOfElementStyle(this.elementStyle.id).subscribe(styles => {
       this.styles = styles;
     });

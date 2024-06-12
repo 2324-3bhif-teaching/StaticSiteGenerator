@@ -2,11 +2,13 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ElementStyleService } from '../../services/element-style.service';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-theme-editor',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, FaIconComponent],
   templateUrl: './theme-editor.component.html',
   styleUrl: './theme-editor.component.css'
 })
@@ -19,6 +21,7 @@ export class ThemeEditorComponent {
   };
 
   public elementStyles: ElementStyle[] = [];
+  faPlus=faPlus;
 
   constructor(private elementStyleService: ElementStyleService){}
 
