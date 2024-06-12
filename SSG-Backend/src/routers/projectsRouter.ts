@@ -99,14 +99,18 @@ projectRouter.delete("/:id", [keycloak.protect()], async (req: any, res: any) : 
     }
 });
 
-projectRouter.get("/convert/:id", async (req: any, res: any) : Promise<void> => {
+projectRouter.get("/convert/:id", [keycloak.protect()], async (req: any, res: any) : Promise<void> => {
     const unit: Unit = await Unit.create(true);
     const projectService: ProjectService = new ProjectService(unit);
     const convertService: ConvertService = new ConvertService(unit);
     try{
+        if (!await projectService.ownsProject(req.kauth.grant.access_token.content.preferred_username, req.params.id)) {
+            res.sendStatus(StatusCodes.BAD_REQUEST);
+            return;
+        }
         const projectPath: string | null = await projectService.getProjectPath(req.params.id);
         if (projectPath === null) {
-            res.sendStatus(StatusCodes.BAD_REQUEST);
+            res.sendStatus(StatusCodes.NOT_FOUND);
             return;
         }
         const destinationPath: string = `${projectPath}.zip`;
