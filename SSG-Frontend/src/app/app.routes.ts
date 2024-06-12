@@ -9,6 +9,7 @@ import { FileListComponent } from "./components/file-list/file-list.component";
 import { EditProjectComponent } from './edit-project/edit-project.component';
 import { ElementStyleComponent } from './components/element-style/element-style.component';
 import {FilePreviewComponent} from "./components/file-preview/file-preview.component";
+import { StyleComponent } from './components/style/style.component';
 
 export const routes: Routes = [
     { path: ``, component: StartPageComponent },
@@ -18,5 +19,6 @@ export const routes: Routes = [
     { path: `file-list`, component: FileListComponent },
     { path: `edit-project/:id`, component: EditProjectComponent },
     { path: `element-style/:id`, component: ElementStyleComponent},
-    { path: `file-preview`, component: FilePreviewComponent }
+    { path: `file-preview`, component: FilePreviewComponent },
+    { path: `style/:id`, component: StyleComponent}
 ];

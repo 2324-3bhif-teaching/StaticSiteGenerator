@@ -25,21 +25,21 @@ export class StyleComponent{
 
   constructor(private styleService: StyleService){}
 
-  propertyChange(){
+  propertyChange(): void{
     if(this.propertyInput.nativeElement.value !== this.style.property){
       this.style.property = this.propertyInput.nativeElement.value;
       this.styleService.patchStyleProperty(this.style.id, this.propertyInput.nativeElement.value);
     }
   }
 
-  valueChange(){
+  valueChange(): void{
     if(this.valueInput.nativeElement.value !== this.style.value){
       this.style.value = this.valueInput.nativeElement.value;
       this.styleService.patchStyleProperty(this.style.id, this.valueInput.nativeElement.value);
     }
   }
 
-  onDelete(){
+  onDelete(): void{
     this.styleService.deleteStyle(this.style.id).subscribe(() => {
       this.reloadStylesEmitter.emit();
     });

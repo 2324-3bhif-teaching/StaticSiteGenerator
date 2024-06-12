@@ -1,11 +1,14 @@
 <div class="ml-4 flex flex-col p-4 bg-gray-800 text-white rounded-lg shadow-lg w-40">
-    <input class="p-2 bg-gray-700 rounded-md border border-gray-600 placeholder-gray-400 text-white" [(ngModel)]="elementStyle.selector">
+    <input #selectorInput class="p-2 bg-gray-700 rounded-md border border-gray-600 placeholder-gray-400 text-white" value="{{elementStyle.selector}}" (keyup.enter)="selectorChange()" (blur)="selectorChange()"/>
     <p class="text-gray-400 text-lg my-2">{{ '{' }}</p>
     <div class="flex flex-col pl-4">
       <div class="py-1" *ngFor="let style of styles">
         <!-- Assuming you want to display each style in some way, e.g., as a text or structured layout -->
-        <span class="text-gray-300">{{style.property}}: {{style.value}};</span>
+        <<!--<span class="text-gray-300">{{style.property}}: {{style.value}};</span>-->
+        <app-style (reloadStylesEmitter)="loadStyles()"></app-style>
       </div>
     </div>
     <p class="text-gray-400 text-lg my-2">{{ '}' }}</p>
+    <button (click)="onDelete()">Delete Element Style</button>
+    <button (click)="onAddStyle()">Add Style</button>
   </div>

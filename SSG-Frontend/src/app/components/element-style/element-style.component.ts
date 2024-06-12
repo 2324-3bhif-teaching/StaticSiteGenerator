@@ -1,16 +1,18 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { StyleService } from '../../services/style.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { StyleComponent } from "../style/style.component";
+import { ElementStyleService } from '../../services/element-style.service';
 
 @Component({
-  selector: 'app-element-style',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './element-style.component.html',
-  styleUrl: './element-style.component.css'
+    selector: 'app-element-style',
+    standalone: true,
+    templateUrl: './element-style.component.html',
+    styleUrl: './element-style.component.css',
+    imports: [CommonModule, FormsModule, StyleComponent]
 })
-export class ElementStyleComponent implements OnChanges{
+export class ElementStyleComponent{
   @Input() elementStyle = {
     id: 1, 
     selector: "Default", 
@@ -21,20 +23,42 @@ export class ElementStyleComponent implements OnChanges{
       isPublic: false
     }
   };
+  @ViewChild('#selectorInput') selectorInput!: ElementRef;
+  @Output() reloadElementStylesEmitter = new EventEmitter<void>();
   public styles: Style[] = [];
 
-  constructor(private styleService: StyleService){}
+  constructor(private elementStyleService: ElementStyleService, private styleService: StyleService){}
 
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
-    if(changes['elementStyle.selector']){
-      console.log(`Selector change: ${changes['elementStyle.selector'].currentValue}`);
+  selectorChange(): void{
+    if(this.selectorInput.nativeElement.value !== this.elementStyle.selector){
+      this.elementStyle.selector = this.selectorInput.nativeElement.value;
+      this.elementStyleService.patchElementStyleSelector(this.elementStyle.id, this.selectorInput.nativeElement.value);
     }
   }
 
   ngOnInit(): void{
+    this.loadStyles;
+  }
+
+  loadStyles(): void{
     this.styleService.getAllServicesOfElementStyle(this.elementStyle.id).subscribe(styles => {
       this.styles = styles;
+    });
+  }
+
+  onDelete(): void{
+    this.elementStyleService.deleteElementStyle(this.elementStyle.id).subscribe(() => {
+      this.reloadElementStylesEmitter.emit();
+    });
+  }
+
+  onAddStyle(): void{
+    this.styleService.postStyle({
+      elementStyleId: this.elementStyle.id,
+      property: "",
+      value: ""
+    }).subscribe(() => {
+      this.loadStyles();
     });
   }
 }
