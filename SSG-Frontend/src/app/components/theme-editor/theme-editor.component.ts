@@ -14,7 +14,7 @@ import { ElementStyleComponent } from "../element-style/element-style.component"
     imports: [CommonModule, FormsModule, FaIconComponent, ElementStyleComponent]
 })
 export class ThemeEditorComponent {
-  @Input() theme = { 
+  @Input() theme: Theme = { 
     id: -1, 
     name: "Def", 
     userName: "Usr", 

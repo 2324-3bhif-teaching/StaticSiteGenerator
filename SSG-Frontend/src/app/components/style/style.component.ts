@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { StyleService } from '../../services/style.service';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faMinus } from '@fortawesome/free-solid-svg-icons';
+import { Style } from '../element-style/element-style.component';
 
 @Component({
   selector: 'app-style',
@@ -12,7 +13,7 @@ import { faMinus } from '@fortawesome/free-solid-svg-icons';
   styleUrl: './style.component.css'
 })
 export class StyleComponent{
-  @Input() style = {
+  @Input() style: Style = {
     id: 1,
     property: "font-size",
     value: "20px",

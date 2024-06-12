@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { StyleComponent } from "../style/style.component";
 import { ElementStyleService } from '../../services/element-style.service';
+import { ElementStyle } from '../theme-editor/theme-editor.component';
 
 @Component({
     selector: 'app-element-style',
@@ -13,15 +14,10 @@ import { ElementStyleService } from '../../services/element-style.service';
     imports: [CommonModule, FormsModule, StyleComponent]
 })
 export class ElementStyleComponent{
-  @Input() elementStyle = {
+  @Input() elementStyle: ElementStyle = {
     id: 1, 
     selector: "Default", 
-    theme: { 
-      id: -1, 
-      name: "Def", 
-      userName: "Usr", 
-      isPublic: false
-    }
+    themeId: -1
   };
   @ViewChild('#selectorInput') selectorInput!: ElementRef;
   @Output() reloadElementStylesEmitter = new EventEmitter<void>();
