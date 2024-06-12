@@ -46,6 +46,7 @@ export class FileListComponent {
       this.activeFile = this.DefaultFile;
     }
     this.changeActiveFile.emit(this.activeFile.id);
+    console.log("Emitted event");
   }
 
   onFileDelete(): void {

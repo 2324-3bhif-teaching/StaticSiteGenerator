@@ -37,6 +37,7 @@ export class ProjectSelectionComponent {
     this.projects.push(newProject);
 
     this.projectService.postProject(newProject.name).subscribe();
+    document.location.reload();
   }
 
   openProjectModal(): void {

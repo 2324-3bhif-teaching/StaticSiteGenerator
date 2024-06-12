@@ -8,5 +8,7 @@ export class BaseService {
   public THEME_URL: string = "/api/themes";
   public PROJECTS_URL: string = "/api/projects";
   public FILES_URL: string = "/api/files";
+  public STYLE_URL: string = "/api/styles";
+  public ELEMENTSTYLE_URL: string = "/api/elementStyles"
   constructor() { }
 }
