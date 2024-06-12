@@ -57,7 +57,7 @@ filesRouter.get("/:projectId", [keycloak.protect()], async (req: any, res: any):
 });
 
 filesRouter.post("/", [keycloak.protect(), upload.array("file")], async (req: any, res: any): Promise<void> => {
-    if (req.file === undefined) {
+    if (req.files === undefined) {
         res.sendStatus(StatusCodes.BAD_REQUEST);
         return;
     }
@@ -70,7 +70,6 @@ filesRouter.post("/", [keycloak.protect(), upload.array("file")], async (req: an
             || !await projectService.ownsProject(req.kauth.grant.access_token.content.preferred_username, req.body.projectId)) {
             res.sendStatus(StatusCodes.BAD_REQUEST);
             await unit.complete(false);
-            await fs.rm(req.file.path);
             return;
         }
 
@@ -82,7 +81,7 @@ filesRouter.post("/", [keycloak.protect(), upload.array("file")], async (req: an
         await fs.mkdir(join(__dirname, "../../",  projectPath), {recursive: true});
 
         for (const file of req.files) {
-            await fs.rename(req.file.path, join(__dirname, "../../", projectPath, file.originalname));
+            await fs.rename(file.path, join(__dirname, "../../", projectPath, file.originalname));
         }
 
         await unit.complete(true);

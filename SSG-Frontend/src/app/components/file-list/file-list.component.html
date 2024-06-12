@@ -16,11 +16,8 @@
       (click)="onFileUpdate(1)"><fa-icon [icon]="faArrowDown"></fa-icon></button>
     <label class="bg-green-500 hover:bg-green-600 hover:text-gray-400 rounded-sm transition-all p-1 text-center"
       for="file"><fa-icon [icon]="faFile"></fa-icon></label>
-    <form (submit)="uploadFile()" enctype="multipart/form-data">
-      <input type="file" id="file" name="file" class="hidden" (change)="handleFileInput($event)">
-      <button type="submit"
-        class="bg-green-500 hover:bg-green-600 hover:text-gray-400 rounded-sm transition-all w-full lg:w-16 p-1"><fa-icon
-          [icon]="faUpload"></fa-icon></button>
+    <form enctype="multipart/form-data">
+      <input type="file" id="file" name="file" class="hidden" (change)="handleFileInput($event)" multiple>
     </form>
   </div>
 </div>
