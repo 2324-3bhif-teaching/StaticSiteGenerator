@@ -56,7 +56,7 @@ filesRouter.get("/:projectId", [keycloak.protect()], async (req: any, res: any):
     }
 });
 
-filesRouter.post("/", [keycloak.protect(), upload.single("file")], async (req: any, res: any): Promise<void> => {
+filesRouter.post("/", [keycloak.protect(), upload.array("file")], async (req: any, res: any): Promise<void> => {
     if (req.file === undefined) {
         res.sendStatus(StatusCodes.BAD_REQUEST);
         return;
@@ -74,10 +74,16 @@ filesRouter.post("/", [keycloak.protect(), upload.single("file")], async (req: a
             return;
         }
 
-        const result: boolean = await fileService.insertFile(req.body.projectId, req.file.originalname);
+        let result;
+        for (const file of req.files) {
+            result = await fileService.insertFile(req.body.projectId, file.originalname) || result;
+        }
 
         await fs.mkdir(join(__dirname, "../../",  projectPath), {recursive: true});
-        await fs.rename(req.file.path, join(__dirname, "../../", projectPath, req.file.originalname));
+
+        for (const file of req.files) {
+            await fs.rename(req.file.path, join(__dirname, "../../", projectPath, file.originalname));
+        }
 
         await unit.complete(true);
         res.status(StatusCodes.CREATED).send(result);
