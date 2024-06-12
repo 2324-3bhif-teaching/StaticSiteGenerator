@@ -53,6 +53,7 @@ export class FileListComponent {
       this.files = this.files.filter(file => file.id !== this.activeFile.id);
       this.fileService.deleteFile(this.activeFile.id).subscribe();
       this.activeFile = this.DefaultFile;
+      this.changeActiveFile.emit(this.activeFile.id);
     }
   }
 

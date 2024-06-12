@@ -155,7 +155,7 @@ filesRouter.get("/convert/:fileId", [keycloak.protect()], async (req: any, res: 
         }
         else {
             res.status(StatusCodes.OK).send({
-                html: await convertService.convertFile(req.params.fileId)
+                html: await convertService.convertFile(req.params.fileId, true)
             });
         }
     }
