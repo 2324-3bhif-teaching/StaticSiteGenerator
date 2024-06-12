@@ -33,6 +33,12 @@ export class ProjectService {
   deleteProject(id:number){
     return this.http.delete(`${this.projectURL}/${id}`);
   }  
+
+  convertProject(id:number){
+    return this.http.get<Blob>(`${this.projectURL}/convert/${id}`, {
+      responseType: 'blob' as 'json'
+    });
+  }
 }
 
 export interface Project {
