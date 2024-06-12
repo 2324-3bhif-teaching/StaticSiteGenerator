@@ -1,34 +1,47 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { StyleService } from '../../services/style.service';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faMinus } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-style',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, FaIconComponent],
   templateUrl: './style.component.html',
   styleUrl: './style.component.css'
 })
-export class StyleComponent implements OnChanges{
+export class StyleComponent{
   @Input() style = {
     id: 1,
     property: "font-size",
     value: "20px",
     elementStyleId: 1
   };
+  @Output() reloadStylesEmitter = new EventEmitter<void>();
+  @ViewChild('propertyInput') propertyInput!: ElementRef;
+  @ViewChild('valueInput') valueInput!: ElementRef;
+  faMinus=faMinus;
 
   constructor(private styleService: StyleService){}
 
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
-    if(changes['style.property']){
-      console.log(`send patch request and with ${changes['style.property'].currentValue}`);
-      //this.styleService.patchStyleProperty(
-        //this.style.id, changes['style.property'].currentValue);
+  propertyChange(){
+    if(this.propertyInput.nativeElement.value !== this.style.property){
+      this.style.property = this.propertyInput.nativeElement.value;
+      this.styleService.patchStyleProperty(this.style.id, this.propertyInput.nativeElement.value);
     }
-    else if(changes['style.value']){
-      this.styleService.patchStyleValue(
-        this.style.id, changes['style.value'].currentValue);
+  }
+
+  valueChange(){
+    if(this.valueInput.nativeElement.value !== this.style.value){
+      this.style.value = this.valueInput.nativeElement.value;
+      this.styleService.patchStyleProperty(this.style.id, this.valueInput.nativeElement.value);
     }
+  }
+
+  onDelete(){
+    this.styleService.deleteStyle(this.style.id).subscribe(() => {
+      this.reloadStylesEmitter.emit();
+    });
   }
 }

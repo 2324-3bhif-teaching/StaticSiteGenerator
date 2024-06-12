@@ -1,1 +1,4 @@
-<input [(ngModel)]="style.property">: <input [(ngModel)]="style.value">
+<input #propertyInput value="{{style.property}}" (keyup.enter)="propertyChange()" (blur)="propertyChange()"/>: <input #valueInput value="{{style.value}}" (keyup.enter)="valueChange()" (blur)="valueChange()"/>;
+<button (click)="onDelete">
+    <fa-icon [icon]="faMinus"></fa-icon>
+</button>
