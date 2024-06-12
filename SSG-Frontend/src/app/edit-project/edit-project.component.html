@@ -1,12 +1,18 @@
 <div class="text-gray-300 bg-gray-900 h-dvh flex flex-col">
-    <div class="justify-center">
-        <app-theme-editor></app-theme-editor>
+    <div class="justify-center">  
+        <app-element-style></app-element-style>      
     </div>
 
-    <div class="justify-end">
-        @if (project.id !== -1) {
-        <app-file-list [project]="project"></app-file-list>
-        }
+    
+    <div class="flex flex-row">
+        <div class="items-start pr-40">
+            @if (project.id !== -1) {
+            <app-file-list (changeActiveFile)="onChangeActiveFileId($event)" [project]="project"></app-file-list>
+            }
+        </div>
+        <div class="items-end">
+            <app-file-preview [themeId]="themeId" [fileId]="activeFileId"></app-file-preview>
+        </div>
+
     </div>
-  <app-file-preview [themeId]="themeId" [fileId]="activeFileId"></app-file-preview>
 </div>

@@ -1,9 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { StyleService } from '../../services/style.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-element-style',
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './element-style.component.html',
   styleUrl: './element-style.component.css'
 })

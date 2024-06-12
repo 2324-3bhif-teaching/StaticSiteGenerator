@@ -28,12 +28,14 @@ export class FilePreviewComponent implements OnChanges {
   ngOnInit(): void {}
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes)
     if (changes['fileId'] || changes['themeId']) {
       this.reloadFilePreview();
     }
   }
 
   protected reloadFilePreview() {
+    console.log("reloading "+this.fileId+" "+this.themeId)
     if (this.fileId === -1 || this.themeId === -1) {
       this.fileHtml = "";
       return;
