@@ -15,6 +15,8 @@ export class DB {
             driver: Driver
         });
         await db.run('PRAGMA foreign_keys = ON');
+        await db.run ('PRAGMA journal_mode = WAL');
+        await db.run('PRAGMA busy_timeout = 30000');
 
         await DB.ensureTablesCreated(db);
         return db;
