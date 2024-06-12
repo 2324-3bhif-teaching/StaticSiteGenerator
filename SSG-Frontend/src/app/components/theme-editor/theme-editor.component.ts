@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ElementStyleService } from '../../services/element-style.service';
+import { ElementStyle, ElementStyleService } from '../../services/element-style.service';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { ElementStyleComponent } from "../element-style/element-style.component";
+import { Theme } from '../../services/theme.service';
 
 @Component({
     selector: 'app-theme-editor',
@@ -43,23 +44,4 @@ export class ThemeEditorComponent {
       this.loadElementStyles();
     });
   }
-}
-
-export interface ElementStyleData{
-  selector: string,
-  themeId: number
-};
-
-export interface ElementStyle extends ElementStyleData{
-  id: number
-};
-
-export interface ThemeData {
-  userName: string;
-  name: string;
-  isPublic: boolean;
-}
-
-export interface Theme extends ThemeData {
-  id: number;
 }

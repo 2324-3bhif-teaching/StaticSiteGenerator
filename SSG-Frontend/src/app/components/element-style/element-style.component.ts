@@ -1,10 +1,9 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { StyleService } from '../../services/style.service';
+import { Style, StyleService } from '../../services/style.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { StyleComponent } from "../style/style.component";
-import { ElementStyleService } from '../../services/element-style.service';
-import { ElementStyle } from '../theme-editor/theme-editor.component';
+import { ElementStyle, ElementStyleService } from '../../services/element-style.service';
 
 @Component({
     selector: 'app-element-style',
@@ -57,14 +56,4 @@ export class ElementStyleComponent{
       this.loadStyles();
     });
   }
-}
-
-export interface StyleData{
-  elementStyleId: number,
-  property: string,
-  value: string
-}
-
-export interface Style extends StyleData{
-  id: number,
 }

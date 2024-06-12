@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BaseService } from './base.service';
-import { Style, StyleData } from '../components/element-style/element-style.component';
 import { style } from '@angular/animations';
 
 @Injectable({
@@ -32,4 +31,14 @@ export class StyleService {
   deleteStyle(id: number){
     return this.http.delete(`${this.stylesUrl}/${id}`);
   }
+}
+
+export interface StyleData{
+  elementStyleId: number,
+  property: string,
+  value: string
+}
+
+export interface Style extends StyleData{
+  id: number,
 }

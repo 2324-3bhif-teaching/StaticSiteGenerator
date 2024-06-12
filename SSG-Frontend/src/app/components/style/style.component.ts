@@ -1,9 +1,8 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { StyleService } from '../../services/style.service';
+import { Style, StyleService } from '../../services/style.service';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faMinus } from '@fortawesome/free-solid-svg-icons';
-import { Style } from '../element-style/element-style.component';
 
 @Component({
   selector: 'app-style',
