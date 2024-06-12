@@ -5,6 +5,8 @@ import { memoryStore } from "../app";
 import { ProjectService } from "../services/projectService";
 import { StatusCodes } from "http-status-codes";
 import * as fs from "fs/promises";
+import {ConvertService} from "../services/convertService";
+import {join} from "path";
 
 export const projectRouter: Router = express.Router();
 const keycloak: Keycloak.Keycloak = new Keycloak({ store: memoryStore });
@@ -94,5 +96,30 @@ projectRouter.delete("/:id", [keycloak.protect()], async (req: any, res: any) : 
         console.log(error);
         res.sendStatus(StatusCodes.BAD_REQUEST);
         await unit.complete(false);
+    }
+});
+
+projectRouter.get("/convert/:id", async (req: any, res: any) : Promise<void> => {
+    const unit: Unit = await Unit.create(true);
+    const projectService: ProjectService = new ProjectService(unit);
+    const convertService: ConvertService = new ConvertService(unit);
+    try{
+        const projectPath: string | null = await projectService.getProjectPath(req.params.id);
+        if (projectPath === null) {
+            res.sendStatus(StatusCodes.BAD_REQUEST);
+            return;
+        }
+        const destinationPath: string = `${projectPath}.zip`;
+        await convertService.convertProject(req.params.id, destinationPath);
+        const relativePath: string = join(__dirname, "/../..", destinationPath);
+        res.status(StatusCodes.OK).sendFile(relativePath);
+        await fs.rm(relativePath);
+    }
+    catch(error){
+        console.log(error);
+        res.sendStatus(StatusCodes.BAD_REQUEST);
+    }
+    finally {
+        await unit.complete();
     }
 });
