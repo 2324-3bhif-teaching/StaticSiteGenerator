@@ -1,6 +1,11 @@
 .preview-field{
-    height: 10rem;
+    height: 100%;
+    max-height: 100%;
     margin-right: 5rem;
     max-width: 70%;
     min-width: 70%;
+}
+
+.viewport{
+    overflow-y: hidden;
 }
