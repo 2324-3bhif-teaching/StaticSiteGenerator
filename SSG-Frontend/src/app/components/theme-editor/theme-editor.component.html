@@ -4,6 +4,6 @@
         <div *ngFor="let elementStyle of elementStyles">
             <app-element-style (reloadElementStylesEmitter)="loadElementStyles()" [elementStyle]="elementStyle"></app-element-style>
         </div>
-        <button (click)="addElementStyle"><fa-icon [icon]="faPlus"></fa-icon></button>
+        <button (click)="addElementStyle()"><fa-icon [icon]="faPlus"></fa-icon></button>
     </div>
 </div>
