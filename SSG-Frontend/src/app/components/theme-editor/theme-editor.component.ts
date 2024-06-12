@@ -4,13 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { ElementStyleService } from '../../services/element-style.service';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { ElementStyleComponent } from "../element-style/element-style.component";
 
 @Component({
-  selector: 'app-theme-editor',
-  standalone: true,
-  imports: [CommonModule, FormsModule, FaIconComponent],
-  templateUrl: './theme-editor.component.html',
-  styleUrl: './theme-editor.component.css'
+    selector: 'app-theme-editor',
+    standalone: true,
+    templateUrl: './theme-editor.component.html',
+    styleUrl: './theme-editor.component.css',
+    imports: [CommonModule, FormsModule, FaIconComponent, ElementStyleComponent]
 })
 export class ThemeEditorComponent {
   @Input() theme = { 
@@ -19,15 +20,27 @@ export class ThemeEditorComponent {
     userName: "Usr", 
     isPublic: false
   };
-
   public elementStyles: ElementStyle[] = [];
   faPlus=faPlus;
 
   constructor(private elementStyleService: ElementStyleService){}
 
-  ngOnInit(){
+  ngOnInit(): void{
+    this.loadElementStyles();
+  }
+
+  loadElementStyles(): void{
     this.elementStyleService.getAllFromTheme(this.theme.id).subscribe(elementStyles => {
       this.elementStyles = elementStyles;
+    });
+  }
+
+  addElementStyle(): void{
+    this.elementStyleService.postElementStyle({
+      selector: "",
+      themeId: this.theme.id
+    }).subscribe(() => {
+      this.loadElementStyles();
     });
   }
 }
