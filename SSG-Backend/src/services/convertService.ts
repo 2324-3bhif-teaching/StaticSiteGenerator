@@ -5,6 +5,12 @@ import {ElementStyle, ElementStyleService} from "./elementStyleService";
 import {StyleService} from "./styleService";
 import {Style} from "./styleService";
 import {FileService} from "./fileService";
+import {ProjectService} from "./projectService";
+import {File} from "./fileService";
+import * as fs from "fs";
+import {WriteStream} from "fs";
+import archiver, {Archiver} from "archiver";
+import {basename, join} from "path";
 
 export class ConvertService extends ServiceBase {
     constructor(unit: Unit) {
@@ -35,7 +41,7 @@ export class ConvertService extends ServiceBase {
         return outputCss;
     }
 
-    public async convertFile(fileId: number): Promise<string> {
+    public async convertFile(fileId: number, standalone: boolean): Promise<string> {
         const fileService: FileService = new FileService(this.unit);
 
         const filePath: string | null = await fileService.getFilePath(fileId);
@@ -44,60 +50,49 @@ export class ConvertService extends ServiceBase {
             throw new Error("File not found");
         }
 
+        let attributes: any = {
+            'stylesheet!': false,
+            'linkcss': false,
+            'source-highlighter': 'highlight.js'
+        };
+
+        if (!standalone) {
+            attributes = {
+                'linkcss': true,
+                'stylesheet': 'style.css',
+                'source-highlighter': 'highlight.js'
+            }
+        }
+
         const asciidoctorInstance = Asciidoctor();
         return asciidoctorInstance.convertFile(filePath, {
             to_file: false,
             standalone: true,
-            attributes: {
-                'stylesheet!': false,
-                'linkcss': false,
-                'source-highlighter': 'highlight.js'
-            }
+            attributes: attributes
         }).toString();
     }
-}
 
-
-/*
-export async function convertFile(fileId: number): Promise<void> {
-    const unit = await Unit.create(true);
-    const fileService = new FileService(unit);
-
-    const file = await fileService.getFilePath(fileId);
-
-    if (file === undefined) {
-        throw new Error("File not found");
-    }
-
-    const content = await readFile(file, "utf-8");
-
-    asciidoctorInstance.convert(content,
-        {
-            to_file: path.basename(file) + `.html`,
-            to_dir: path.dirname(file),
-            attributes: {
-                'stylesheet': `./${path.basename(file)}.css`,
-                'copycss': true,
-                'source-highlighter': 'highlight.js'
-            }
+    public async convertProject(projectId: number, destinationPath: string): Promise<void> {
+        const projectService: ProjectService = new ProjectService(this.unit);
+        const projectPath: string | null = await projectService.getProjectPath(projectId);
+        if (projectPath === null) {
+            return;
         }
-    );
+        const fileService: FileService = new FileService(this.unit);
+        const files: File[] = await fileService.selectFilesOfProject(projectId);
 
-    await fsPromises.appendFile(path.dirname(file)+ path.basename(file) + `.html`, `<style> .hljs{ background:transparent;}</style>`);
+        const outputStream: WriteStream = fs.createWriteStream(join(__dirname, "/../..", destinationPath));
+        const archive: Archiver = archiver('zip', {
+            zlib: { level: 9 }
+        });
 
+        archive.pipe(outputStream);
+
+        for (const file of files) {
+            archive.append(await this.convertFile(file.id, false), {name: `${basename(file.name, "adoc")}.html`});
+        }
+        archive.append(await this.convertThemeToCss(projectId), {name: "style.css"});
+
+        await archive.finalize();
+    }
 }
-
-export async function convertProject(userName:string,project: Project): Promise<string[]> {
-    let content: string[] = [];
-
-    const unit = await Unit.create(true);
-    const fileService = new FileService(unit);
-
-    (await fileService.selectFilesOfProject(userName,project.id)).forEach(file =>{
-        convertFile(file.id);
-    });
-
-
-    return content;
-}
- */
