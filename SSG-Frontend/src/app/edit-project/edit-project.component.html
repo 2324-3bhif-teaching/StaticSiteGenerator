@@ -1,18 +1,16 @@
-<div class="text-gray-300 bg-gray-900 h-dvh flex flex-col">
-    <div class="justify-center">  
-        <app-element-style></app-element-style>      
-    </div>
-
-    
-    <div class="flex flex-row">
-        <div class="items-start pr-40">
-            @if (project.id !== -1) {
-            <app-file-list (changeActiveFile)="onChangeActiveFileId($event)" [project]="project"></app-file-list>
-            }
+<div class="text-gray-300 bg-gray-900 h-screen flex flex-col pt-4">
+    <div class="flex flex-row justify-between w-full h-full">
+        <div class="justify-center">  
+            <app-element-style></app-element-style>  
+            <div>
+                @if (project.id !== -1) {
+                <app-file-list (changeActiveFile)="onChangeActiveFileId($event)" [project]="project"></app-file-list>
+                }
+            </div>    
         </div>
-        <div class="items-end">
+
+        <div class="preview-field">
             <app-file-preview [themeId]="themeId" [fileId]="activeFileId"></app-file-preview>
         </div>
-
     </div>
 </div>

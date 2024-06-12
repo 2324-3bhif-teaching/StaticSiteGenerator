@@ -1,1 +1,3 @@
-<div [innerHTML]="fileHtml" appHtmlLoaded (htmlLoaded)="onHtmlLoaded()"></div>
+<div class="bg-white text-black p-2 h-[45rem] min-w-[60rem] overflow-y-scroll overflow-x-hidden scrollbar rounded-lg">
+    <div class="p-2 rounded-lg h-full scale-90 transition-all" [innerHTML]="fileHtml" appHtmlLoaded (htmlLoaded)="onHtmlLoaded()"></div>
+</div>
