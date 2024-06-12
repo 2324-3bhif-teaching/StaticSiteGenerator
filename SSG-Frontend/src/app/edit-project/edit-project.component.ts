@@ -6,6 +6,7 @@ import { ThemeEditorComponent } from '../components/theme-editor/theme-editor.co
 import {FilePreviewComponent} from "../components/file-preview/file-preview.component";
 import { ElementStyleComponent } from '../components/element-style/element-style.component';
 import { ThemeService } from '../services/theme.service';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-edit-project',
@@ -51,5 +52,15 @@ export class EditProjectComponent {
 
   onChangeActiveFileId(fileId: number) {
     this.activeFileId = fileId;
+  }
+
+  convertProject(){
+    console.log(this.project);
+
+    this.projectService.convertProject(this.project.id).subscribe(data =>{
+      saveAs(data,`${this.project.name}.zip`);
+    }
+    )
+
   }
 }
