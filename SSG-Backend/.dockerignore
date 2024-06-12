@@ -1,6 +1,8 @@
 node_modules/
 test/
 *.db
+*.db-shm
+*.db-wal
 data/
 package-lock.json
 coverage/
