@@ -2,7 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleCh
 import { FormsModule } from '@angular/forms';
 import { Style, StyleService } from '../../services/style.service';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { faMinus } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, faMinus } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-style',
@@ -22,7 +22,7 @@ export class StyleComponent{
   @Output() reloadStylesEmitter = new EventEmitter<void>();
   @ViewChild('propertyInput') propertyInput: ElementRef | null = null;
   @ViewChild('valueInput') valueInput: ElementRef | null = null;
-  faMinus=faMinus;
+  faMinus: IconDefinition=faMinus;
 
   constructor(private styleService: StyleService){}
 
