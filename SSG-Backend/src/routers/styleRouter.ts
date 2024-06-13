@@ -10,7 +10,7 @@ export const styleRouter: Router = express.Router();
 const keycloak: Keycloak.Keycloak = new Keycloak({ store: memoryStore });
 
 //get all styles for a style element
-styleRouter.get("/elementStyle/:id", [keycloak.protect], async (req: any, res: any): Promise<void> => {
+styleRouter.get("/elementStyle/:id", [keycloak.protect()], async (req: any, res: any): Promise<void> => {
     const unit: Unit = await Unit.create(true);
     const service: StyleService = new StyleService(unit);
     const elementStyleService: ElementStyleService = new ElementStyleService(unit);

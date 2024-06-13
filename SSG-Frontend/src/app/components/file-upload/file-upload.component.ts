@@ -41,8 +41,5 @@ export class FileUploadComponent {
       return;
     }
 
-    this.fileService.postFile(this.fileToUpload, -1).subscribe(data => {
-      console.log(data);
-    });
   }
 }

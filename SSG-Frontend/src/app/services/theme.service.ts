@@ -19,8 +19,8 @@ export class ThemeService {
     return this.http.get<Theme[]>(`${this.themeURL}/private`);
   }
 
-  postTheme(theme:Theme){
-    return this.http.post(this.themeURL + "/",{theme});
+  postTheme(name: string, isPublic: boolean){
+    return this.http.post(this.themeURL + "/",{name: name, isPublic: isPublic});
   }
 
   patchThemeName(id:number,name:string){

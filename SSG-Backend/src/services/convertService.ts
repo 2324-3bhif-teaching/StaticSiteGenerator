@@ -80,19 +80,31 @@ export class ConvertService extends ServiceBase {
         }
         const fileService: FileService = new FileService(this.unit);
         const files: File[] = await fileService.selectFilesOfProject(projectId);
-
+    
         const outputStream: WriteStream = fs.createWriteStream(join(__dirname, "/../..", destinationPath));
         const archive: Archiver = archiver('zip', {
             zlib: { level: 9 }
         });
-
+    
+        archive.on('error', (err) => {
+            throw err;
+        });
+    
+        outputStream.on('close', () => {
+            console.log('Archived files successfully.');
+        });
+    
         archive.pipe(outputStream);
-
+    
         for (const file of files) {
             archive.append(await this.convertFile(file.id, false), {name: `${basename(file.name, "adoc")}.html`});
         }
         archive.append(await this.convertThemeToCss(projectId), {name: "style.css"});
-
+    
         await archive.finalize();
+        await new Promise((resolve, reject) => {
+            outputStream.on('finish', resolve);
+            outputStream.on('error', reject);
+        });
     }
 }
