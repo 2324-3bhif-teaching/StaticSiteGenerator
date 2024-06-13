@@ -92,5 +92,4 @@ export class ThemeSelectionComponent {
 export interface NewThemeData {
   name: string;
   isPublic: boolean;
-  baseThemeId: number;
 }

@@ -12,7 +12,6 @@ import {FormsModule} from "@angular/forms";
 export class ThemeModalComponent {
   protected themeName: string = "";
   protected isPublic: boolean = false;
-  protected baseThemeId: number = -1;
 
   constructor(public dialogRef: MatDialogRef<ThemeModalComponent>) {
 
@@ -22,7 +21,7 @@ export class ThemeModalComponent {
     if (this.themeName === "") {
       return;
     }
-    this.dialogRef.close({ name: this.themeName, isPublic: this.isPublic, baseThemeId: this.baseThemeId });
+    this.dialogRef.close({ name: this.themeName, isPublic: this.isPublic });
   }
 
   close() {
