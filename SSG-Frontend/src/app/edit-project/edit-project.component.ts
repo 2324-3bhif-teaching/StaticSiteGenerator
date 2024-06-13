@@ -18,7 +18,7 @@ import { saveAs } from 'file-saver';
 export class EditProjectComponent {
   protected project: Project = { id: -1, name: "Default", theme: { id: -1, name: "Def", userName: "Usr", isPublic: false } };
   protected activeFileId: number = -1;
-  protected theme: Theme = { id: 1, name: "Def", userName: "Usr", isPublic: false };
+  protected theme: Theme = { id: -1, name: "Def", userName: "Usr", isPublic: false };
 
   constructor(private route: ActivatedRoute, private projectService: ProjectService, private themeService:ThemeService) {
     this.projectService.getAllProjects().subscribe(val => {
@@ -40,6 +40,7 @@ export class EditProjectComponent {
         themeService.getAllPublicThemes().subscribe(themes =>{
           for(const theme of themes){
             if(foundProject?.themeId === theme.id){
+              console.log(theme.id);
               this.theme = theme;
             }
           }

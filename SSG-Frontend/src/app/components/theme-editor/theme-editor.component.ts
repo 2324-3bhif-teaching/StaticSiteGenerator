@@ -31,12 +31,14 @@ export class ThemeEditorComponent {
   }
 
   loadElementStyles(): void{
+    this.elementStyles = [];
     this.elementStyleService.getAllFromTheme(this.theme.id).subscribe(elementStyles => {
       this.elementStyles = elementStyles;
     });
   }
 
   addElementStyle(): void{
+    console.log("Add Element Style");
     this.elementStyleService.postElementStyle({
       selector: "Your Selector Here",
       themeId: this.theme.id

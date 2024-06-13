@@ -14,7 +14,7 @@ import { ElementStyle, ElementStyleService } from '../../services/element-style.
 })
 export class ElementStyleComponent{
   @Input() elementStyle: ElementStyle = {
-    id: 1,
+    id: -1,
     selector: "Default",
     themeId: -1
   };
@@ -36,7 +36,8 @@ export class ElementStyleComponent{
   }
 
   loadStyles(): void{
-    this.styleService.getAllServicesOfElementStyle(this.elementStyle.id).subscribe(styles => {
+    this.styles = [];
+    this.styleService.getAllStylesOfElementStyle(this.elementStyle.id).subscribe(styles => {
       this.styles = styles;
     });
   }

@@ -12,7 +12,7 @@ export class ElementStyleService {
   private elementStylesUrl: string = this.base.BASE_URL + this.base.ELEMENTSTYLE_URL;
 
   getAllFromTheme(id: number){
-    return this.http.get<ElementStyle[]>(`${this.elementStylesUrl}/${id}`);
+    return this.http.get<ElementStyle[]>(`${this.elementStylesUrl}/themeId/${id}`);
   }
 
   postElementStyle(elementStyle: ElementStyleData){

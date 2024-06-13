@@ -2,7 +2,9 @@
 <div class="flex flex-row text-gray-300">
     <div class="flex flex-col m-4 bg-gray-800 rounded-lg max-h-80 min-h-80">
         <div *ngFor="let elementStyle of elementStyles">
+          @if (elementStyle.id !== -1) {
             <app-element-style (reloadElementStylesEmitter)="loadElementStyles()" [elementStyle]="elementStyle"></app-element-style>
+          }
         </div>
         <button (click)="addElementStyle()"><fa-icon [icon]="faPlus"></fa-icon></button>
     </div>

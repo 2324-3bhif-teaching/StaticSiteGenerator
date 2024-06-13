@@ -11,9 +11,10 @@ export class StyleService {
   constructor(private http: HttpClient, private baseService: BaseService) { }
 
   private stylesUrl: string = this.baseService.BASE_URL + this.baseService.STYLE_URL;
-  
-  getAllServicesOfElementStyle(projectId: number){
-    return this.http.get<Style[]>(`${this.stylesUrl}/${projectId}`);
+
+  getAllStylesOfElementStyle(elementStyleId: number){
+    console.log(`${this.stylesUrl}/elementStyle/${elementStyleId}`);
+    return this.http.get<Style[]>(`${this.stylesUrl}/elementStyle/${elementStyleId}`);
   }
 
   postStyle(data: StyleData){
