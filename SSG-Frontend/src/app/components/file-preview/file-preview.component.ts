@@ -2,6 +2,7 @@ import {Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild} from 
 import {FileService} from "../../services/file.service";
 import {ThemeService} from "../../services/theme.service";
 import {CommonModule} from "@angular/common";
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-file-preview',
@@ -13,14 +14,20 @@ import {CommonModule} from "@angular/common";
 export class FilePreviewComponent implements OnChanges {
   @Input() fileId: number = -1;
   @Input() themeId: number = -1;
+  @Input() reloadPreviewEvent!: Observable<void>;
   @ViewChild('preview', { static: false }) iframe: ElementRef | null = null;
+  subscription!: Subscription;
 
   constructor(
     private fileService: FileService,
     private themeService: ThemeService) {
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.subscription = this.reloadPreviewEvent.subscribe(() => {
+      this.reloadFilePreview();
+    });
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['fileId'] || changes['themeId']) {
@@ -54,5 +61,9 @@ export class FilePreviewComponent implements OnChanges {
     iframeDoc.open();
     iframeDoc.write(content);
     iframeDoc.close();
+  }
+
+  ngOnDestroy(): void{
+    this.subscription.unsubscribe();
   }
 }

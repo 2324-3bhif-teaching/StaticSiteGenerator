@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter } from '@angular/core';
 import { FileListComponent } from '../components/file-list/file-list.component';
 import { Project, ProjectService } from '../services/project.service';
 import { ActivatedRoute } from '@angular/router';
@@ -19,6 +19,7 @@ export class EditProjectComponent {
   protected project: Project = { id: -1, name: "Default", themeId: -1, userName: "Default" };
   protected activeFileId: number = -1;
   protected theme: Theme = { id: -1, name: "Def", userName: "Usr", isPublic: false };
+  reloadPreviewEmitter: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(private route: ActivatedRoute, private projectService: ProjectService, private themeService:ThemeService) {
     this.projectService.getAllProjects().subscribe(val => {
@@ -63,5 +64,9 @@ export class EditProjectComponent {
     this.projectService.convertProject(this.project.id).subscribe(data =>{
       saveAs(data,`${this.project.name}.zip`);
     });
+  }
+
+  previewTrigger(){
+    this.reloadPreviewEmitter.emit();
   }
 }
