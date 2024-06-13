@@ -1,6 +1,7 @@
 @if(isOwn){
-    <input #propertyInput value="{{style.property}}" (keyup.enter)="propertyChange()" (blur)="propertyChange()"/>: <input #valueInput value="{{style.value}}" (keyup.enter)="valueChange()" (blur)="valueChange()"/>;
-    <button (click)="onDelete()">
+    <input #propertyInput class="bg-gray-800 w-20 text-white p-2 rounded border border-gray-700 focus:outline-none focus:border-blue-500" value="{{style.property}}" (keyup.enter)="propertyChange()" (blur)="propertyChange()"/>: 
+    <input #valueInput class="bg-gray-800 w-20 text-white p-2 rounded border border-gray-700 focus:outline-none focus:border-blue-500" value="{{style.value}}" (keyup.enter)="valueChange()" (blur)="valueChange()"/>;
+    <button class="ml-2 bg-red-500 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 text-white font-bold py-2 px-4 rounded" (click)="onDelete()">
         <fa-icon [icon]="faMinus"></fa-icon>
     </button>
 }

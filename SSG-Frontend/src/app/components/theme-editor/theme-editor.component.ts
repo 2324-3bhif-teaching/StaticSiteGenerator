@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ElementStyle, ElementStyleService } from '../../services/element-style.service';
 import { IconDefinition, faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -23,6 +23,9 @@ export class ThemeEditorComponent {
     isPublic: false
   };
   public elementStyles: ElementStyle[] = [];
+
+  @Output() reloadPreviewEmitter = new EventEmitter<void>();
+
   userName: string = 'Default';
   faPlus: IconDefinition=faPlus;
 
@@ -40,16 +43,21 @@ export class ThemeEditorComponent {
   }
 
   loadElementStyles(): void{
+    this.reloadPreviewEmitter.emit();
     this.elementStyles = [];
     this.elementStyleService.getAllFromTheme(this.theme.id).subscribe(elementStyles => {
       this.elementStyles = elementStyles;
     });
   }
 
+  triggerEmit()
+  {
+    this.reloadPreviewEmitter.emit()
+  }
+
   addElementStyle(): void{
-    console.log("Add Element Style");
     this.elementStyleService.postElementStyle({
-      selector: "Your Selector Here",
+      selector: "Selector",
       themeId: this.theme.id
     }).subscribe(() => {
       this.loadElementStyles();

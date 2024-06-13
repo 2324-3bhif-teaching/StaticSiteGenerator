@@ -64,4 +64,8 @@ export class EditProjectComponent {
       saveAs(data,`${this.project.name}.zip`);
     });
   }
+
+  previewTrigger(){
+    
+  }
 }

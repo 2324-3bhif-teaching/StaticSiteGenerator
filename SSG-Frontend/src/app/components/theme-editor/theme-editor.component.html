@@ -3,16 +3,23 @@
   @if(this.theme.userName === this.userName){
   <div *ngFor="let elementStyle of elementStyles">
     @if (elementStyle.id !== -1) {
-    <app-element-style (reloadElementStylesEmitter)="loadElementStyles()" [elementStyle]="elementStyle"
+    <app-element-style (reloadElementStylesEmitter)="loadElementStyles()" (previewReloadEmitter)="triggerEmit()" [elementStyle]="elementStyle"
       [isOwn]="this.theme.userName === this.userName"></app-element-style>
     }
   </div>
-  <button class="text-xs sm:text-sm md:text-base" (click)="addElementStyle()"><fa-icon [icon]="faPlus"></fa-icon></button>
+
+  @if (elementStyles.length === 0) {
+    <button class="text-xs sm:text-sm md:text-base ml-[9.5rem]" (click)="addElementStyle()"><fa-icon [icon]="faPlus"></fa-icon></button>
+
+  }@else {
+    <button class="text-xs sm:text-sm md:text-base" (click)="addElementStyle()"><fa-icon [icon]="faPlus"></fa-icon></button>
+  }
+  
   }
   @else {
   <div *ngFor="let elementStyle of elementStyles">
     @if (elementStyle.id !== -1) {
-    <app-element-style (reloadElementStylesEmitter)="loadElementStyles()" [elementStyle]="elementStyle"
+    <app-element-style (reloadElementStylesEmitter)="loadElementStyles()" (previewReloadEmitter)="triggerEmit()" [elementStyle]="elementStyle"
       [isOwn]="this.theme.userName === this.userName"></app-element-style>
     }
   </div>

@@ -4,13 +4,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { StyleComponent } from "../style/style.component";
 import { ElementStyle, ElementStyleService } from '../../services/element-style.service';
+import { faTrash,faAdd } from '@fortawesome/free-solid-svg-icons';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 @Component({
     selector: 'app-element-style',
     standalone: true,
     templateUrl: './element-style.component.html',
     styleUrl: './element-style.component.css',
-    imports: [CommonModule, FormsModule, StyleComponent]
+    imports: [CommonModule, FormsModule, StyleComponent,FaIconComponent]
 })
 export class ElementStyleComponent{
   @Input() elementStyle: ElementStyle = {
@@ -21,7 +23,10 @@ export class ElementStyleComponent{
   @Input() isOwn: boolean = false;
   @ViewChild('selectorInput') selectorInput: ElementRef | null = null;
   @Output() reloadElementStylesEmitter = new EventEmitter<void>();
+  @Output() previewReloadEmitter = new EventEmitter<void>();
   public styles: Style[] = [];
+  faTrash = faTrash;
+  faAdd = faAdd;
 
   constructor(private elementStyleService: ElementStyleService, private styleService: StyleService){}
 
@@ -52,11 +57,15 @@ export class ElementStyleComponent{
     });
   }
 
+  onTriggerPreview(){
+    this.previewReloadEmitter.emit();
+  }
+
   onAddStyle(): void{
     this.styleService.postStyle({
       elementStyleId: this.elementStyle.id,
-      property: "Your Property Here",
-      value: "Your Value Here"
+      property: "Property",
+      value: "Value"
     }).subscribe(() => {
       this.loadStyles();
     });

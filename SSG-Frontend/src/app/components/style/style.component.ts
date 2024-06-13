@@ -24,12 +24,16 @@ export class StyleComponent{
   @ViewChild('valueInput') valueInput: ElementRef | null = null;
   faMinus: IconDefinition=faMinus;
 
+  @Output() reloadPreviewEmitter = new EventEmitter<void>();
+
+
   constructor(private styleService: StyleService){}
 
   propertyChange(): void{
     if(this.propertyInput?.nativeElement.value !== this.style.property){
       this.style.property = this.propertyInput!.nativeElement.value;
       this.styleService.patchStyleProperty(this.style.id, this.propertyInput!.nativeElement.value).subscribe();
+      this.reloadPreviewEmitter.emit();
     }
   }
 
@@ -37,12 +41,14 @@ export class StyleComponent{
     if(this.valueInput?.nativeElement.value !== this.style.value){
       this.style.value = this.valueInput!.nativeElement.value;
       this.styleService.patchStyleValue(this.style.id, this.valueInput!.nativeElement.value).subscribe();
+      this.reloadPreviewEmitter.emit();
     }
   }
 
   onDelete(): void{
     this.styleService.deleteStyle(this.style.id).subscribe(() => {
       this.reloadStylesEmitter.emit();
+      this.reloadPreviewEmitter.emit();
     });
   }
 }
