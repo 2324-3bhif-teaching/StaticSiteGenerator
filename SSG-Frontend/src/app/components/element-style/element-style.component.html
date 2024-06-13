@@ -1,4 +1,4 @@
-<div class="ml-4 flex flex-col p-4 bg-gray-800 text-white rounded-lg shadow-lg w-40">
+<div class="mx-4 flex flex-col p-4 bg-gray-800 text-white rounded-lg shadow-lg w-40 mb-4">
     @if(isOwn){
       <input #selectorInput class="p-2 bg-gray-700 rounded-md border border-gray-600 placeholder-gray-400 text-white" value="{{elementStyle.selector}}" (keyup.enter)="selectorChange()" (blur)="selectorChange()"/>
       <p class="text-gray-400 text-lg my-2">{{ '{' }}</p>

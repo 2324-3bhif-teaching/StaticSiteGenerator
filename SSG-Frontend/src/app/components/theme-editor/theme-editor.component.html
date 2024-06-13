@@ -1,5 +1,5 @@
 <!-- theme-editor.component.html -->
-<div class="flex flex-col text-gray-300 scrollbar max-h-96 max-w-[70%]">
+<div class="flex flex-col text-gray-300 scrollbar max-h-96 max-w-fit">
   @if(!theme.isPublic){
   <div *ngFor="let elementStyle of elementStyles">
     @if (elementStyle.id !== -1) {
@@ -7,7 +7,7 @@
       [isOwn]="!theme.isPublic"></app-element-style>
     }
   </div>
-  <button (click)="addElementStyle()"><fa-icon [icon]="faPlus"></fa-icon></button>
+  <button class="text-xs sm:text-sm md:text-base" (click)="addElementStyle()"><fa-icon [icon]="faPlus"></fa-icon></button>
   }
   @else {
   <div *ngFor="let elementStyle of elementStyles">
