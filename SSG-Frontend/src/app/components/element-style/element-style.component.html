@@ -1,16 +1,32 @@
-<div class="ml-4 flex flex-col p-4 bg-gray-800 text-white rounded-lg shadow-lg w-40">
-    <input #selectorInput class="p-2 bg-gray-700 rounded-md border border-gray-600 placeholder-gray-400 text-white" value="{{elementStyle.selector}}" (keyup.enter)="selectorChange()" (blur)="selectorChange()"/>
-    <p class="text-gray-400 text-lg my-2">{{ '{' }}</p>
-    <div class="flex flex-col pl-4">
-      <div class="py-1" *ngFor="let style of styles">
-        <!-- Assuming you want to display each style in some way, e.g., as a text or structured layout -->
-        <<!--<span class="text-gray-300">{{style.property}}: {{style.value}};</span>-->
-        @if (style.id !== -1) {
-          <app-style (reloadStylesEmitter)="loadStyles()" [style]="style"></app-style>
-        }
+<div class="mx-4 flex flex-col p-4 bg-gray-800 text-gray-400 rounded-lg shadow-lg w-80 mb-4">
+    @if(isOwn){
+      <input #selectorInput class="p-2 bg-gray-700 rounded-md border border-gray-600 placeholder-gray-400 text-white" value="{{elementStyle.selector}}" (keyup.enter)="selectorChange()" (blur)="selectorChange()"/>
+      <p class="text-gray-400 text-lg my-2">{{ '{' }}</p>
+      <div class="flex flex-col pl-4">
+        <div class="py-1" *ngFor="let style of styles">
+          <!-- Assuming you want to display each style in some way, e.g., as a text or structured layout -->
+          <!--<span class="text-gray-300">{{style.property}}: {{style.value}};</span>-->
+          @if (style.id !== -1) {
+            <app-style (reloadStylesEmitter)="loadStyles()" (reloadPreviewEmitter)="onTriggerPreview()" [style]="style" [isOwn]="isOwn"></app-style>
+          }
+        </div>
       </div>
-    </div>
-    <p class="text-gray-400 text-lg my-2">{{ '}' }}</p>
-    <button (click)="onDelete()">Delete Element Style</button>
-    <button (click)="onAddStyle()">Add Style</button>
+      <p class="text-gray-400 text-lg my-2">{{ '}' }}</p>
+      <button class="bg-red-500 rounded-md m-2" (click)="onDelete()"><fa-icon [icon]="faTrash"></fa-icon></button>
+      <button class="bg-blue-500 rounded-md m-2" (click)="onAddStyle()"><fa-icon [icon]="faAdd"></fa-icon></button>
+    }
+    @else{
+      <p class="p-2 bg-gray-700 rounded-md border border-gray-600 placeholder-gray-400 text-white">{{elementStyle.selector}}</p>
+      <p class="text-gray-400 text-lg my-2">{{ '{' }}</p>
+      <div class="flex flex-col pl-4">
+        <div class="py-1" *ngFor="let style of styles">
+          <!-- Assuming you want to display each style in some way, e.g., as a text or structured layout -->
+          <!--<span class="text-gray-300">{{style.property}}: {{style.value}};</span>-->
+          @if (style.id !== -1) {
+            <app-style (reloadStylesEmitter)="loadStyles()" (reloadPreviewEmitter)="onTriggerPreview()" [style]="style" [isOwn]="isOwn"></app-style>
+          }
+        </div>
+      </div>
+      <p class="text-gray-400 text-lg my-2">{{ '}' }}</p>
+    }
   </div>

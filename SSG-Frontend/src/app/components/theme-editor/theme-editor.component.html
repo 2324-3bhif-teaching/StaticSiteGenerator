@@ -1,11 +1,27 @@
 <!-- theme-editor.component.html -->
-<div class="flex flex-row text-gray-300">
-    <div class="flex flex-col m-4 bg-gray-800 rounded-lg max-h-80 min-h-80">
-        <div *ngFor="let elementStyle of elementStyles">
-          @if (elementStyle.id !== -1) {
-            <app-element-style (reloadElementStylesEmitter)="loadElementStyles()" [elementStyle]="elementStyle"></app-element-style>
-          }
-        </div>
-        <button (click)="addElementStyle()"><fa-icon [icon]="faPlus"></fa-icon></button>
-    </div>
+<div class="flex flex-col text-gray-300 scrollbar max-h-96 max-w-fit">
+  @if(this.theme.userName === this.userName){
+  <div *ngFor="let elementStyle of elementStyles">
+    @if (elementStyle.id !== -1) {
+    <app-element-style (reloadElementStylesEmitter)="loadElementStyles()" (previewReloadEmitter)="triggerEmit()" [elementStyle]="elementStyle"
+      [isOwn]="this.theme.userName === this.userName"></app-element-style>
+    }
+  </div>
+
+  @if (elementStyles.length === 0) {
+    <button class="text-xs sm:text-sm md:text-base ml-[9.5rem]" (click)="addElementStyle()"><fa-icon [icon]="faPlus"></fa-icon></button>
+
+  }@else {
+    <button class="text-xs sm:text-sm md:text-base" (click)="addElementStyle()"><fa-icon [icon]="faPlus"></fa-icon></button>
+  }
+  
+  }
+  @else {
+  <div *ngFor="let elementStyle of elementStyles">
+    @if (elementStyle.id !== -1) {
+    <app-element-style (reloadElementStylesEmitter)="loadElementStyles()" (previewReloadEmitter)="triggerEmit()" [elementStyle]="elementStyle"
+      [isOwn]="this.theme.userName === this.userName"></app-element-style>
+    }
+  </div>
+  }
 </div>
