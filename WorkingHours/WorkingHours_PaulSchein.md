@@ -24,3 +24,4 @@
 | 09.06.2024 | 6h 30min | HTML Preview für Files und Convert service mit Routen                                                                | #14, #17, #26 |
 | 10.06.2024 | 6h       | Docker Compose eingerichtet                                                                                          |          |
 | 12.06.2024 | 6h 30min | Docker Compose verbessert, Fehler im Backend behoben, Multi File Uplead hinzugefügt, Converten, zippen und downloaden der Website | #14, #15, #26 |
+| 13.06.2024 | 6h       | Fehler bei Theme Editor, Preview, Project Selection und Theme Selection behoben und erstellen von Themes hinzugefügt | #24, #26 |
