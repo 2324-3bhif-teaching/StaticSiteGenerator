@@ -6,6 +6,9 @@ import { ThemeElementComponent } from '../components/theme-element/theme-element
 import { trigger, transition, style, animate } from '@angular/animations';
 import {ActivatedRoute} from "@angular/router";
 import {ProjectService} from "../services/project.service";
+import {ProjectModalComponent} from "../components/project-modal/project-modal.component";
+import {ThemeModalComponent} from "../components/theme-modal/theme-modal.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-theme-selection',
@@ -30,7 +33,7 @@ export class ThemeSelectionComponent {
   public searchText: string = '';
   private projectId: number = -1;
 
-  constructor(private route: ActivatedRoute, private themeService: ThemeService, private projectService: ProjectService) { }
+  constructor(private dialog: MatDialog,private route: ActivatedRoute, private themeService: ThemeService, private projectService: ProjectService) { }
 
   ngOnInit() {
     this.projectId = parseInt(this.route.snapshot.paramMap.get('id')?.valueOf() ?? "-1");
@@ -68,4 +71,28 @@ export class ThemeSelectionComponent {
       window.location.pathname = "/edit-project/" + this.projectId;
     }
   }
+
+  openThemeModal(): void {
+    const dialogRef = this.dialog.open(ThemeModalComponent, {
+      width: '250px',
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === undefined) {
+        return;
+      }
+      this.handleNewThemeCreation(result)
+    });
+  }
+
+  handleNewThemeCreation(newTheme: NewThemeData) {
+    this.themeService.postTheme(newTheme.name, newTheme.isPublic).subscribe();
+    document.location.reload();
+  }
+}
+
+export interface NewThemeData {
+  name: string;
+  isPublic: boolean;
+  baseThemeId: number;
 }
