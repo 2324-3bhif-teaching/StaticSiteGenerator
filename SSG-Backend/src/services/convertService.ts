@@ -79,7 +79,10 @@ export class ConvertService extends ServiceBase {
         if (projectPath === null) {
             return;
         }
+
         await this.createTableOfContent(projectId);
+
+
         const fileService: FileService = new FileService(this.unit);
         const files: File[] = await fileService.selectFilesOfProject(projectId);
     
@@ -140,28 +143,30 @@ export class ConvertService extends ServiceBase {
             for (const header of headers) {
                 const level = header.startsWith("== ") ? 2 : 1;
                 const headerText = header.replace(/^=+ /, '');
-                const headerLink = wrapInTag(headerText, "a", `href="#${encodeURIComponent(headerText)}"`);
+                const headerId = encodeURIComponent(headerText); // Generate a unique ID for the header
+                // Modify headerLink to include the file name and header ID
+                const headerLink = wrapInTag(headerText, "a", `href="${basename(file.name, ".adoc")}.html#${headerId}" class="link"`);
                 if (level === 1) {
                     if (currentList) {
-                        wrapped += wrapInTag(currentList, "ul");
+                        wrapped += wrapInTag(currentList, "ul", 'class="sub-list"');
                         currentList = "";
                     }
-                    wrapped += wrapInTag(headerLink, "li");
+                    wrapped += wrapInTag(headerLink, "li", 'class="list-item"');
                 } else if (level === 2) {
-                    currentList += wrapInTag(headerLink, "li");
+                    currentList += wrapInTag(headerLink, "li", 'class="list-item"');
                 }
             }
             if (currentList) {
-                wrapped += wrapInTag(currentList, "ul");
+                wrapped += wrapInTag(currentList, "ul", 'class="sub-list"');
             }
     
-            const fileLink = wrapInTag(file.name, "a", `href="${basename(file.name, ".adoc")}.html"`);
-            wrapped = wrapInTag(fileLink, "li") + wrapInTag(wrapped, "ul");
+            const fileLink = wrapInTag(file.name, "a", `href="${basename(file.name, ".adoc")}.html" class="file-link"`);
+            wrapped = wrapInTag(fileLink, "li", 'class="navbar"') + wrapInTag(wrapped, "ul", 'class="content-list"');
             resultingHtml += wrapped;
         }
     
         console.log(resultingHtml);
-        return wrapInTag(resultingHtml, "ul");
+        return wrapInTag(resultingHtml, "ul", 'class="table-of-contents"');
     }
     
     private getArrayOfAllHeaders(fileContent: string): string[] {
