@@ -6,7 +6,6 @@ import { ThemeElementComponent } from '../components/theme-element/theme-element
 import { trigger, transition, style, animate } from '@angular/animations';
 import {ActivatedRoute} from "@angular/router";
 import {ProjectService} from "../services/project.service";
-import {ProjectModalComponent} from "../components/project-modal/project-modal.component";
 import {ThemeModalComponent} from "../components/theme-modal/theme-modal.component";
 import {MatDialog} from "@angular/material/dialog";
 
@@ -32,7 +31,6 @@ export class ThemeSelectionComponent {
   public themes: Theme[] = [];
   public searchText: string = '';
   private projectId: number = -1;
-  private baseThemeId: number | null = null;
 
   constructor(private dialog: MatDialog,private route: ActivatedRoute, private themeService: ThemeService, private projectService: ProjectService) { }
 
@@ -72,11 +70,11 @@ export class ThemeSelectionComponent {
   }
 
   onCopyTheme(theme: Theme) {
-    this.baseThemeId = theme.id;
-    this.openThemeModal();
+    console.log("Copying theme: ", theme);
+    this.openThemeModal(theme.id);
   }
 
-  openThemeModal(): void {
+  openThemeModal(baseThemeId: number | null): void {
     const dialogRef = this.dialog.open(ThemeModalComponent, {
       width: '250px',
     });
@@ -85,23 +83,24 @@ export class ThemeSelectionComponent {
       if (result === undefined) {
         return;
       }
-      this.handleNewThemeCreation(result)
+      this.handleNewThemeCreation(result, baseThemeId);
     });
   }
 
-  handleNewThemeCreation(newTheme: NewThemeData) {
+  handleNewThemeCreation(newTheme: NewThemeData, baseThemeId: number | null) {
+    console.log("Creating new theme: ", newTheme);
     this.themeService.postTheme(newTheme.name, newTheme.isPublic).subscribe();
-    if (this.baseThemeId !== null) {
+    if (baseThemeId !== null) {
       this.themeService.getPrivateThemes().subscribe((themes) => {
         const themeId: number | undefined = themes
           .find(t => t.name === newTheme.name)?.id;
+        console.log("Theme ID: ", themeId);
         if (themeId !== undefined) {
-          this.themeService.copyTheme(this.baseThemeId ?? -1, themeId);
-          this.baseThemeId = null;
+          this.themeService.copyTheme(baseThemeId ?? -1, themeId);
         }
       });
     }
-    document.location.reload();
+    //document.location.reload();
   }
 }
 
