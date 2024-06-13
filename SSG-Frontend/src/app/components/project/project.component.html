@@ -1,22 +1,21 @@
-<div class="rounded-xl min-w-[50em] p-4 my-4 bg-gray-950 text-gray-300 flex flex-row justify-between items-center">
+<div class="rounded-xl min-w-full sm:min-w-[50em] p-4 my-4 bg-gray-950 text-gray-300 flex flex-col sm:flex-row justify-between items-center">
     <div class="flex flex-col">
-        <h1 class="text-2xl">{{ project.name}}</h1>
+        <h1 class="text-xl sm:text-2xl">{{ project.name }}</h1>
         <p class="text-gray-600">
             @if (project.theme === undefined) {
             "No Theme"
             }@else{
-            {{project.theme.name}}
+            {{ project.theme.name }}
             }
         </p>
     </div>
 
-    <div class="*:mx-2 *:rounded-lg *:p-2 *:px-4 *:transition-all">
-        <button class="bg-blue-500 hover:bg-blue-600 hover:text-gray-400" (click)="handlePass()">
+    <div class="flex mx-2 rounded-lg p-2 px-4 transition-all justify-center [&>*]:px-4">
+        <button class="bg-blue-500 hover:bg-blue-600 rounded-md hover:text-gray-400 text-sm sm:text-base p-1 sm:p-2 mx-1" (click)="handlePass()">
             <fa-icon [icon]="faEdit"></fa-icon>
         </button>
-        <button class="bg-red-500 hover:bg-red-600 hover:text-gray-400" (click)="deleteMe()">
+        <button class="bg-red-500 hover:bg-red-600 rounded-md hover:text-gray-400 text-sm sm:text-base p-1 sm:p-2 mx-1" (click)="deleteMe()">
             <fa-icon [icon]="faTrash"></fa-icon>
         </button>
     </div>
-
 </div>
