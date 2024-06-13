@@ -23,7 +23,7 @@
         </div>
 
         <div class="preview-field">
-            <app-file-preview [themeId]="theme.id"  [fileId]="activeFileId" ></app-file-preview>
+            <app-file-preview [themeId]="theme.id" [reloadPreviewEvent]="reloadPreviewEmitter.asObservable()"  [fileId]="activeFileId" ></app-file-preview>
         </div>
     </div>
 </div>
