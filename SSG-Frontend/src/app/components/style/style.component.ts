@@ -19,23 +19,23 @@ export class StyleComponent{
     elementStyleId: 1
   };
   @Output() reloadStylesEmitter = new EventEmitter<void>();
-  @ViewChild('propertyInput') propertyInput!: ElementRef;
-  @ViewChild('valueInput') valueInput!: ElementRef;
+  @ViewChild('propertyInput') propertyInput: ElementRef | null = null;
+  @ViewChild('valueInput') valueInput: ElementRef | null = null;
   faMinus=faMinus;
 
   constructor(private styleService: StyleService){}
 
   propertyChange(): void{
-    if(this.propertyInput.nativeElement.value !== this.style.property){
-      this.style.property = this.propertyInput.nativeElement.value;
-      this.styleService.patchStyleProperty(this.style.id, this.propertyInput.nativeElement.value).subscribe();
+    if(this.propertyInput?.nativeElement.value !== this.style.property){
+      this.style.property = this.propertyInput!.nativeElement.value;
+      this.styleService.patchStyleProperty(this.style.id, this.propertyInput!.nativeElement.value).subscribe();
     }
   }
 
   valueChange(): void{
-    if(this.valueInput.nativeElement.value !== this.style.value){
-      this.style.value = this.valueInput.nativeElement.value;
-      this.styleService.patchStyleValue(this.style.id, this.valueInput.nativeElement.value).subscribe();
+    if(this.valueInput?.nativeElement.value !== this.style.value){
+      this.style.value = this.valueInput!.nativeElement.value;
+      this.styleService.patchStyleValue(this.style.id, this.valueInput!.nativeElement.value).subscribe();
     }
   }
 
