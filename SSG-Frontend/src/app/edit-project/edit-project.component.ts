@@ -16,7 +16,7 @@ import { saveAs } from 'file-saver';
   styleUrl: './edit-project.component.css'
 })
 export class EditProjectComponent {
-  protected project: Project = { id: -1, name: "Default", theme: { id: -1, name: "Def", userName: "Usr", isPublic: false } };
+  protected project: Project = { id: -1, name: "Default", themeId: -1, userName: "Default" };
   protected activeFileId: number = -1;
   protected theme: Theme = { id: -1, name: "Def", userName: "Usr", isPublic: false };
 
@@ -36,11 +36,10 @@ export class EditProjectComponent {
       this.project = corrProj;
 
       this.projectService.getAllProjects().subscribe(projects => {
-        const foundProject: any = projects.find(project => project.id === this.project.id);
+        const foundProject: Project | undefined = projects.find(project => project.id === this.project.id);
         themeService.getAllPublicThemes().subscribe(themes =>{
           for(const theme of themes){
             if(foundProject?.themeId === theme.id){
-              console.log(theme.id);
               this.theme = theme;
             }
           }

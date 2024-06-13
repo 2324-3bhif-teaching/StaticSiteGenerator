@@ -23,7 +23,6 @@ export class ProjectSelectionComponent {
 
   ngOnInit() {
     this.projectService.getAllProjects().subscribe((project) => {
-      console.log(project);
       this.projects = project;
     });
   }
@@ -33,7 +32,7 @@ export class ProjectSelectionComponent {
       return;
     }
 
-    
+
     this.projects.push(newProject);
 
     this.projectService.postProject(newProject.name).subscribe();

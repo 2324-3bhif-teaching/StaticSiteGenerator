@@ -16,8 +16,9 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
   styleUrls: ['./project.component.css']
 })
 export class ProjectComponent {
-  @Input() project: Project = { id: -1, name: "", theme: { id: -1, userName: "Note", name: "B", isPublic: false } };
+  @Input() project: Project = { id: -1, name: "", themeId: -1, userName: "" };
   @Output() deleteRequest = new EventEmitter<Project>();
+  protected theme: Theme | undefined = undefined;
   faEdit = faEdit;
   faTrash = faTrash;
 
@@ -25,14 +26,13 @@ export class ProjectComponent {
 
   ngOnInit() {
     this.themeService.getAllPublicThemes().subscribe((themes) => {
-      const defTheme = themes.find(theme => theme.id == 1);
+      const theme: Theme | undefined = themes.find(theme => theme.id == this.project.themeId);
 
-      if (defTheme === undefined) {
+      if (theme === undefined) {
         return;
       }
 
-      console.log(defTheme);
-      this.project.theme = defTheme;
+      this.theme = theme;
     });
   }
 
