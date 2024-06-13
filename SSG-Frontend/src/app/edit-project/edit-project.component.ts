@@ -44,7 +44,14 @@ export class EditProjectComponent {
               this.theme = theme;
             }
           }
-        })
+        });
+        themeService.getPrivateThemes().subscribe(themes =>{
+          for(const theme of themes){
+            if(foundProject?.themeId === theme.id){
+              this.theme = theme;
+            }
+          }
+        });
 
       });
     })
