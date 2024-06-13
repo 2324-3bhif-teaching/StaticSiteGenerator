@@ -80,7 +80,7 @@ export class ConvertService extends ServiceBase {
             return;
         }
 
-        await this.createTableOfContent(projectId);
+        
 
 
         const fileService: FileService = new FileService(this.unit);
@@ -100,9 +100,11 @@ export class ConvertService extends ServiceBase {
         });
     
         archive.pipe(outputStream);
+
+        const toc = await this.createTableOfContent(projectId);
     
         for (const file of files) {
-            archive.append(await this.convertFile(file.id, false), {name: `${basename(file.name, ".adoc")}.html`});
+            archive.append(toc + await this.convertFile(file.id, false), {name: `${basename(file.name, ".adoc")}.html`});
         }
         archive.append(await this.convertThemeToCss(projectId), {name: "style.css"});
     
@@ -164,8 +166,6 @@ export class ConvertService extends ServiceBase {
             wrapped = wrapInTag(fileLink, "li", 'class="navbar"') + wrapInTag(wrapped, "ul", 'class="content-list"');
             resultingHtml += wrapped;
         }
-    
-        console.log(resultingHtml);
         return wrapInTag(resultingHtml, "ul", 'class="table-of-contents"');
     }
     
