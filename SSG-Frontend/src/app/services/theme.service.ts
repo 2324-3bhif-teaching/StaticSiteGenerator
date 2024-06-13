@@ -39,8 +39,8 @@ export class ThemeService {
     return this.http.get<{css: string}>(`${this.themeURL}/convert/${id}`);
   }
 
-  copyTheme(baseThemeId: number, themeId: number){
-    return this.http.put(`${this.themeURL}/copy/${baseThemeId}/${themeId}`,{});
+  copyTheme(baseThemeId: number, themeName: string){
+    return this.http.put(`${this.themeURL}/copy/${baseThemeId}/${themeName}`,{});
   }
 }
 

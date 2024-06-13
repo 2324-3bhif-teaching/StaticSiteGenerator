@@ -130,14 +130,17 @@ themeRouter.get('/convert/:id', [keycloak.protect()], async (req: any, res: any)
     }
 });
 
-themeRouter.put('/copy/:baseThemeId/:themeId', [keycloak.protect()], async (req: any, res: any): Promise<void> => {
+themeRouter.put('/copy/:baseThemeId/:themeName', [keycloak.protect()], async (req: any, res: any): Promise<void> => {
     const unit: Unit = await Unit.create(false);
     const themeService: ThemeService = new ThemeService(unit);
     const elementStyleService: ElementStyleService = new ElementStyleService(unit);
     const styleService: StyleService = new StyleService(unit);
     try {
-        if (!await themeService.isAllowedToUseTheme(req.kauth.grant.access_token.content.preferred_username, req.params.baseThemeId)
-        && !await themeService.ownsTheme(req.kauth.grant.access_token.content.preferred_username, req.params.themeId)) {
+        const themeId: number | undefined = (await themeService.selectThemesByUser(req.kauth.grant.access_token.content.preferred_username))
+            .find(theme => theme.name === req.params.themeName)?.id;
+        if (themeId === undefined
+            || !await themeService.isAllowedToUseTheme(req.kauth.grant.access_token.content.preferred_username, req.params.baseThemeId)
+            || !await themeService.ownsTheme(req.kauth.grant.access_token.content.preferred_username, themeId)) {
             res.sendStatus(StatusCodes.BAD_REQUEST);
             await unit.complete(false);
             return;
@@ -146,10 +149,10 @@ themeRouter.put('/copy/:baseThemeId/:themeId', [keycloak.protect()], async (req:
         const elementStyles: ElementStyle[] = await elementStyleService.selectAllElementStyles(req.params.baseThemeId);
         for (const elementStyle of elementStyles) {
             result = await elementStyleService.insertElementStyle(
-                {selector: elementStyle.selector, themeId: parseInt(req.params.themeId)})
+                {selector: elementStyle.selector, themeId: themeId})
                 || result;
         }
-        const newElementStyles: ElementStyle[] = (await elementStyleService.selectAllElementStyles(parseInt(req.params.themeId)));
+        const newElementStyles: ElementStyle[] = (await elementStyleService.selectAllElementStyles(themeId));
         newElementStyles.splice(0, newElementStyles.length - elementStyles.length);
         for (let i = 0; i < elementStyles.length; i++) {
             const styles: Style[] = await styleService.selectAll(elementStyles[i].id);

@@ -92,12 +92,7 @@ export class ThemeSelectionComponent {
     this.themeService.postTheme(newTheme.name, newTheme.isPublic).subscribe();
     if (baseThemeId !== null) {
       this.themeService.getPrivateThemes().subscribe((themes) => {
-        const themeId: number | undefined = themes
-          .find(t => t.name === newTheme.name)?.id;
-        console.log("Theme ID: ", themeId);
-        if (themeId !== undefined) {
-          this.themeService.copyTheme(baseThemeId ?? -1, themeId);
-        }
+        this.themeService.copyTheme(baseThemeId ?? -1, newTheme.name);
       });
     }
     //document.location.reload();
