@@ -46,7 +46,6 @@ export class FileListComponent {
       this.activeFile = this.DefaultFile;
     }
     this.changeActiveFile.emit(this.activeFile.id);
-    console.log("Emitted event");
   }
 
   onFileDelete(): void {
@@ -84,7 +83,7 @@ export class FileListComponent {
   handleFileInput(event: any): void {
     const files: FileList = event.target.files;
     const validFiles: File[] = [];
-  
+
     // Collect valid .adoc files
     for (let i = 0; i < files.length; i++) {
       const file = files.item(i);
@@ -92,14 +91,14 @@ export class FileListComponent {
         validFiles.push(file);
       }
     }
-  
+
     // Check if there are valid files to upload
     if (validFiles.length === 0) {
       this.validFile = false;
       return;
     }
     this.validFile = true;
-  
+
     // Use postFiles to upload all valid files at once
     this.fileService.postFiles(validFiles, this.project.id).subscribe(() => {
       // Refresh the page after successful upload

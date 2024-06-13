@@ -17,10 +17,8 @@ import {join} from "path";
 const app = express();
 
 (async () => {
-    const connection = await DB.createDBConnection();
-    await DB.ensureTablesPopulated(connection);
+    await DB.ensureTablesPopulated();
     await fs.mkdir(join(__dirname, "../", TempFileLocation), {recursive: true});
-    await connection.close();
 })();
 
 if(process.env.SECRET_KEY === undefined){

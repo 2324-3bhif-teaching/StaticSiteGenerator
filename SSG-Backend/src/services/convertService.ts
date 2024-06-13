@@ -97,7 +97,7 @@ export class ConvertService extends ServiceBase {
         archive.pipe(outputStream);
     
         for (const file of files) {
-            archive.append(await this.convertFile(file.id, false), {name: `${basename(file.name, "adoc")}.html`});
+            archive.append(await this.convertFile(file.id, false), {name: `${basename(file.name, "adoc")}html`});
         }
         archive.append(await this.convertThemeToCss(projectId), {name: "style.css"});
     
