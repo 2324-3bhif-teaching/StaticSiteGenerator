@@ -1,6 +1,10 @@
 import { Database as Driver } from "sqlite3";
 import { open, Database } from "sqlite";
-import { DefaultTheme } from "../constants";
+import {DefaultElementStyles, DefaultStyles, DefaultTheme} from "../constants";
+import {Unit} from "./unit";
+import {ThemeService} from "../services/themeService";
+import {ElementStyleService} from "../services/elementStyleService";
+import {StyleService} from "../services/styleService";
 
 export const dbFileName = 'StaticSiteGenerator.db';
 
@@ -107,23 +111,28 @@ export class DB {
         }
     }
 
-    public static async ensureTablesPopulated(connection: Database) : Promise<void> {
-        const defTheme = await connection.get(`Select Count(*) as cnt from theme where name = '${DefaultTheme.name}' and user_name = '${DefaultTheme.userName}'`);
+    public static async ensureTablesPopulated() : Promise<void> {
+        const unit: Unit = await Unit.create(false);
+        const themeService: ThemeService = new ThemeService(unit);
+        const elementStyleService: ElementStyleService = new ElementStyleService(unit);
+        const styleService: StyleService = new StyleService(unit);
 
-        if(defTheme.cnt === 1) {
-            return;
-        }
-
-        await DB.beginTransaction(connection);
         try {
-            await connection.run(`Insert into THEME (user_name, name, is_public) Values ('${DefaultTheme.userName}','${DefaultTheme.name}',${DefaultTheme.isPublic ? 1 : 0})`);
-            await connection.run(`Insert into Element_Style (selector, theme_id) Values ('h2', 1)`);
-            await connection.run(`Insert into Style (property, value, element_style_id) Values ('color', 'red', 1)`);
-            await DB.commitTransaction(connection);
+            await themeService.insertTheme(DefaultTheme);
+
+            for (const elementStyle of DefaultElementStyles) {
+                await elementStyleService.insertElementStyle(elementStyle);
+            }
+
+            for (const style of DefaultStyles) {
+                await styleService.insertStyle(style);
+            }
+
+            await unit.complete(true);
         }
-        catch (error)
-        {
-            await DB.rollbackTransaction(connection);
+        catch (error) {
+            console.log(error);
+            await unit.complete(false);
         }
     }
 }
