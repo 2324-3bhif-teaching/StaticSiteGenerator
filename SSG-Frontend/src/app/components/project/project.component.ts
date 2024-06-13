@@ -34,6 +34,15 @@ export class ProjectComponent {
 
       this.theme = theme;
     });
+    this.themeService.getPrivateThemes().subscribe((themes) => {
+      const theme: Theme | undefined = themes.find(theme => theme.id == this.project.themeId);
+
+      if (theme === undefined) {
+        return;
+      }
+
+      this.theme = theme;
+    });
   }
 
   deleteMe() {
