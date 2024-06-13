@@ -18,6 +18,7 @@ export class StyleComponent{
     value: "20px",
     elementStyleId: 1
   };
+  @Input() isOwn: boolean = false;
   @Output() reloadStylesEmitter = new EventEmitter<void>();
   @ViewChild('propertyInput') propertyInput: ElementRef | null = null;
   @ViewChild('valueInput') valueInput: ElementRef | null = null;

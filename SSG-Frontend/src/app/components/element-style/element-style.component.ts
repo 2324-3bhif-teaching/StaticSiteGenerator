@@ -18,6 +18,7 @@ export class ElementStyleComponent{
     selector: "Default",
     themeId: -1
   };
+  @Input() isOwn: boolean = false;
   @ViewChild('selectorInput') selectorInput: ElementRef | null = null;
   @Output() reloadElementStylesEmitter = new EventEmitter<void>();
   public styles: Style[] = [];
