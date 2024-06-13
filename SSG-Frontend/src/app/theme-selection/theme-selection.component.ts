@@ -32,6 +32,7 @@ export class ThemeSelectionComponent {
   public themes: Theme[] = [];
   public searchText: string = '';
   private projectId: number = -1;
+  private baseThemeId: number | null = null;
 
   constructor(private dialog: MatDialog,private route: ActivatedRoute, private themeService: ThemeService, private projectService: ProjectService) { }
 
@@ -70,6 +71,11 @@ export class ThemeSelectionComponent {
     }
   }
 
+  onCopyTheme(theme: Theme) {
+    this.baseThemeId = theme.id;
+    this.openThemeModal();
+  }
+
   openThemeModal(): void {
     const dialogRef = this.dialog.open(ThemeModalComponent, {
       width: '250px',
@@ -85,6 +91,16 @@ export class ThemeSelectionComponent {
 
   handleNewThemeCreation(newTheme: NewThemeData) {
     this.themeService.postTheme(newTheme.name, newTheme.isPublic).subscribe();
+    if (this.baseThemeId !== null) {
+      this.themeService.getPrivateThemes().subscribe((themes) => {
+        const themeId: number | undefined = themes
+          .find(t => t.name === newTheme.name)?.id;
+        if (themeId !== undefined) {
+          this.themeService.copyTheme(this.baseThemeId ?? -1, themeId);
+          this.baseThemeId = null;
+        }
+      });
+    }
     document.location.reload();
   }
 }
@@ -92,5 +108,4 @@ export class ThemeSelectionComponent {
 export interface NewThemeData {
   name: string;
   isPublic: boolean;
-  baseThemeId: number;
 }

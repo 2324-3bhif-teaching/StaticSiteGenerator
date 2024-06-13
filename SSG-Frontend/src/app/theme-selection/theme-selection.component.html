@@ -9,7 +9,7 @@
 
         <div class="grid grid-cols-3 gap-4">
             <ng-container *ngFor="let theme of filteredThemes">
-                <app-theme-element *ngIf="theme" [theme]="theme" [@fadeInOut] (themeSelected)="onThemeSelected($event)" />
+                <app-theme-element *ngIf="theme" [theme]="theme" [@fadeInOut] (themeSelected)="onThemeSelected($event)" (copyTheme)="onCopyTheme($event)" />
             </ng-container>
         </div>
         @if (filteredThemes.length === 0) {

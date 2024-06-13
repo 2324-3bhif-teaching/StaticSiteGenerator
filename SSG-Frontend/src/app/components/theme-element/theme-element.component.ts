@@ -15,9 +15,14 @@ import {ProjectService} from "../../services/project.service";
 export class ThemeElementComponent {
   @Input() theme: Theme = {name:"Default",userName:"SSG",isPublic:true,id:-1};
   @Output() themeSelected: EventEmitter<Theme> = new EventEmitter<Theme>();
+  @Output() copyTheme: EventEmitter<Theme> = new EventEmitter<Theme>();
   faCheck = faCheck;
 
   constructor() {
+  }
+
+  onCopyTheme(): void {
+    this.copyTheme.emit(this.theme);
   }
 
   onThemeSelected(): void {

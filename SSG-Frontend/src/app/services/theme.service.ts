@@ -38,6 +38,10 @@ export class ThemeService {
   convertTheme(id:number){
     return this.http.get<{css: string}>(`${this.themeURL}/convert/${id}`);
   }
+
+  copyTheme(baseThemeId: number, themeId: number){
+    return this.http.put(`${this.themeURL}/copy/${baseThemeId}/${themeId}`,{});
+  }
 }
 
 export interface ThemeData {

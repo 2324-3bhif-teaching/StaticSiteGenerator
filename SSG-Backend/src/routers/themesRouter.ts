@@ -5,6 +5,8 @@ import {ThemeService } from "../services/themeService";
 import { memoryStore } from "../app";
 import Keycloak from "keycloak-connect";
 import {ConvertService} from "../services/convertService";
+import {ElementStyle, ElementStyleService} from "../services/elementStyleService";
+import {StyleService, Style} from "../services/styleService";
 
 export const themeRouter: Router = express.Router();
 const keycloak: Keycloak.Keycloak = new Keycloak({ store: memoryStore });
@@ -125,5 +127,43 @@ themeRouter.get('/convert/:id', [keycloak.protect()], async (req: any, res: any)
     }
     finally {
         await unit.complete();
+    }
+});
+
+themeRouter.put('/copy/:baseThemeId/:themeId', [keycloak.protect()], async (req: any, res: any): Promise<void> => {
+    const unit: Unit = await Unit.create(false);
+    const themeService: ThemeService = new ThemeService(unit);
+    const elementStyleService: ElementStyleService = new ElementStyleService(unit);
+    const styleService: StyleService = new StyleService(unit);
+    try {
+        if (!await themeService.isAllowedToUseTheme(req.kauth.grant.access_token.content.preferred_username, req.params.baseThemeId)
+        && !await themeService.ownsTheme(req.kauth.grant.access_token.content.preferred_username, req.params.themeId)) {
+            res.sendStatus(StatusCodes.BAD_REQUEST);
+            await unit.complete(false);
+            return;
+        }
+        let result;
+        const elementStyles: ElementStyle[] = await elementStyleService.selectAllElementStyles(req.params.baseThemeId);
+        for (const elementStyle of elementStyles) {
+            result = await elementStyleService.insertElementStyle(
+                {selector: elementStyle.selector, themeId: parseInt(req.params.themeId)})
+                || result;
+        }
+        const newElementStyles: ElementStyle[] = (await elementStyleService.selectAllElementStyles(parseInt(req.params.themeId)));
+        newElementStyles.splice(0, newElementStyles.length - elementStyles.length);
+        for (let i = 0; i < elementStyles.length; i++) {
+            const styles: Style[] = await styleService.selectAll(elementStyles[i].id);
+            for (const style of styles) {
+                result = await styleService.insertStyle({elementStyleId: newElementStyles[i].id, property: style.property, value: style.value})
+                || result;
+            }
+        }
+        res.status(StatusCodes.OK).send(result);
+        await unit.complete(true);
+    }
+    catch (error) {
+        console.log(error);
+        await unit.complete(false);
+        res.sendStatus(StatusCodes.BAD_REQUEST);
     }
 });
