@@ -48,11 +48,11 @@ export class ElementStyleService extends ServiceBase{
     }
 }
 
-export interface ElementStyleData{
+export interface ElementStyleData {
     selector: string,
     themeId: number
 };
 
-export interface ElementStyle extends ElementStyleData{
+export interface ElementStyle extends ElementStyleData {
     id: number
 };
