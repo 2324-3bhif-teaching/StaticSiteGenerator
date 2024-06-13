@@ -15,7 +15,7 @@ import { Project } from '../../services/project.service';
   styleUrl: './file-list.component.css'
 })
 export class FileListComponent {
-  @Input() project: Project = { id: -1, name: "Default", theme: { id: -1, name: "Def", userName: "Usr", isPublic: false } };
+  @Input() project: Project = { id: -1, name: "Default", themeId: -1, userName: "Default" };
   @Output() changeActiveFile = new EventEmitter<number>();
   private DefaultFile: SSGFile = { id: -1, index: -1, name: "" };
   protected files: SSGFile[] = [];
