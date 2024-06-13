@@ -14,8 +14,8 @@ import { ElementStyle, ElementStyleService } from '../../services/element-style.
 })
 export class ElementStyleComponent{
   @Input() elementStyle: ElementStyle = {
-    id: 1, 
-    selector: "Default", 
+    id: 1,
+    selector: "Default",
     themeId: -1
   };
   @ViewChild('#selectorInput') selectorInput!: ElementRef;
@@ -32,7 +32,7 @@ export class ElementStyleComponent{
   }
 
   ngOnInit(): void{
-    this.loadStyles;
+    this.loadStyles();
   }
 
   loadStyles(): void{
@@ -50,8 +50,8 @@ export class ElementStyleComponent{
   onAddStyle(): void{
     this.styleService.postStyle({
       elementStyleId: this.elementStyle.id,
-      property: "",
-      value: ""
+      property: "Your Property Here",
+      value: "Your Value Here"
     }).subscribe(() => {
       this.loadStyles();
     });

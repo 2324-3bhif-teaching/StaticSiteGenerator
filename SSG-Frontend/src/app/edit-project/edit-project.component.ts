@@ -43,12 +43,16 @@ export class EditProjectComponent {
             }
           }
         })
-        
+
       });
     })
   }
 
   onChangeActiveFileId(fileId: number) {
     this.activeFileId = fileId;
+  }
+
+  onThemeChange() {
+    window.location.pathname = "/theme-selection/" + this.project.id;
   }
 }

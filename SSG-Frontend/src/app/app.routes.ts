@@ -14,7 +14,7 @@ import { StyleComponent } from './components/style/style.component';
 export const routes: Routes = [
     { path: ``, component: StartPageComponent },
     { path: `project-selection`, component: ProjectSelectionComponent },
-    { path: `theme-selection`, component: ThemeSelectionComponent },
+    { path: `theme-selection/:id`, component: ThemeSelectionComponent },
     { path: `upload-adoc`, component: FileUploadComponent },
     { path: `file-list`, component: FileListComponent },
     { path: `edit-project/:id`, component: EditProjectComponent },

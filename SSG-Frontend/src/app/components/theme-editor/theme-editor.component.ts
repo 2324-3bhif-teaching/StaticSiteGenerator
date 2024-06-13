@@ -15,10 +15,10 @@ import { Theme } from '../../services/theme.service';
     imports: [CommonModule, FormsModule, FaIconComponent, ElementStyleComponent]
 })
 export class ThemeEditorComponent {
-  @Input() theme: Theme = { 
-    id: -1, 
-    name: "Def", 
-    userName: "Usr", 
+  @Input() theme: Theme = {
+    id: -1,
+    name: "Def",
+    userName: "Usr",
     isPublic: false
   };
   public elementStyles: ElementStyle[] = [];
@@ -38,7 +38,7 @@ export class ThemeEditorComponent {
 
   addElementStyle(): void{
     this.elementStyleService.postElementStyle({
-      selector: "",
+      selector: "Your Selector Here",
       themeId: this.theme.id
     }).subscribe(() => {
       this.loadElementStyles();
