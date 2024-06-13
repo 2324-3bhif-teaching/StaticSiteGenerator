@@ -18,3 +18,9 @@
 | 09.05.2024 | 3h | Tried to understand Keycloak and started using it | #22 #23 |
 | 22.05.2024 | 2h | Implemented Project Service and Tests | #23 |
 | 24.05.2024 | 2h | Project Service Tests | #23 |
+| 07.06.2024 | 3h | Element Style Service und Tests | #37 |
+| 08.06.2024 | 4h | Style Router, Service and Tests, Element Style Router | #36, #37|
+| 09.06.2024 | 5h | Frontend Theme Editor | |
+| 11.06.2024 | 1h | Frontend Theme Editor | |
+| 12.06.2024 | 4h 30min | Frontend Theme Editor | |
+| 13.06.2024 | 4h | Frontend Theme Editor, private Preview fix | |
