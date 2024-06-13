@@ -8,6 +8,7 @@ import {FileService} from "./fileService";
 import {ProjectService} from "./projectService";
 import {File} from "./fileService";
 import * as fs from "fs";
+import * as fsPromises from "fs/promises";
 import {WriteStream} from "fs";
 import archiver, {Archiver} from "archiver";
 import {basename, join} from "path";
@@ -78,6 +79,7 @@ export class ConvertService extends ServiceBase {
         if (projectPath === null) {
             return;
         }
+        await this.createTableOfContent(projectId);
         const fileService: FileService = new FileService(this.unit);
         const files: File[] = await fileService.selectFilesOfProject(projectId);
     
@@ -97,7 +99,7 @@ export class ConvertService extends ServiceBase {
         archive.pipe(outputStream);
     
         for (const file of files) {
-            archive.append(await this.convertFile(file.id, false), {name: `${basename(file.name, "adoc")}.html`});
+            archive.append(await this.convertFile(file.id, false), {name: `${basename(file.name, ".adoc")}.html`});
         }
         archive.append(await this.convertThemeToCss(projectId), {name: "style.css"});
     
@@ -106,5 +108,72 @@ export class ConvertService extends ServiceBase {
             outputStream.on('finish', resolve);
             outputStream.on('error', reject);
         });
+    }
+
+    public async createTableOfContent(projectId: number): Promise<string> {
+        const wrapInTag = (input: string, tag: string, attributes: string = ''): string => {
+            return `<${tag} ${attributes.trim()}>${input}</${tag}>`;
+        };
+    
+        const projectService: ProjectService = new ProjectService(this.unit);
+        const projectPath: string | null = await projectService.getProjectPath(projectId);
+        if (projectPath === null) {
+            throw new Error("File not found");
+        }
+        const fileService: FileService = new FileService(this.unit);
+        const files: File[] = await fileService.selectFilesOfProject(projectId);
+        let resultingHtml = "";
+    
+        for (const file of files) {
+            let wrapped = "";
+            const rawPath = await fileService.getFilePath(file.id);
+    
+            if (rawPath == null) {
+                continue;
+            }
+    
+            const path = join(__dirname, "/../..", rawPath);
+            const fileContent = await fsPromises.readFile(path, "utf-8");
+            const headers: string[] = this.getArrayOfAllHeaders(fileContent);
+    
+            let currentList = "";
+            for (const header of headers) {
+                const level = header.startsWith("== ") ? 2 : 1;
+                const headerText = header.replace(/^=+ /, '');
+                const headerLink = wrapInTag(headerText, "a", `href="#${encodeURIComponent(headerText)}"`);
+                if (level === 1) {
+                    if (currentList) {
+                        wrapped += wrapInTag(currentList, "ul");
+                        currentList = "";
+                    }
+                    wrapped += wrapInTag(headerLink, "li");
+                } else if (level === 2) {
+                    currentList += wrapInTag(headerLink, "li");
+                }
+            }
+            if (currentList) {
+                wrapped += wrapInTag(currentList, "ul");
+            }
+    
+            const fileLink = wrapInTag(file.name, "a", `href="${basename(file.name, ".adoc")}.html"`);
+            wrapped = wrapInTag(fileLink, "li") + wrapInTag(wrapped, "ul");
+            resultingHtml += wrapped;
+        }
+    
+        console.log(resultingHtml);
+        return wrapInTag(resultingHtml, "ul");
+    }
+    
+    private getArrayOfAllHeaders(fileContent: string): string[] {
+        const lines: string[] = fileContent.split(/\r?\n/);
+        const headers: string[] = [];
+        const equalRegex = /^=+$/;
+        for (const line of lines) {
+            if (line.startsWith("=") && !equalRegex.test(line)) { 
+                headers.push(line);
+            }
+        }
+    
+        return headers;
     }
 }
