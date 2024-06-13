@@ -20,7 +20,7 @@ export class ElementStyleService {
   }
 
   patchElementStyleSelector(id: number, newSelector: string){
-    return this.http.patch(`${this.elementStylesUrl}/${id}`, {newSelector: newSelector});
+    return this.http.patch(`${this.elementStylesUrl}/${id}`, {selector: newSelector});
   }
 
   deleteElementStyle(id: number){

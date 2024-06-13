@@ -18,7 +18,7 @@ export class ElementStyleComponent{
     selector: "Default",
     themeId: -1
   };
-  @ViewChild('#selectorInput') selectorInput!: ElementRef;
+  @ViewChild('selectorInput') selectorInput!: ElementRef;
   @Output() reloadElementStylesEmitter = new EventEmitter<void>();
   public styles: Style[] = [];
 
@@ -27,7 +27,10 @@ export class ElementStyleComponent{
   selectorChange(): void{
     if(this.selectorInput.nativeElement.value !== this.elementStyle.selector){
       this.elementStyle.selector = this.selectorInput.nativeElement.value;
-      this.elementStyleService.patchElementStyleSelector(this.elementStyle.id, this.selectorInput.nativeElement.value);
+      console.log("selector change " + this.selectorInput.nativeElement.value);
+      console.log("selector change " + this.selectorInput.nativeElement.value);
+      console.log("selector change " + this.selectorInput.nativeElement.value);
+      this.elementStyleService.patchElementStyleSelector(this.elementStyle.id, this.selectorInput.nativeElement.value).subscribe();
     }
   }
 

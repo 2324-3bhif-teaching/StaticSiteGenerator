@@ -4,7 +4,7 @@
     <div class="flex flex-col pl-4">
       <div class="py-1" *ngFor="let style of styles">
         <!-- Assuming you want to display each style in some way, e.g., as a text or structured layout -->
-        <<!--<span class="text-gray-300">{{style.property}}: {{style.value}};</span>-->
+        <!--<span class="text-gray-300">{{style.property}}: {{style.value}};</span>-->
         @if (style.id !== -1) {
           <app-style (reloadStylesEmitter)="loadStyles()" [style]="style"></app-style>
         }

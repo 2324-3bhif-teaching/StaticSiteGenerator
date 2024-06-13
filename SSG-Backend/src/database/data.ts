@@ -119,6 +119,10 @@ export class DB {
             await connection.run(`Insert into THEME (user_name, name, is_public) Values ('${DefaultTheme.userName}','${DefaultTheme.name}',${DefaultTheme.isPublic ? 1 : 0})`);
             await connection.run(`Insert into Element_Style (selector, theme_id) Values ('h2', 1)`);
             await connection.run(`Insert into Style (property, value, element_style_id) Values ('color', 'red', 1)`);
+
+            await connection.run(`Insert into THEME (user_name, name, is_public) Values ('if210053','Ultra Theme', '1')`);
+            await connection.run(`Insert into Element_Style (selector, theme_id) Values ('h2', 2)`);
+            await connection.run(`Insert into Style (property, value, element_style_id) Values ('color', 'red', 2)`);
             await DB.commitTransaction(connection);
         }
         catch (error)
