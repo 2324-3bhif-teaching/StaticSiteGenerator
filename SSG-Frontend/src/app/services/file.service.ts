@@ -15,11 +15,15 @@ export class FileService {
     return this.http.get<SSGFile[]>(`${this.filesURL}/${projectId}`);
   }
 
-  postFile(file: File, projectId: number) {
+  postFiles(files: File[], projectId: number) {
     const formData: FormData = new FormData();
-    formData.append('file', file, file.name);
-    formData.append('projectId', projectId.toString());
+    console.log(files)
 
+    files.forEach(file => {
+      formData.append('file', file);
+    });
+
+    formData.append('projectId', projectId.toString());
     return this.http.post(this.filesURL, formData);
   }
 

@@ -82,27 +82,29 @@ export class FileListComponent {
   }
 
   handleFileInput(event: any): void {
-    const file: File = event.target.files.item(0);
-    console.log(file);
-    if (!file.name.endsWith(".adoc")) {
+    const files: FileList = event.target.files;
+    const validFiles: File[] = [];
+  
+    // Collect valid .adoc files
+    for (let i = 0; i < files.length; i++) {
+      const file = files.item(i);
+      if (file && file.name.endsWith(".adoc")) {
+        validFiles.push(file);
+      }
+    }
+  
+    // Check if there are valid files to upload
+    if (validFiles.length === 0) {
       this.validFile = false;
       return;
     }
     this.validFile = true;
-
-
-    this.fileToUpload = file;
-  }
-
-  uploadFile(): void {
-    if (this.fileToUpload === null) {
-      return;
-    }
-
-    this.fileService.postFile(this.fileToUpload, this.project.id).subscribe(data => {
-      console.log(data);
+  
+    // Use postFiles to upload all valid files at once
+    this.fileService.postFiles(validFiles, this.project.id).subscribe(() => {
+      // Refresh the page after successful upload
+      document.location.reload();
     });
-
-    document.location.reload();
   }
+
 }
