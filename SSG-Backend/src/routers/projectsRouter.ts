@@ -123,7 +123,11 @@ projectRouter.get("/convert/:id", [keycloak.protect()], async (req: any, res: an
             return;
         }
         const destinationPath: string = `${projectPath}.zip`;
-        await convertService.convertProject(req.params.id, destinationPath);
+        await convertService.convertProject(
+            req.params.id,
+            (await projectService.selectAllProjects(req.kauth.grant.access_token.content.preferred_username))
+                .find(project => project.id === req.params.id)?.themeId ?? -1,
+            destinationPath);
         const relativePath: string = join(__dirname, "/../..", destinationPath);
         res.status(StatusCodes.OK).sendFile(relativePath);
         await fs.rm(relativePath);
