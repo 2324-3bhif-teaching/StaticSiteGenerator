@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BaseService } from './base.service';
 import { HttpClient } from '@angular/common/http';
-import { ElementStyle, ElementStyleData } from '../components/theme-editor/theme-editor.component';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +12,7 @@ export class ElementStyleService {
   private elementStylesUrl: string = this.base.BASE_URL + this.base.ELEMENTSTYLE_URL;
 
   getAllFromTheme(id: number){
-    return this.http.get<ElementStyle[]>(`${this.elementStylesUrl}/${id}`);
+    return this.http.get<ElementStyle[]>(`${this.elementStylesUrl}/themeId/${id}`);
   }
 
   postElementStyle(elementStyle: ElementStyleData){
@@ -28,3 +27,12 @@ export class ElementStyleService {
     return this.http.delete(`${this.elementStylesUrl}/${id}`);
   }
 }
+
+export interface ElementStyleData{
+  selector: string,
+  themeId: number
+};
+
+export interface ElementStyle extends ElementStyleData{
+  id: number
+};
