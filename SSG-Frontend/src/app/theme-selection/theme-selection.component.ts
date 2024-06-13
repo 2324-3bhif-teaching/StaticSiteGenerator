@@ -37,8 +37,11 @@ export class ThemeSelectionComponent {
 
   ngOnInit() {
     this.projectId = parseInt(this.route.snapshot.paramMap.get('id')?.valueOf() ?? "-1");
-    this.themeService.getAllPublicThemes().subscribe((value) => {
-      this.themes = value;
+    this.themeService.getAllPublicThemes().subscribe((themes) => {
+      this.themes = themes;
+      this.themeService.getPrivateThemes().subscribe((privateThemes) => {
+        this.themes = this.themes.concat(privateThemes.filter(t => !t.isPublic));
+      });
       // Mock themes (replace with your actual data)
       /*
       this.themes.push({ id: 3, name: "Dark Mode", userName: "SSG", isPublic: true });
@@ -58,11 +61,6 @@ export class ThemeSelectionComponent {
       return this.themes;
     }
     return this.themes.filter(theme => theme.name.toLowerCase().includes(this.searchText.toLowerCase()));
-  }
-
-  createThemeClicked() {
-    this.themeService.postTheme("Dark Mode", true).subscribe();
-    window.location.reload();
   }
 
   onThemeSelected(theme: Theme) {
