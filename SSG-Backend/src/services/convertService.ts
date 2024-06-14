@@ -110,7 +110,9 @@ export class ConvertService extends ServiceBase {
     
 
         for (const file of files) {
-            archive.append(toc + await this.convertFile(file.id, false), {name: `${basename(file.name, ".adoc")}.html`});
+            let html: string = await this.convertFile(file.id, false);
+            //html =  
+            archive.append(toc + html, {name: `${basename(file.name, ".adoc")}.html`});
         }
 
         
@@ -122,6 +124,24 @@ export class ConvertService extends ServiceBase {
             outputStream.on('finish', resolve);
             outputStream.on('error', reject);
         });
+    }
+
+    public addIdsToHeaders(fileContent: string): string {
+        const lines: string[] = fileContent.split(/\r?\n/);
+        let htmlContent = "";
+        const headerRegex = /^(<h\d)(.*>)(.*)<\/h\d>/;
+        for(let line of lines){
+            const regexMatch: IterableIterator<RegExpExecArray>[] = [line.matchAll(headerRegex)];
+            if(regexMatch.length === 3){
+                //const headerPart1: string = regexMatch[0];
+                //const id: string = encodeURIComponent(regexMatch[1]);
+                //const headerPart2: string = regexMatch[2];
+            }
+            else if(regexMatch.length === 0){
+                htmlContent += line;
+            }
+        }
+        return htmlContent;
     }
 
     public async createTableOfContent(projectId: number): Promise<string> {
