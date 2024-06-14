@@ -22,7 +22,8 @@ export class ProjectService {
   }
 
   patchProjectName(id:number,name:string){
-    return this.http.patch(`${this.projectURL}/name/${id}`,{name});
+    console.log(id + name)
+    return this.http.patch(`${this.projectURL}/name/${id}`,{newName:name});
   }
 
   patchThemeId(id:number,newThemeId:number){
