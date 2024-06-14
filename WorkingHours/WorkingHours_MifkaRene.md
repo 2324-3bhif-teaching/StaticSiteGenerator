@@ -22,3 +22,4 @@
 | 09.06.2024 | 6h 30min | HTML Preview und Theme Editor                                                                                        | #17, #26 |
 | 12.06.2024 | 8h | Sehr viel design, fixes und navbar                                                                                | #19, #24, #26 |
 | 13.06.2024 | 7h 30min | Design und viele Bugfixes und TOC, sowie Default Theme                                                                              | #19, #24, #26 |
+| 14.06.2024 | 4h 30min | Design und viele Bugfixes und Renaming                                                                          | #19, #24, #26 |
