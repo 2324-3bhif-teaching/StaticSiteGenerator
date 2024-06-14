@@ -10,8 +10,8 @@
       </div>
     </div>
     <p class="text-gray-400 text-base sm:text-lg my-2">{{ '}' }}</p>
-    <button class="bg-red-500 rounded-md m-1 sm:m-2 p-1 sm:p-2"><fa-icon [icon]="faTrash"></fa-icon></button>
-    <button class="bg-blue-500 rounded-md m-1 sm:m-2 p-1 sm:p-2"><fa-icon [icon]="faAdd"></fa-icon></button>
+    <button class="bg-red-500 rounded-md m-1 sm:m-2 p-1 sm:p-2" (click)="onDelete()"><fa-icon [icon]="faTrash"></fa-icon></button>
+    <button class="bg-blue-500 rounded-md m-1 sm:m-2 p-1 sm:p-2" (click)="onAddStyle()"><fa-icon [icon]="faAdd"></fa-icon></button>
   }
   @else{
     <p class="p-1 sm:p-2 bg-gray-700 rounded-md border border-gray-600 placeholder-gray-400 text-white">{{elementStyle.selector}}</p>
