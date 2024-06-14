@@ -105,11 +105,16 @@ export class ConvertService extends ServiceBase {
 
         if(generateTOC){
             toc = await this.createTableOfContent(projectId);
+            archive.append(toc + `<link rel="stylesheet" href="style.css">` , {name: `index.html`});
         }
     
+
         for (const file of files) {
             archive.append(toc + await this.convertFile(file.id, false), {name: `${basename(file.name, ".adoc")}.html`});
         }
+
+        
+
         archive.append(await this.convertThemeToCss(themeId), {name: "style.css"});
     
         await archive.finalize();
