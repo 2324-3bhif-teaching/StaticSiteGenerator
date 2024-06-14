@@ -14,7 +14,7 @@
     <button class="bg-blue-500 rounded-md m-1 sm:m-2 p-1 sm:p-2" (click)="onAddStyle()"><fa-icon [icon]="faAdd"></fa-icon></button>
   }
   @else{
-    <p class="p-1 sm:p-2 bg-gray-700 rounded-md border border-gray-600 placeholder-gray-400 text-white">{{elementStyle.selector}}</p>
+    <p class="p-1 sm:p-2 bg-gray-900 text-gray-400 rounded-md border border-gray-600 placeholder-gray-400">{{elementStyle.selector}}</p>
     <p class="text-gray-400 text-base sm:text-lg my-2">{{ '{' }}</p>
     <div class="flex flex-col pl-2 sm:pl-4">
       <div class="py-1" *ngFor="let style of styles">
