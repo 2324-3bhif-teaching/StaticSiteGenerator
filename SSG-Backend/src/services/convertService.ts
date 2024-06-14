@@ -12,6 +12,7 @@ import * as fsPromises from "fs/promises";
 import {WriteStream} from "fs";
 import archiver, {Archiver} from "archiver";
 import {basename, join} from "path";
+import { wrap } from "module";
 
 export class ConvertService extends ServiceBase {
     constructor(unit: Unit) {
@@ -110,9 +111,7 @@ export class ConvertService extends ServiceBase {
     
 
         for (const file of files) {
-            let html: string = await this.convertFile(file.id, false);
-            //html =  
-            archive.append(toc + html, {name: `${basename(file.name, ".adoc")}.html`});
+            archive.append(toc + await this.convertFile(file.id, false), {name: `${basename(file.name, ".adoc")}.html`});
         }
 
         
@@ -124,24 +123,6 @@ export class ConvertService extends ServiceBase {
             outputStream.on('finish', resolve);
             outputStream.on('error', reject);
         });
-    }
-
-    public addIdsToHeaders(fileContent: string): string {
-        const lines: string[] = fileContent.split(/\r?\n/);
-        let htmlContent = "";
-        const headerRegex = /^(<h\d)(.*>)(.*)<\/h\d>/;
-        for(let line of lines){
-            const regexMatch: IterableIterator<RegExpExecArray>[] = [line.matchAll(headerRegex)];
-            if(regexMatch.length === 3){
-                //const headerPart1: string = regexMatch[0];
-                //const id: string = encodeURIComponent(regexMatch[1]);
-                //const headerPart2: string = regexMatch[2];
-            }
-            else if(regexMatch.length === 0){
-                htmlContent += line;
-            }
-        }
-        return htmlContent;
     }
 
     public async createTableOfContent(projectId: number): Promise<string> {
@@ -169,14 +150,14 @@ export class ConvertService extends ServiceBase {
             const path = join(__dirname, "/../..", rawPath);
             const fileContent = await fsPromises.readFile(path, "utf-8");
             const headers: string[] = this.getArrayOfAllHeaders(fileContent);
-    
+            const ids: string[] = this.getIdArray(fileContent)
+            const length: number = Math.min(headers.length, ids.length);
+
             let currentList = "";
-            for (const header of headers) {
-                const level = header.startsWith("== ") ? 2 : 1;
-                const headerText = header.replace(/^=+ /, '');
-                const headerId = encodeURIComponent(headerText); // Generate a unique ID for the header
-                // Modify headerLink to include the file name and header ID
-                const headerLink = wrapInTag(headerText, "a", `href="${basename(file.name, ".adoc")}.html#${headerId}" class="link"`);
+            for (let i: number = 0; i < length; i++) {
+                const level = headers[i].split(" ")[0].length;
+                const headerText = headers[i].replace(/^=+ /, '');
+                const headerLink = wrapInTag(headerText, "a", `href="${basename(file.name, ".adoc")}.html#${ids[i]}" class="link"`);
                 if (level === 1) {
                     if (currentList) {
                         wrapped += wrapInTag(currentList, "ul", 'class="sub-list"');
@@ -196,6 +177,61 @@ export class ConvertService extends ServiceBase {
             resultingHtml += wrapped;
         }
         return wrapInTag(resultingHtml, "ul", 'class="table-of-contents"');
+    }
+
+    private wrapInTag(input: string, tag: string, attributes: string = ''): string {
+        return `<${tag} ${attributes.trim()}>${input}</${tag}>`;
+    };
+
+    // soll rekursiv die li und ul machen;
+    // soll bei 1 starten und erhäht sich dann rekursiv und geht so jedes level durch
+    private generateHeaders(headers: string[], ids: string[], fileName: string, headerLevel: number): string{
+        const length: number = Math.min(headers.length, ids.length);
+        let html: string = "";
+
+        for(let i: number = 0; i < length; i++){
+            const level = headers[i].split(" ")[0].length;
+            const headerText = headers[i].replace(/^=+ /, '');
+            const headerLink = this.wrapInTag(headerText, "a", `href="${basename(fileName, ".adoc")}.html#${ids[i]}" class="link"`);
+            
+            if(level === headerLevel){
+                html += this.wrapInTag(headerLink, "li", 'class="content-list"');
+            }
+            else if(level > headerLevel){
+                html += this.wrapInTag(this.generateHeaders(headers, ids, fileName, headerLevel++), "ul", 'class="sub-list"');
+            }
+        }
+        return html;
+    }
+
+    private getIdArray(fileContent: string): string[]{
+        const ids: string[] = [];
+        const regex: RegExp = /^=+ +(\S+[\S ]*)$/m;
+        for(const line of fileContent.split(/\r?\n/)){
+            const match: RegExpExecArray[] = [...line.matchAll(regex)];
+            ids.push(`_${match[1].toString().replace(" ", "_").toLowerCase()}`);
+        }
+        let resultIds: string[] = [];
+        for(const searchId of ids){
+            const occurences: string[] = ids.filter(id => id === searchId);
+            if(occurences.length > 1){
+                resultIds = this.handleSameIds(ids, searchId);
+            }
+        }
+        return resultIds;
+    }
+
+    private handleSameIds(ids: string[], searchId: string): string[]{
+        let counter: number = 0;
+        for(let i: number = 0; i < ids.length; i++){
+            if(ids[i] === searchId){
+                counter++;
+                if(counter > 1){
+                    ids[i] = `${ids[i]}_${counter}`;
+                }
+            }
+        }
+        return ids;
     }
     
     private getArrayOfAllHeaders(fileContent: string): string[] {
