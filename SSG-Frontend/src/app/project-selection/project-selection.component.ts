@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { ProjectModalComponent } from '../components/project-modal/project-modal.component';
 import { Project, ProjectService } from '../services/project.service';
-import { ThemeService } from '../services/theme.service';
 
 
 @Component({
@@ -15,15 +14,12 @@ import { ThemeService } from '../services/theme.service';
   styleUrl: './project-selection.component.css'
 })
 export class ProjectSelectionComponent {
-
-
   public projects: Project[] = [];
 
-  constructor(public dialog: MatDialog,private projectService:ProjectService,private themeService:ThemeService) { }
+  constructor(public dialog: MatDialog,private projectService:ProjectService) { }
 
   ngOnInit() {
     this.projectService.getAllProjects().subscribe((project) => {
-      console.log(project);
       this.projects = project;
     });
   }
@@ -33,7 +29,7 @@ export class ProjectSelectionComponent {
       return;
     }
 
-    
+
     this.projects.push(newProject);
 
     this.projectService.postProject(newProject.name).subscribe();

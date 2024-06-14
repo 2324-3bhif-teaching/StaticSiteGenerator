@@ -14,7 +14,6 @@ export class ProjectService {
 
   getAllProjects(){
     const s = this.http.get<Project[]>(`${this.projectURL}/`);
-    console.log(s)
     return s;
   }
 
@@ -32,7 +31,7 @@ export class ProjectService {
 
   deleteProject(id:number){
     return this.http.delete(`${this.projectURL}/${id}`);
-  }  
+  }
 
   convertProject(id:number){
     return this.http.get<Blob>(`${this.projectURL}/convert/${id}`, {
@@ -42,7 +41,8 @@ export class ProjectService {
 }
 
 export interface Project {
-  id: number
-  name: string,
-  theme: Theme
+  id: number;
+  name: string;
+  userName: string;
+  themeId: number;
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter } from '@angular/core';
 import { FileListComponent } from '../components/file-list/file-list.component';
 import { Project, ProjectService } from '../services/project.service';
 import { ActivatedRoute } from '@angular/router';
@@ -16,9 +16,10 @@ import { saveAs } from 'file-saver';
   styleUrl: './edit-project.component.css'
 })
 export class EditProjectComponent {
-  protected project: Project = { id: -1, name: "Default", theme: { id: -1, name: "Def", userName: "Usr", isPublic: false } };
+  protected project: Project = { id: -1, name: "Default", themeId: -1, userName: "Default" };
   protected activeFileId: number = -1;
   protected theme: Theme = { id: -1, name: "Def", userName: "Usr", isPublic: false };
+  reloadPreviewEmitter: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(private route: ActivatedRoute, private projectService: ProjectService, private themeService:ThemeService) {
     this.projectService.getAllProjects().subscribe(val => {
@@ -36,15 +37,21 @@ export class EditProjectComponent {
       this.project = corrProj;
 
       this.projectService.getAllProjects().subscribe(projects => {
-        const foundProject: any = projects.find(project => project.id === this.project.id);
+        const foundProject: Project | undefined = projects.find(project => project.id === this.project.id);
         themeService.getAllPublicThemes().subscribe(themes =>{
           for(const theme of themes){
             if(foundProject?.themeId === theme.id){
-              console.log(theme.id);
               this.theme = theme;
             }
           }
-        })
+        });
+        themeService.getPrivateThemes().subscribe(themes =>{
+          for(const theme of themes){
+            if(foundProject?.themeId === theme.id){
+              this.theme = theme;
+            }
+          }
+        });
 
       });
     })
@@ -64,5 +71,9 @@ export class EditProjectComponent {
     this.projectService.convertProject(this.project.id).subscribe(data =>{
       saveAs(data,`${this.project.name}.zip`);
     });
+  }
+
+  previewTrigger(){
+    this.reloadPreviewEmitter.emit();
   }
 }

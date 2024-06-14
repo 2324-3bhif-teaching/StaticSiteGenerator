@@ -1,43 +1,43 @@
-import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
 import {FileService} from "../../services/file.service";
 import {ThemeService} from "../../services/theme.service";
-import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
-import hljs from 'highlight.js';
 import {CommonModule} from "@angular/common";
-import {HtmlLoadedDirective} from "../../directives/html-loaded.directive";
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-file-preview',
   standalone: true,
-  imports: [CommonModule, HtmlLoadedDirective],
+  imports: [CommonModule],
   templateUrl: './file-preview.component.html',
   styleUrl: './file-preview.component.css'
 })
 export class FilePreviewComponent implements OnChanges {
   @Input() fileId: number = -1;
   @Input() themeId: number = -1;
-  protected fileHtml: SafeHtml = "";
-  private isLoaded = false;
+  @Input() reloadPreviewEvent!: Observable<void>;
+  @ViewChild('preview', { static: false }) iframe: ElementRef | null = null;
+  subscription!: Subscription;
 
   constructor(
     private fileService: FileService,
-    private themeService: ThemeService,
-    private sanitizer: DomSanitizer) {
+    private themeService: ThemeService) {
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.subscription = this.reloadPreviewEvent.subscribe(() => {
+      this.reloadFilePreview();
+    });
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes)
     if (changes['fileId'] || changes['themeId']) {
       this.reloadFilePreview();
     }
   }
 
   protected reloadFilePreview() {
-    console.log("reloading "+this.fileId+" "+this.themeId)
     if (this.fileId === -1 || this.themeId === -1) {
-      this.fileHtml = "";
+      this.writeToIframe("");
       return;
     }
     let fileHtml: string = "";
@@ -45,16 +45,25 @@ export class FilePreviewComponent implements OnChanges {
       fileHtml = html.html;
       this.themeService.convertTheme(this.themeId).subscribe(css => {
         fileHtml += `<style>${css.css}</style>`;
-        this.fileHtml = this.sanitizer.bypassSecurityTrustHtml(fileHtml);
-        this.isLoaded = false;
+        this.writeToIframe(fileHtml);
       });
     });
   }
 
-  onHtmlLoaded() {
-    if (!this.isLoaded) {
-      hljs.highlightAll();
-      this.isLoaded = true;
+  writeToIframe(content: string) {
+    if (!this.iframe) {
+      return;
     }
+
+    const iframe = this.iframe.nativeElement;
+    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+    iframeDoc.open();
+    iframeDoc.write(content);
+    iframeDoc.close();
+  }
+
+  ngOnDestroy(): void{
+    this.subscription.unsubscribe();
   }
 }

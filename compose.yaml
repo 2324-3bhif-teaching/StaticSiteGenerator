@@ -3,20 +3,24 @@
     build: "./SSG-Frontend/"
     ports:
       - "8080:8080"
+    image: paulschein/static_site_generator:frontend
     links:
         - api
     networks:
       - back-tier
       - front-tier
+    pull_policy: always
       
   api:
     build: "./SSG-Backend/"
     env_file:
       - ./SSG-Backend/.env
+    image: paulschein/static_site_generator:backend
     networks:
       - back-tier
     expose:
         - "3000"
+    pull_policy: always
 
 networks:
   back-tier: {}

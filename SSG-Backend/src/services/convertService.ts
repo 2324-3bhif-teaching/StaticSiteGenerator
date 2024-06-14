@@ -73,7 +73,7 @@ export class ConvertService extends ServiceBase {
         }).toString();
     }
 
-    public async convertProject(projectId: number, destinationPath: string, generateTOC : boolean = true): Promise<void> {
+    public async convertProject(projectId: number, themeId: number, destinationPath: string, generateTOC : boolean = true): Promise<void> {
         const projectService: ProjectService = new ProjectService(this.unit);
         const projectPath: string | null = await projectService.getProjectPath(projectId);
         if (projectPath === null) {
@@ -110,7 +110,7 @@ export class ConvertService extends ServiceBase {
         for (const file of files) {
             archive.append(toc + await this.convertFile(file.id, false), {name: `${basename(file.name, ".adoc")}.html`});
         }
-        archive.append(await this.convertThemeToCss(projectId), {name: "style.css"});
+        archive.append(await this.convertThemeToCss(themeId), {name: "style.css"});
     
         await archive.finalize();
         await new Promise((resolve, reject) => {

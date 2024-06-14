@@ -44,7 +44,7 @@ export class StyleService extends ServiceBase{
     }
 }
 
-export interface StyleData{
+export interface StyleData {
     elementStyleId: number,
     property: string,
     value: string

@@ -86,11 +86,20 @@ projectRouter.delete("/:id", [keycloak.protect()], async (req: any, res: any) : 
             await unit.complete(false);
             return;
         }
-        await fs.rm(projectPath, {recursive: true});
-        res.status(StatusCodes.OK).send(
-            await projectService.deleteProject(
-                req.kauth.grant.access_token.content.preferred_username, req.params.id));
-            await unit.complete(true);
+        const result: boolean = await projectService.deleteProject(
+            req.kauth.grant.access_token.content.preferred_username, req.params.id);
+
+        try {
+            await fs.access(projectPath);
+            await fs.rm(projectPath, {recursive: true});
+        }
+        catch (error) {
+            console.log(error);
+            console.log("No files to delete");
+        }
+
+        await unit.complete(true);
+        res.status(StatusCodes.OK).send(result);
     }
     catch(error){
         console.log(error);
@@ -114,7 +123,11 @@ projectRouter.get("/convert/:id", [keycloak.protect()], async (req: any, res: an
             return;
         }
         const destinationPath: string = `${projectPath}.zip`;
-        await convertService.convertProject(req.params.id, destinationPath);
+        await convertService.convertProject(
+            req.params.id,
+            (await projectService.selectAllProjects(req.kauth.grant.access_token.content.preferred_username))
+                .find(project => project.id === req.params.id)?.themeId ?? -1,
+            destinationPath);
         const relativePath: string = join(__dirname, "/../..", destinationPath);
         res.status(StatusCodes.OK).sendFile(relativePath);
         await fs.rm(relativePath);

@@ -3,3 +3,4 @@ test/
 package-lock.json
 coverage/
 .idea
+proxy.conf.json
