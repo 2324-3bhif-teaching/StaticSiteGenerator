@@ -1,10 +1,13 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import { faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import {ProjectService} from "../../services/project.service";
 import { CommonModule } from '@angular/common';
 import { jwtDecode } from 'jwt-decode';
 import {Theme, ThemeService} from '../../services/theme.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ThemeModalComponent } from '../theme-modal/theme-modal.component';
+import { NewThemeData } from '../../theme-selection/theme-selection.component';
 
 @Component({
   selector: 'app-theme-element',
@@ -19,8 +22,9 @@ export class ThemeElementComponent {
   faCheck = faCheck;
   userName : string = "";
   faTrash = faTrash;
+  faPen = faPen;
 
-  constructor(private themeService:ThemeService){
+  constructor(private dialog: MatDialog,private themeService:ThemeService){
 
   }
 
@@ -43,5 +47,25 @@ export class ThemeElementComponent {
     this.themeService.deleteTheme(this.theme.id).subscribe(()=>{
       document.location.reload();
     });
+  }
+
+  onThemePatch(){
+    const dialogRef = this.dialog.open(ThemeModalComponent, {
+      width: '250px',
+    });
+
+    dialogRef.afterClosed().subscribe((result : NewThemeData) => {
+      if (result === undefined) {
+        return;
+      }
+      this.handleThemeEdit(result)
+    });
+  }
+
+  handleThemeEdit(newTheme : NewThemeData){
+    this.themeService.patchThemeName(this.theme.id,newTheme.name).subscribe();
+    this.theme.name = newTheme.name;
+    this.themeService.patchThemePublicity(this.theme.id,newTheme.isPublic).subscribe();
+    this.theme.isPublic = newTheme.isPublic;
   }
 }
