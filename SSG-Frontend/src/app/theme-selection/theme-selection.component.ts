@@ -32,6 +32,7 @@ export class ThemeSelectionComponent {
   public themes: Theme[] = [];
   public searchText: string = '';
   private projectId: number = -1;
+  public onlyShowPrivate : boolean = false;
 
   constructor(private dialog: MatDialog,private route: ActivatedRoute, private themeService: ThemeService, private projectService: ProjectService) { }
 
@@ -56,11 +57,24 @@ export class ThemeSelectionComponent {
     });
   }
 
+  get privateThemes(){
+    return this.themes.filter(theme => !theme.isPublic);
+  }
+
   get filteredThemes() {
-    if (!this.searchText.trim()) {
-      return this.themes;
+    if(this.onlyShowPrivate){
+      if (!this.searchText.trim()) {
+        return this.privateThemes;
+      }
+      return this.privateThemes.filter(theme => theme.name.toLowerCase().includes(this.searchText.toLowerCase()));
     }
-    return this.themes.filter(theme => theme.name.toLowerCase().includes(this.searchText.toLowerCase()));
+    else{
+      if (!this.searchText.trim()) {
+        return this.themes;
+      }
+      return this.themes.filter(theme => theme.name.toLowerCase().includes(this.searchText.toLowerCase()));
+    }
+    
   }
 
   onThemeSelected(theme: Theme) {
@@ -84,8 +98,9 @@ export class ThemeSelectionComponent {
   }
 
   handleNewThemeCreation(newTheme: NewThemeData) {
-    this.themeService.postTheme(newTheme.name, newTheme.isPublic).subscribe();
-    document.location.reload();
+    this.themeService.postTheme(newTheme.name, newTheme.isPublic).subscribe(() =>{
+      document.location.reload();
+    });
   }
 }
 
