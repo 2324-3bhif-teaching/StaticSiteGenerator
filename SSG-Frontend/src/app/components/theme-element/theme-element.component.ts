@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {Theme} from '../../services/theme.service';
+import {Theme, ThemeService} from '../../services/theme.service';
 import { faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { CommonModule } from '@angular/common';
@@ -31,11 +31,17 @@ export class ThemeElementComponent {
     console.log(this.userName)
   }
 
+
+  constructor(private themeService:ThemeService){
+
+  }
   onThemeSelected(): void {
     this.themeSelected.emit(this.theme);
   }
 
   onThemeDeleted() : void{
-    
+    this.themeService.deleteTheme(this.theme.id).subscribe(()=>{
+      document.location.reload();
+    });
   }
 }
