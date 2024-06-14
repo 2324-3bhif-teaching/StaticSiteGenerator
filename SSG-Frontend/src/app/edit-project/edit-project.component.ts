@@ -68,7 +68,7 @@ export class EditProjectComponent {
   convertProject(){
     console.log(this.project);
 
-    this.projectService.convertProject(this.project.id).subscribe(data =>{
+    this.projectService.convertProject(this.project.id, this.theme.id).subscribe(data =>{
       saveAs(data,`${this.project.name}.zip`);
     });
   }
