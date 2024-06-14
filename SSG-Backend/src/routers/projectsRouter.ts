@@ -108,7 +108,7 @@ projectRouter.delete("/:id", [keycloak.protect()], async (req: any, res: any) : 
     }
 });
 
-projectRouter.get("/convert/:id", [keycloak.protect()], async (req: any, res: any) : Promise<void> => {
+projectRouter.get("/convert/:id/:themeId", [keycloak.protect()], async (req: any, res: any) : Promise<void> => {
     const unit: Unit = await Unit.create(true);
     const projectService: ProjectService = new ProjectService(unit);
     const convertService: ConvertService = new ConvertService(unit);
@@ -125,8 +125,7 @@ projectRouter.get("/convert/:id", [keycloak.protect()], async (req: any, res: an
         const destinationPath: string = `${projectPath}.zip`;
         await convertService.convertProject(
             req.params.id,
-            (await projectService.selectAllProjects(req.kauth.grant.access_token.content.preferred_username))
-                .find(project => project.id === req.params.id)?.themeId ?? -1,
+            req.params.themeId,
             destinationPath);
         const relativePath: string = join(__dirname, "/../..", destinationPath);
         res.status(StatusCodes.OK).sendFile(relativePath);

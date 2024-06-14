@@ -33,8 +33,8 @@ export class ProjectService {
     return this.http.delete(`${this.projectURL}/${id}`);
   }
 
-  convertProject(id:number){
-    return this.http.get<Blob>(`${this.projectURL}/convert/${id}`, {
+  convertProject(id:number, themeId: number) {
+    return this.http.get<Blob>(`${this.projectURL}/convert/${id}/${themeId}`, {
       responseType: 'blob' as 'json'
     });
   }
