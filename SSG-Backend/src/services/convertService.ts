@@ -150,30 +150,12 @@ export class ConvertService extends ServiceBase {
             const path = join(__dirname, "/../..", rawPath);
             const fileContent = await fsPromises.readFile(path, "utf-8");
             const headers: string[] = this.getArrayOfAllHeaders(fileContent);
-            const ids: string[] = this.getIdArray(fileContent)
-            const length: number = Math.min(headers.length, ids.length);
+            const ids: string[] = this.getIdArray(fileContent);
 
-            let currentList = "";
-            for (let i: number = 0; i < length; i++) {
-                const level = headers[i].split(" ")[0].length;
-                const headerText = headers[i].replace(/^=+ /, '');
-                const headerLink = wrapInTag(headerText, "a", `href="${basename(file.name, ".adoc")}.html#${ids[i]}" class="link"`);
-                if (level === 1) {
-                    if (currentList) {
-                        wrapped += wrapInTag(currentList, "ul", 'class="sub-list"');
-                        currentList = "";
-                    }
-                    wrapped += wrapInTag(headerLink, "li", 'class="list-item"');
-                } else if (level === 2) {
-                    currentList += wrapInTag(headerLink, "li", 'class="list-item"');
-                }
-            }
-            if (currentList) {
-                wrapped += wrapInTag(currentList, "ul", 'class="sub-list"');
-            }
+            const html: string = this.generateHeaders(headers, ids, file.name, 1);
     
             const fileLink = wrapInTag(file.name, "a", `href="${basename(file.name, ".adoc")}.html" class="file-link"`);
-            wrapped = wrapInTag(fileLink, "li", 'class="navbar"') + wrapInTag(wrapped, "ul", 'class="content-list"');
+            wrapped = wrapInTag(fileLink, "li", 'class="navbar"') + wrapInTag(html, "ul", 'class="content-list"');
             resultingHtml += wrapped;
         }
         return wrapInTag(resultingHtml, "ul", 'class="table-of-contents"');
@@ -197,8 +179,8 @@ export class ConvertService extends ServiceBase {
             if(level === headerLevel){
                 html += this.wrapInTag(headerLink, "li", 'class="content-list"');
             }
-            else if(level > headerLevel){
-                html += this.wrapInTag(this.generateHeaders(headers, ids, fileName, headerLevel++), "ul", 'class="sub-list"');
+            else if(level === (headerLevel + 1)){
+                html += this.wrapInTag(this.generateHeaders(headers, ids, fileName, headerLevel + 1), "ul", 'class="sub-list"');
             }
         }
         return html;
@@ -206,12 +188,22 @@ export class ConvertService extends ServiceBase {
 
     private getIdArray(fileContent: string): string[]{
         const ids: string[] = [];
-        const regex: RegExp = /^=+ +(\S+[\S ]*)$/m;
+        const regex: RegExp = /^=+ +(\S+[\S ]*)$/mg;
+        const h1Regex: RegExp = /^= +(\S+[\S ]*)$/mg;
+        const h1Count: number | undefined = fileContent.match(h1Regex)?.length;
+        console.log(h1Count);
         for(const line of fileContent.split(/\r?\n/)){
-            const match: RegExpExecArray[] = [...line.matchAll(regex)];
-            ids.push(`_${match[1].toString().replace(" ", "_").toLowerCase()}`);
+            const match: RegExpMatchArray[] = [...line.matchAll(regex)];
+            
+            if(line.match(h1Regex) && h1Count === 1){
+                    ids.push("header");
+            }
+            else if(match.at(0)?.at(1)){
+                ids.push(`_${match.at(0)?.at(1)?.toString().replace(" ", "_").toLowerCase()}`);
+            }
         }
-        let resultIds: string[] = [];
+    
+        let resultIds: string[] = ids;
         for(const searchId of ids){
             const occurences: string[] = ids.filter(id => id === searchId);
             if(occurences.length > 1){
