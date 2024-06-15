@@ -56,17 +56,6 @@ html. The service uses the "archiver" library to create a zip file of the html f
 hide empty methods
 hide empty fields
 
-class DB
-class Unit
-class ServiceBase
-
-class FileService
-class ProjectService
-class StyleService
-class ElementStyleService
-class ThemeService
-class ConvertService
-
 Unit *-u- DB
 
 ServiceBase *-u- Unit
