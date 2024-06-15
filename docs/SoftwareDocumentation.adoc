@@ -1,0 +1,130 @@
+= Software Documentation
+
+== Github
+
+The "stable-" prefix of branches is used when automatic testing on github is wanted.
+
+On pull requests to the main branch the tests will run automatically.
+The test results must be green before the pull request can be merged.
+
+If a branch is successfully merged into the main branch a
+github action will automatically build docker images
+of the frontend and backend and push them to the docker hub repository.
+
+== Backend
+
+Technologies used:
+
+* Typescript
+* Express
+* Keycloak
+* Multer
+* Archiver
+* Jest
+
+To start the backend a .env file in the backend root directory is needed.
+The .env file should contain the following:
+
+* PORT=3000
+* SECRET_KEY=Your secret key
+** what the secret key is set to is not important for developing
+
+The backend consists of:
+
+* Database utility classes
+** /src/database
+* Routers
+* they contain the endpoints of the API
+** /src/routes
+* Services
+** they contain the functions for accessing the database
+** the services also contain some utility methods for the database
+and the data we store
+** /src/services
+
+In the "app.ts" file are the routers used as middleware and keycloak get initialized.
+
+The routers use the services to access the database.
+The routers also handle most of the file handling using multer.
+
+The "Convert Service" is a special service which handles converting the files of the user to
+html. The service uses the "archiver" library to create a zip file of the html files.
+
+[plantuml]
+----
+@startuml
+hide empty methods
+hide empty fields
+
+class DB
+class Unit
+class ServiceBase
+
+class FileService
+class ProjectService
+class StyleService
+class ElementStyleService
+class ThemeService
+class ConvertService
+
+Unit *-u- DB
+
+ServiceBase *-u- Unit
+
+ServiceBase <|-- FileService
+ServiceBase <|-- ProjectService
+ServiceBase <|-- StyleService
+ServiceBase <|-- ElementStyleService
+ServiceBase <|-- ThemeService
+ServiceBase <|-- ConvertService
+
+ThemeRouter *-u- ThemeService
+ElementStyleRouter *-u- ElementStyleService
+StyleRouter *-u- StyleService
+ProjectRouter *-u- ProjectService
+FileRouter *-u- FileService
+
+ThemeRouter *-- ConvertService
+ProjectRouter *-- ConvertService
+FileRouter *-- ConvertService
+
+@enduml
+----
+
+== Frontend
+
+Technologies used:
+
+* Typescript
+* Angular
+* TailwindCSS
+
+The frontend consists of:
+
+* Components
+** /src/app/components
+* Services
+** /src/app/services
+
+The components use the services to access the backend.
+
+Pages:
+
+* Landing Page
+* Project Selection
+* Theme Selection
+* Project Editor
+
+The selection pages are used to selecting, creating and
+changing the name of the project and theme.
+The theme selection can also change if the
+theme is public or not.
+
+The project editor uses:
+
+* theme-editor component
+* file-list component
+* file-preview component
+
+The project editor has a button to generate the site
+and the "Change Theme" button uses the theme selection page.
