@@ -187,11 +187,11 @@ export class ConvertService extends ServiceBase {
     }
 
     private getIdArray(fileContent: string): string[]{
+        fileContent = fileContent.replace(/[^\s\wÄÜÖ=]/g, "");
         const ids: string[] = [];
         const regex: RegExp = /^=+ +(\S+[\S ]*)$/mg;
         const h1Regex: RegExp = /^= +(\S+[\S ]*)$/mg;
         const h1Count: number | undefined = fileContent.match(h1Regex)?.length;
-        console.log(h1Count);
         for(const line of fileContent.split(/\r?\n/)){
             const match: RegExpMatchArray[] = [...line.matchAll(regex)];
             
