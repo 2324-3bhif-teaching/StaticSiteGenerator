@@ -38,8 +38,8 @@ export class FileService {
     return this.http.patch(`${this.filesURL}/${fileId}`, { index: newIndex });
   }
 
-  convertFile(fileId: number) {
-    return this.http.get<{ html: string }>(`${this.filesURL}/convert/${fileId}`);
+  convertFile(fileId: number, projectId: number, generateTOC: boolean) {
+    return this.http.get<{ html: string }>(`${this.filesURL}/convert/${fileId}/${projectId}/${generateTOC}`);
   }
 }
 

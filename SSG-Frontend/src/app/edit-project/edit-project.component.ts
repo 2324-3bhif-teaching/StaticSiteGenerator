@@ -77,6 +77,7 @@ export class EditProjectComponent {
   }
 
   previewTrigger(){
+    console.log("something changed " + this.generateTOC)
     this.reloadPreviewEmitter.emit();
   }
 }

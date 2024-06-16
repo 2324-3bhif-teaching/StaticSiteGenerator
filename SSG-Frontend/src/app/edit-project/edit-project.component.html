@@ -16,9 +16,9 @@
                 }
             </div>
             <div class="flex items-center m-4">
-                <input [(ngModel)]="generateTOC" type="checkbox" name="Generate table of contents" class="appearance-none hover:cursor-pointer checked:bg-blue-800 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                <label for="onlyPrivate" class="ml-2 text-sm font-medium text-gray-300 dark:text-gray-300 hover:cursor-pointer select-none">Generate table of contents</label>
-            </div>
+                <input [(ngModel)]="generateTOC" type="checkbox" id="generate" name="Generate table of contents" class="appearance-none hover:cursor-pointer checked:bg-blue-800 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                <label for="generate" class="ml-2 text-sm font-medium text-gray-300 dark:text-gray-300 hover:cursor-pointer select-none">Generate table of contents</label>
+              </div>
 
             <div class="justify-end items-end">
                 @if (project.id !== -1) {
@@ -28,7 +28,7 @@
         </div>
 
         <div class="preview-field">
-            <app-file-preview [themeId]="theme.id" [reloadPreviewEvent]="reloadPreviewEmitter.asObservable()"  [fileId]="activeFileId" ></app-file-preview>
+            <app-file-preview [themeId]="theme.id" [projectId]="project.id" [generateTOC]="generateTOC" [reloadPreviewEvent]="reloadPreviewEmitter.asObservable()"  [fileId]="activeFileId" ></app-file-preview>
         </div>
     </div>
 </div>
