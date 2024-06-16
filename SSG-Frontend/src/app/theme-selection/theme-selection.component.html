@@ -1,4 +1,4 @@
-<div class="bg-gray-900 h-screen text-gray-300 flex justify-center text-center ">
+<div class="bg-gray-900 min-h-screen text-gray-300 flex justify-center text-center ">
     <div class="container mx-auto p-6">
         <input type="text" [(ngModel)]="searchText"
             class="bg-gray-900 text-gray-300 border-4 border-gray-950 rounded-lg p-2 mb-4 w-full"
@@ -6,6 +6,11 @@
         <button
             class="rounded-lg bg-gray-900 border-gray-700 hover:text-gray-300 border-4 hover:border-blue-500 text-white p-3 my-4 transition-all"
             (click)="openThemeModal()">Create Theme</button>
+
+            <div class="flex items-center mb-4">
+                <input [(ngModel)]="onlyShowPrivate" type="checkbox" id="onlyPrivate" name="Only Show Private Themes" class="appearance-none hover:cursor-pointer checked:bg-blue-800 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                <label for="onlyPrivate" class="ml-2 text-sm font-medium text-gray-300 dark:text-gray-300 hover:cursor-pointer select-none">Only show private themes</label>
+              </div>
 
         <div class="grid grid-cols-3 gap-4">
             <ng-container *ngFor="let theme of filteredThemes">

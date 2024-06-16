@@ -11,11 +11,15 @@
     </div>
 
     <div class="flex mx-2 rounded-lg p-2 px-4 transition-all justify-center [&>*]:px-4">
-        <button class="bg-blue-500 hover:bg-blue-600 rounded-md hover:text-gray-400 text-sm sm:text-base p-1 sm:p-2 mx-1" (click)="handlePass()">
+        <button class="bg-blue-500 hover:bg-blue-600 rounded-md hover:text-gray-400 text-sm sm:text-base p-1 sm:p-2 mx-1 transition-all" (click)="handlePass()">
             <fa-icon [icon]="faEdit"></fa-icon>
         </button>
-        <button class="bg-red-500 hover:bg-red-600 rounded-md hover:text-gray-400 text-sm sm:text-base p-1 sm:p-2 mx-1" (click)="deleteMe()">
+        <button class="bg-red-500 hover:bg-red-600 rounded-md hover:text-gray-400 text-sm sm:text-base p-1 sm:p-2 mx-1 transition-all" (click)="deleteMe()">
             <fa-icon [icon]="faTrash"></fa-icon>
+        </button>
+
+        <button class="bg-gray-500 hover:bg-gray-600 rounded-md hover:text-gray-400 text-sm sm:text-base p-1 sm:p-2 mx-1 transition-all" (click)="onProjectPatch()">
+            <fa-icon [icon]="faPen"></fa-icon>
         </button>
     </div>
 </div>
