@@ -38,7 +38,7 @@ export class FileListComponent {
     this.fileService.getAllFilesOfProject(this.project.id).subscribe(files => {
       this.files = files;
     },(err) => {
-      this.globEHandler.handleError(new Error("Could not find file",err));
+      this.globEHandler.handleError(new Error("There are no files in this project",err));
     });
   }
 
