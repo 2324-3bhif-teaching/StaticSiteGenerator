@@ -1,0 +1,13 @@
+<div @fadeInOut class="fixed bottom-5 right-5 space-y-2 w-96 text-wrap z-50">
+    <div class="toast bg-gray-950 shadow-lg rounded-lg p-4 max-w-xs w-full">
+      <div class="flex items-start">
+        <div class="flex-shrink-0">
+          <fa-icon [icon]="faError" class="text-red-500"></fa-icon>
+        </div>
+        <div class="ml-3 w-0 flex-1 pt-0.5">
+          <p class="text-sm font-medium text-gray-200">An Unexpected Error Occurred</p>
+          <p class="mt-1 text-sm text-gray-500">{{errorMsg}}</p>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -2,3 +2,7 @@
     <app-navbar></app-navbar>
 }
 <router-outlet/>
+
+@if (Exception !== null) {
+    <app-alert-toast [errorMsg]="Exception"/>
+}

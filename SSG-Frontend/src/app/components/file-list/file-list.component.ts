@@ -5,6 +5,7 @@ import { faArrowDown, faArrowUp, faDeleteLeft, faFile, faFileArchive, faTrash, f
 import { FaIconComponent } from "@fortawesome/angular-fontawesome";
 import { FormsModule } from "@angular/forms";
 import { Project } from '../../services/project.service';
+import { GlobalErrorHandlerService } from '../../services/global-error-handler.service';
 
 
 @Component({
@@ -29,13 +30,15 @@ export class FileListComponent {
   fileToUpload: File | null = null;
   validFile: boolean = true;
 
-  constructor(private fileService: FileService) {
+  constructor(private fileService: FileService,private globEHandler:GlobalErrorHandlerService) {
 
   }
 
   ngOnInit(): void {
     this.fileService.getAllFilesOfProject(this.project.id).subscribe(files => {
       this.files = files;
+    },(err) => {
+      this.globEHandler.handleError(new Error("There are no files in this project",err));
     });
   }
 
