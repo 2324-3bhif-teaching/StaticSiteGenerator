@@ -71,17 +71,22 @@ export class ThemeSelectionComponent {
   }
 
   get filteredThemes() {
+    const filter = (theme: Theme) => {
+      const lowercaseSearchText: string = this.searchText.toLowerCase();
+      return theme.name.toLowerCase().includes(lowercaseSearchText)
+        || theme.userName.toLowerCase().includes(lowercaseSearchText)
+    };
     if(this.onlyShowOwned){
       if (!this.searchText.trim()) {
         return this.ownedThemes;
       }
-      return this.ownedThemes.filter(theme => theme.name.toLowerCase().includes(this.searchText.toLowerCase()));
+      return this.ownedThemes.filter(filter);
     }
     else{
       if (!this.searchText.trim()) {
         return this.themes;
       }
-      return this.themes.filter(theme => theme.name.toLowerCase().includes(this.searchText.toLowerCase()));
+      return this.themes.filter(filter);
     }
   }
 
