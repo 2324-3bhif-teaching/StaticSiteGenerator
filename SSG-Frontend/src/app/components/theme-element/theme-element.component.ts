@@ -48,8 +48,8 @@ export class ThemeElementComponent {
     this.userName = (decodedJwt as any).preferred_username;
 
     this.elementService.getAllFromTheme(this.theme.id).subscribe(async (elementStyles: ElementStyle[]) => {
-      this.backgroundColor = await this.findFirstValue(elementStyles, ['*', 'body'], 'background-color') ?? this.backgroundColor;
-      this.background = await this.findFirstValue(elementStyles, ['*', 'body'], 'background') ?? this.background;
+      this.backgroundColor = await this.findFirstValue(elementStyles, ['*', 'html', 'body'], 'background-color') ?? this.backgroundColor;
+      this.background = await this.findFirstValue(elementStyles, ['*', 'html','body'], 'background') ?? this.background;
       this.fontFamily = await this.findFirstValue(elementStyles, ['*', 'body'], 'font-family') ?? this.fontFamily;
       this.headerColor = await this.findFirstValue(elementStyles, ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'], 'color') ?? this.headerColor;
       this.paragraphColor = await this.findFirstValue(elementStyles, ['p'], 'color') ?? this.paragraphColor;
