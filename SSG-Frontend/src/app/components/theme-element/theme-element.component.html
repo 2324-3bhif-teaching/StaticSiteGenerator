@@ -1,7 +1,7 @@
-<div class="rounded-xl min-w-[12em] px-4 py-5 my-4 bg-gray-950 lg:max-h-20 lg:min-h-20 min-h-32 max-h-32  text-gray-300 flex flex-row justify-between items-center">
+<div [style.background-color]="backgroundColor" [style.background]="background" class="rounded-xl min-w-[12em] px-4 py-5 my-4 bg-gray-950 lg:max-h-20 lg:min-h-20 min-h-32 max-h-32  text-gray-300 flex flex-row justify-between items-center">
     <div class="flex flex-col text-left">
-        <h1 class="text-xl">{{ theme.name}}</h1>
-        <h1 class="text-xl text-gray-400">by {{theme.userName.toLocaleUpperCase()}}</h1>
+        <h1 [style.font-family]="fontFamily" [style.color]="headerColor" class="text-xl">{{ theme.name}}</h1>
+        <h1 [style.color]="paragraphColor" class="text-xl text-gray-400">by {{theme.userName.toLocaleUpperCase()}}</h1>
     </div>
     <h1 class="text-lg ml-1" [ngClass]="{'text-green-500': theme.isPublic, 'text-gray-500': !theme.isPublic}">{{ theme.isPublic ? "Public" : "Private"}}</h1>
     <div class="*:mx-2 *:rounded-lg *:p-2 *:px-4 *:transition-all">
