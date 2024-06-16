@@ -15,27 +15,19 @@ export class FileService {
   private filesURL: string = this.baseService.BASE_URL + this.baseService.FILES_URL;
 
   getAllFilesOfProject(projectId: number) {
-    return this.http.get<SSGFile[]>(`${this.filesURL}/${projectId}`).pipe(
-      catchError(error => {
-        this.errorHandler.handleError(new Error("Could not get files",error));
-        return throwError(() => new Error("Could not get files"));
-      }),
-    );
+    return this.http.get<SSGFile[]>(`${this.filesURL}/${projectId}`);
   }
 
   postFiles(files: File[], projectId: number) {
     const formData: FormData = new FormData();
+    console.log(files)
+
     files.forEach(file => {
       formData.append('file', file);
     });
-    formData.append('projectId', projectId.toString());
 
-    return this.http.post(`${this.filesURL}/upload`, formData).pipe(
-      catchError(error => {
-        this.errorHandler.handleError(error);
-        return throwError(() => new Error("Could not upload files"));
-      }),
-    );
+    formData.append('projectId', projectId.toString());
+    return this.http.post(this.filesURL, formData);
   }
 
   deleteFile(fileId: number) {
