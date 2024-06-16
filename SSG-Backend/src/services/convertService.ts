@@ -81,9 +81,6 @@ export class ConvertService extends ServiceBase {
             return;
         }
 
-        
-
-
         const fileService: FileService = new FileService(this.unit);
         const files: File[] = await fileService.selectFilesOfProject(projectId);
     
@@ -154,7 +151,7 @@ export class ConvertService extends ServiceBase {
             wrapped = this.wrapInTag(fileLink, "li", 'class="navbar"') + this.wrapInTag(html, "ul", 'class="content-list"');
             resultingHtml += wrapped;
         }
-        return this.wrapInTag(resultingHtml, "ul", 'class="table-of-contents"');
+        return this.wrapInTag(resultingHtml, "ul", 'id="table-of-contents" class="table-of-contents"');
     }
 
     private wrapInTag(input: string, tag: string, attributes: string = ''): string {
