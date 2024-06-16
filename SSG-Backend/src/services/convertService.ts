@@ -126,10 +126,6 @@ export class ConvertService extends ServiceBase {
     }
 
     public async createTableOfContent(projectId: number): Promise<string> {
-        const wrapInTag = (input: string, tag: string, attributes: string = ''): string => {
-            return `<${tag} ${attributes.trim()}>${input}</${tag}>`;
-        };
-    
         const projectService: ProjectService = new ProjectService(this.unit);
         const projectPath: string | null = await projectService.getProjectPath(projectId);
         if (projectPath === null) {
@@ -152,54 +148,64 @@ export class ConvertService extends ServiceBase {
             const headers: string[] = this.getArrayOfAllHeaders(fileContent);
             const ids: string[] = this.getIdArray(fileContent);
 
-            const html: string = this.generateHeaders(headers, ids, file.name, 1);
+            const html: string = this.generateHeaders(headers, ids, file.name, 1, 0);
     
-            const fileLink = wrapInTag(file.name, "a", `href="${basename(file.name, ".adoc")}.html" class="file-link"`);
-            wrapped = wrapInTag(fileLink, "li", 'class="navbar"') + wrapInTag(html, "ul", 'class="content-list"');
+            const fileLink = this.wrapInTag(file.name, "a", `href="${basename(file.name, ".adoc")}.html" class="file-link"`);
+            wrapped = this.wrapInTag(fileLink, "li", 'class="navbar"') + this.wrapInTag(html, "ul", 'class="content-list"');
             resultingHtml += wrapped;
         }
-        return wrapInTag(resultingHtml, "ul", 'class="table-of-contents"');
+        return this.wrapInTag(resultingHtml, "ul", 'class="table-of-contents"');
     }
 
     private wrapInTag(input: string, tag: string, attributes: string = ''): string {
-        return `<${tag} ${attributes.trim()}>${input}</${tag}>`;
+        return input !== "" ? `<${tag} ${attributes.trim()}>${input}</${tag}>` : "";
     };
 
     // soll rekursiv die li und ul machen;
     // soll bei 1 starten und erhäht sich dann rekursiv und geht so jedes level durch
-    private generateHeaders(headers: string[], ids: string[], fileName: string, headerLevel: number): string{
+    private generateHeaders(headers: string[], ids: string[], fileName: string, headerLevel: number, startIdx: number): string{
         const length: number = Math.min(headers.length, ids.length);
         let html: string = "";
+        console.log("");
+        console.log(`headerLevel: ${headerLevel} startIdx: ${startIdx}`);
 
-        for(let i: number = 0; i < length; i++){
+        for(let i: number = startIdx; i < length; i++){
             const level = headers[i].split(" ")[0].length;
             const headerText = headers[i].replace(/^=+ /, '');
             const headerLink = this.wrapInTag(headerText, "a", `href="${basename(fileName, ".adoc")}.html#${ids[i]}" class="link"`);
-            
+
             if(level === headerLevel){
                 html += this.wrapInTag(headerLink, "li", 'class="content-list"');
+                console.log(`content: ${html}`);
+                html += this.wrapInTag(this.generateHeaders(headers, ids, fileName, headerLevel + 1, i + 1), "ul", 'class="sub-list"');
             }
-            else if(level === (headerLevel + 1)){
-                html += this.wrapInTag(this.generateHeaders(headers, ids, fileName, headerLevel + 1), "ul", 'class="sub-list"');
+            else if(level < headerLevel){
+                console.log(`Broke out of ${headerLevel}`);
+                break;
             }
         }
         return html;
     }
 
     private getIdArray(fileContent: string): string[]{
-        fileContent = fileContent.replace(/[^\s\wÄÜÖ=]/g, "");
         const ids: string[] = [];
         const regex: RegExp = /^=+ +(\S+[\S ]*)$/mg;
         const h1Regex: RegExp = /^= +(\S+[\S ]*)$/mg;
         const h1Count: number | undefined = fileContent.match(h1Regex)?.length;
+        let firstHeaderAssigned: boolean = false;
         for(const line of fileContent.split(/\r?\n/)){
             const match: RegExpMatchArray[] = [...line.matchAll(regex)];
             
-            if(line.match(h1Regex) && h1Count === 1){
+            if(line.match(h1Regex) && !firstHeaderAssigned/*&& h1Count === 1*/){
                     ids.push("header");
+                    firstHeaderAssigned = true;
             }
             else if(match.at(0)?.at(1)){
-                ids.push(`_${match.at(0)?.at(1)?.toString().replace(" ", "_").toLowerCase()}`);
+                ids.push(`_${match.at(0)?.at(1)?.toString().
+                    replace(/ ?[^\s\wÄÜÖ=:.] ?/g, "").
+                    replace(/[:.]/g, " ").
+                    replace(/ +/g, "_").
+                    toLowerCase()}`);
             }
         }
     
@@ -232,7 +238,7 @@ export class ConvertService extends ServiceBase {
         const equalRegex = /^=+$/;
         for (const line of lines) {
             if (line.startsWith("=") && !equalRegex.test(line)) { 
-                headers.push(line);
+                headers.push(line.replace(/-{2}/g, "-"));
             }
         }
     
