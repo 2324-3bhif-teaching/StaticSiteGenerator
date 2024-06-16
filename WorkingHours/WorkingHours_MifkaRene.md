@@ -23,3 +23,4 @@
 | 12.06.2024 | 8h | Sehr viel design, fixes und navbar                                                                                | #19, #24, #26 |
 | 13.06.2024 | 7h 30min | Design und viele Bugfixes und TOC, sowie Default Theme                                                                              | #19, #24, #26 |
 | 14.06.2024 | 4h 30min | Design und viele Bugfixes und Renaming                                                                          | #19, #24, #26 |
+| 16.06.2024 | 2h 30min | Toasts und Error Handling                                                                                       |               |
