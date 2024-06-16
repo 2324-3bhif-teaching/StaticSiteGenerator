@@ -24,3 +24,6 @@
 | 11.06.2024 | 1h | Frontend Theme Editor | |
 | 12.06.2024 | 4h 30min | Frontend Theme Editor | |
 | 13.06.2024 | 4h | Frontend Theme Editor, private Preview fix | |
+| 14.06.2024 | 3h | Table of Contents Generierung im Backend | |
+| 15.06.2024 | 3h | Table of Contents Generierung im Backend | |
+| 16.06.2024 | 4h | Table of Contents im Backend und Frontend | |
