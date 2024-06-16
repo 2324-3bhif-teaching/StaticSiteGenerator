@@ -1,30 +1,41 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BaseService } from './base.service';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+import { GlobalErrorHandlerService } from './global-error-handler.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FileService {
 
-  constructor(private http: HttpClient, private baseService: BaseService) { }
+  constructor(private http: HttpClient, private baseService: BaseService,private errorHandler:GlobalErrorHandlerService) { }
 
   private filesURL: string = this.baseService.BASE_URL + this.baseService.FILES_URL;
 
   getAllFilesOfProject(projectId: number) {
-    return this.http.get<SSGFile[]>(`${this.filesURL}/${projectId}`);
+    return this.http.get<SSGFile[]>(`${this.filesURL}/${projectId}`).pipe(
+      catchError(error => {
+        this.errorHandler.handleError(new Error("Could not get files",error));
+        return throwError(() => new Error("Could not get files"));
+      }),
+    );
   }
 
   postFiles(files: File[], projectId: number) {
     const formData: FormData = new FormData();
-    console.log(files)
-
     files.forEach(file => {
       formData.append('file', file);
     });
-
     formData.append('projectId', projectId.toString());
-    return this.http.post(this.filesURL, formData);
+
+    return this.http.post(`${this.filesURL}/upload`, formData).pipe(
+      catchError(error => {
+        this.errorHandler.handleError(error);
+        return throwError(() => new Error("Could not upload files"));
+      }),
+    );
   }
 
   deleteFile(fileId: number) {
