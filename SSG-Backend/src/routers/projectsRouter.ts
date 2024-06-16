@@ -126,7 +126,8 @@ projectRouter.get("/convert/:id/:themeId", [keycloak.protect()], async (req: any
         await convertService.convertProject(
             req.params.id,
             req.params.themeId,
-            destinationPath);
+            destinationPath,
+            req.body.generateTOC === 'true');
         const relativePath: string = join(__dirname, "/../..", destinationPath);
         res.status(StatusCodes.OK).sendFile(relativePath);
         await fs.rm(relativePath);

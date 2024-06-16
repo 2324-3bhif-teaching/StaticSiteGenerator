@@ -12,7 +12,6 @@ import * as fsPromises from "fs/promises";
 import {WriteStream} from "fs";
 import archiver, {Archiver} from "archiver";
 import {basename, join} from "path";
-import { wrap } from "module";
 
 export class ConvertService extends ServiceBase {
     constructor(unit: Unit) {
@@ -74,7 +73,7 @@ export class ConvertService extends ServiceBase {
         }).toString();
     }
 
-    public async convertProject(projectId: number, themeId: number, destinationPath: string, generateTOC : boolean = true): Promise<void> {
+    public async convertProject(projectId: number, themeId: number, destinationPath: string, generateTOC : boolean): Promise<void> {
         const projectService: ProjectService = new ProjectService(this.unit);
         const projectPath: string | null = await projectService.getProjectPath(projectId);
         if (projectPath === null) {
