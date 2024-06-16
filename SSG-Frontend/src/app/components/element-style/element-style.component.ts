@@ -36,7 +36,9 @@ export class ElementStyleComponent{
       console.log("selector change " + this.selectorInput!.nativeElement.value);
       console.log("selector change " + this.selectorInput!.nativeElement.value);
       console.log("selector change " + this.selectorInput!.nativeElement.value);
-      this.elementStyleService.patchElementStyleSelector(this.elementStyle.id, this.selectorInput!.nativeElement.value).subscribe();
+      this.elementStyleService.patchElementStyleSelector(this.elementStyle.id, this.selectorInput!.nativeElement.value).subscribe(() => {
+        this.onTriggerPreview();
+      });
     }
   }
 

@@ -7,11 +7,13 @@ import {FilePreviewComponent} from "../components/file-preview/file-preview.comp
 import { ElementStyleComponent } from '../components/element-style/element-style.component';
 import { Theme, ThemeService } from '../services/theme.service';
 import { saveAs } from 'file-saver';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-edit-project',
   standalone: true,
-  imports: [FileListComponent, ThemeEditorComponent, FilePreviewComponent,ElementStyleComponent],
+  imports: [FileListComponent, ThemeEditorComponent, FilePreviewComponent,ElementStyleComponent, CommonModule, FormsModule],
   templateUrl: './edit-project.component.html',
   styleUrl: './edit-project.component.css'
 })
@@ -19,6 +21,7 @@ export class EditProjectComponent {
   protected project: Project = { id: -1, name: "Default", themeId: -1, userName: "Default" };
   protected activeFileId: number = -1;
   protected theme: Theme = { id: -1, name: "Def", userName: "Usr", isPublic: false };
+  public generateTOC: boolean = false;
   reloadPreviewEmitter: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(private route: ActivatedRoute, private projectService: ProjectService, private themeService:ThemeService) {
@@ -68,12 +71,13 @@ export class EditProjectComponent {
   convertProject(){
     console.log(this.project);
 
-    this.projectService.convertProject(this.project.id, this.theme.id).subscribe(data =>{
+    this.projectService.convertProject(this.project.id, this.theme.id, this.generateTOC).subscribe(data =>{
       saveAs(data,`${this.project.name}.zip`);
     });
   }
 
   previewTrigger(){
+    console.log("something changed " + this.generateTOC)
     this.reloadPreviewEmitter.emit();
   }
 }

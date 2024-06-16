@@ -7,6 +7,7 @@ import { StatusCodes } from "http-status-codes";
 import * as fs from "fs/promises";
 import {ConvertService} from "../services/convertService";
 import {join} from "path";
+import { ThemeService } from "../services/themeService";
 
 export const projectRouter: Router = express.Router();
 const keycloak: Keycloak.Keycloak = new Keycloak({ store: memoryStore });
@@ -111,9 +112,11 @@ projectRouter.delete("/:id", [keycloak.protect()], async (req: any, res: any) : 
 projectRouter.get("/convert/:id/:themeId", [keycloak.protect()], async (req: any, res: any) : Promise<void> => {
     const unit: Unit = await Unit.create(true);
     const projectService: ProjectService = new ProjectService(unit);
+    const themeService: ThemeService = new ThemeService(unit);
     const convertService: ConvertService = new ConvertService(unit);
     try{
-        if (!await projectService.ownsProject(req.kauth.grant.access_token.content.preferred_username, req.params.id)) {
+        if (!await projectService.ownsProject(req.kauth.grant.access_token.content.preferred_username, req.params.id) ||
+         !await themeService.isAllowedToUseTheme(req.kauth.grant.access_token.content.preferred_username, req.params.themeId)) {
             res.sendStatus(StatusCodes.BAD_REQUEST);
             return;
         }
@@ -126,7 +129,8 @@ projectRouter.get("/convert/:id/:themeId", [keycloak.protect()], async (req: any
         await convertService.convertProject(
             req.params.id,
             req.params.themeId,
-            destinationPath);
+            destinationPath,
+            req.body.generateTOC === 'true');
         const relativePath: string = join(__dirname, "/../..", destinationPath);
         res.status(StatusCodes.OK).sendFile(relativePath);
         await fs.rm(relativePath);

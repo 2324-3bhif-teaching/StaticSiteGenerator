@@ -14,6 +14,8 @@ import { Observable, Subscription } from 'rxjs';
 export class FilePreviewComponent implements OnChanges {
   @Input() fileId: number = -1;
   @Input() themeId: number = -1;
+  @Input() projectId: number = -1;
+  @Input() generateTOC: boolean = false;
   @Input() reloadPreviewEvent!: Observable<void>;
   @ViewChild('preview', { static: false }) iframe: ElementRef | null = null;
   subscription!: Subscription;
@@ -30,18 +32,19 @@ export class FilePreviewComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['fileId'] || changes['themeId']) {
+    if (changes['fileId'] || changes['themeId'] || changes['generateTOC']) {
       this.reloadFilePreview();
     }
   }
 
   protected reloadFilePreview() {
+    console.log("generate: " + this.generateTOC);
     if (this.fileId === -1 || this.themeId === -1) {
       this.writeToIframe("");
       return;
     }
     let fileHtml: string = "";
-    this.fileService.convertFile(this.fileId).subscribe(html => {
+    this.fileService.convertFile(this.fileId, this.projectId, this.generateTOC).subscribe(html => {
       fileHtml = html.html;
       this.themeService.convertTheme(this.themeId).subscribe(css => {
         fileHtml += `<style>${css.css}</style>`;
