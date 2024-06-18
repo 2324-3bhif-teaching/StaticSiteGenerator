@@ -2,7 +2,7 @@
   web:
     build: "./SSG-Frontend/"
     ports:
-      - "8080:8080"
+      - "878:8080"
     image: paulschein/static_site_generator:frontend
     links:
         - api
