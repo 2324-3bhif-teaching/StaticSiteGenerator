@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port 8080",
-    "build": "ng build --configuration=production --port 8080",
+    "build": "ng build --configuration=production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:SSG-Frontend": "node dist/ssg-frontend/server/server.mjs"
