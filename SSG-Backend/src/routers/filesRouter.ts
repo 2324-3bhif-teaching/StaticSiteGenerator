@@ -145,12 +145,13 @@ filesRouter.patch("/:fileId", [keycloak.protect()], async (req: any, res: any): 
     }
 });
 
-filesRouter.get("/convert/:fileId", [keycloak.protect()], async (req: any, res: any): Promise<void> => {
+filesRouter.get("/convert/:fileId/:projectId/:generateTOC", [keycloak.protect()], async (req: any, res: any): Promise<void> => {
     const unit: Unit = await Unit.create(true);
     const fileService: FileService = new FileService(unit);
     const convertService: ConvertService = new ConvertService(unit);
     try {
-        if (!await fileService.ownsFile(req.kauth.grant.access_token.content.preferred_username, req.params.fileId)) {
+        if (!await fileService.ownsFile(req.kauth.grant.access_token.content.preferred_username, req.params.fileId) ||
+            !(await fileService.selectFilesOfProject(req.params.projectId)).some((file: File) => file.id === parseInt(req.params.fileId))){
             res.sendStatus(StatusCodes.BAD_REQUEST);
             return;
         }
@@ -159,8 +160,14 @@ filesRouter.get("/convert/:fileId", [keycloak.protect()], async (req: any, res: 
             res.sendStatus(StatusCodes.NOT_FOUND);
         }
         else {
+            let html: string = "";
+            if(req.params.generateTOC === "true"){
+                html += await convertService.createTableOfContent(req.params.projectId)
+            }
+            html += await convertService.convertFile(req.params.fileId, true);
+
             res.status(StatusCodes.OK).send({
-                html: await convertService.convertFile(req.params.fileId, true)
+                html: html
             });
         }
     }

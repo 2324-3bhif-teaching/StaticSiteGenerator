@@ -22,7 +22,8 @@ export class ProjectService {
   }
 
   patchProjectName(id:number,name:string){
-    return this.http.patch(`${this.projectURL}/name/${id}`,{name});
+    console.log(id + name)
+    return this.http.patch(`${this.projectURL}/name/${id}`,{newName:name});
   }
 
   patchThemeId(id:number,newThemeId:number){
@@ -33,8 +34,9 @@ export class ProjectService {
     return this.http.delete(`${this.projectURL}/${id}`);
   }
 
-  convertProject(id:number, themeId: number) {
+  convertProject(id:number, themeId: number, generateTOC: boolean) {
     return this.http.get<Blob>(`${this.projectURL}/convert/${id}/${themeId}`, {
+      params: { generateTOC },
       responseType: 'blob' as 'json'
     });
   }

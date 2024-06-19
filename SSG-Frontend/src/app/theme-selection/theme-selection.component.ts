@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ThemeService, Theme } from '../services/theme.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -6,9 +6,9 @@ import { ThemeElementComponent } from '../components/theme-element/theme-element
 import { trigger, transition, style, animate } from '@angular/animations';
 import {ActivatedRoute} from "@angular/router";
 import {ProjectService} from "../services/project.service";
-import {ProjectModalComponent} from "../components/project-modal/project-modal.component";
 import {ThemeModalComponent} from "../components/theme-modal/theme-modal.component";
 import {MatDialog} from "@angular/material/dialog";
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-theme-selection',
@@ -32,10 +32,20 @@ export class ThemeSelectionComponent {
   public themes: Theme[] = [];
   public searchText: string = '';
   private projectId: number = -1;
+  public onlyShowOwned : boolean = false;
+  private userName: string = "";
 
   constructor(private dialog: MatDialog,private route: ActivatedRoute, private themeService: ThemeService, private projectService: ProjectService) { }
 
   ngOnInit() {
+    const jwt = sessionStorage.getItem('jwt')?.replace("Bearer","");
+    if(jwt === undefined){
+      this.userName = "Not logged in";
+      return;
+    }
+    const decodedJwt = jwtDecode(jwt);
+    this.userName = (decodedJwt as any).preferred_username;
+
     this.projectId = parseInt(this.route.snapshot.paramMap.get('id')?.valueOf() ?? "-1");
     this.themeService.getAllPublicThemes().subscribe((themes) => {
       this.themes = themes;
@@ -56,11 +66,28 @@ export class ThemeSelectionComponent {
     });
   }
 
+  get ownedThemes(){
+    return this.themes.filter(theme => theme.userName === this.userName);
+  }
+
   get filteredThemes() {
-    if (!this.searchText.trim()) {
-      return this.themes;
+    const filter = (theme: Theme) => {
+      const lowercaseSearchText: string = this.searchText.toLowerCase();
+      return theme.name.toLowerCase().includes(lowercaseSearchText)
+        || theme.userName.toLowerCase().includes(lowercaseSearchText)
+    };
+    if(this.onlyShowOwned){
+      if (!this.searchText.trim()) {
+        return this.ownedThemes;
+      }
+      return this.ownedThemes.filter(filter);
     }
-    return this.themes.filter(theme => theme.name.toLowerCase().includes(this.searchText.toLowerCase()));
+    else{
+      if (!this.searchText.trim()) {
+        return this.themes;
+      }
+      return this.themes.filter(filter);
+    }
   }
 
   onThemeSelected(theme: Theme) {
@@ -84,8 +111,9 @@ export class ThemeSelectionComponent {
   }
 
   handleNewThemeCreation(newTheme: NewThemeData) {
-    this.themeService.postTheme(newTheme.name, newTheme.isPublic).subscribe();
-    document.location.reload();
+    this.themeService.postTheme(newTheme.name, newTheme.isPublic).subscribe(() =>{
+      document.location.reload();
+    });
   }
 }
 

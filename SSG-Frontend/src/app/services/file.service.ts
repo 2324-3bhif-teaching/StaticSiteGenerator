@@ -1,13 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BaseService } from './base.service';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+import { GlobalErrorHandlerService } from './global-error-handler.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FileService {
 
-  constructor(private http: HttpClient, private baseService: BaseService) { }
+  constructor(private http: HttpClient, private baseService: BaseService,private errorHandler:GlobalErrorHandlerService) { }
 
   private filesURL: string = this.baseService.BASE_URL + this.baseService.FILES_URL;
 
@@ -35,8 +38,8 @@ export class FileService {
     return this.http.patch(`${this.filesURL}/${fileId}`, { index: newIndex });
   }
 
-  convertFile(fileId: number) {
-    return this.http.get<{ html: string }>(`${this.filesURL}/convert/${fileId}`);
+  convertFile(fileId: number, projectId: number, generateTOC: boolean) {
+    return this.http.get<{ html: string }>(`${this.filesURL}/convert/${fileId}/${projectId}/${generateTOC}`);
   }
 }
 
