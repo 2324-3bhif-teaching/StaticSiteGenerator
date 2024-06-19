@@ -6,7 +6,7 @@ import {ThemeService} from "../services/themeService";
 import {ElementStyleService} from "../services/elementStyleService";
 import {StyleService} from "../services/styleService";
 
-export const dbFileName = 'StaticSiteGenerator.db';
+export const dbFileName = './data/StaticSiteGenerator.db';
 
 export class DB {
     public static dbFilePath: string = dbFileName;
