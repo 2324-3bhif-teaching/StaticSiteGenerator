@@ -20,7 +20,12 @@
       - back-tier
     expose:
         - "3000"
+    volumes:
+      - data-volume:/app/data
     pull_policy: always
+
+volumes:
+    data-volume:
 
 networks:
   back-tier: {}
