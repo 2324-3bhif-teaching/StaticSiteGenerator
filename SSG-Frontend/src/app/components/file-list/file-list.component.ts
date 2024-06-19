@@ -30,15 +30,13 @@ export class FileListComponent {
   fileToUpload: File | null = null;
   validFile: boolean = true;
 
-  constructor(private fileService: FileService,private globEHandler:GlobalErrorHandlerService) {
+  constructor(private fileService: FileService) {
 
   }
 
   ngOnInit(): void {
     this.fileService.getAllFilesOfProject(this.project.id).subscribe(files => {
       this.files = files;
-    },(err) => {
-      this.globEHandler.handleError(new Error("There are no files in this project",err));
     });
   }
 

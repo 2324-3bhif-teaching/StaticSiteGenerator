@@ -4,6 +4,7 @@ import { NgbModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { AlertToastComponent } from './components/alert-toast/alert-toast.component';
 import { GlobalErrorHandlerService } from './services/global-error-handler.service';
+import { ConsoleToggleService } from './services/console-toggle-service.service';
 
 @Component({
   selector: 'app-root',
@@ -19,8 +20,9 @@ export class AppComponent {
   public static instance : any = null;
   Exception : any = null;
 
-  constructor(){
+  constructor(private consoleDisableService:ConsoleToggleService){
     AppComponent.instance = this;
+    consoleDisableService.disableConsoleInProduction();
   }
 
   isLoginPage: boolean = false;
